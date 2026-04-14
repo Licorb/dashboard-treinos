@@ -1,37 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard de Treinos</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #F5F3EF; --surface: #FFFFFF; --border: rgba(0,0,0,0.08); --text: #1A1916; --text-muted: #7A7770; --radius-md: 12px; }
+    :root { --bg: #F5F3EF; --card: #FFFFFF; --text: #1A1916; --muted: #7A7770; --border: rgba(0,0,0,0.08); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-    .container { max-width: 1100px; margin: 0 auto; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .status { font-size: 11px; padding: 4px 10px; background: #eee; border-radius: 20px; color: var(--text-muted); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-    .card { background: var(--surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border); }
-    .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
-    .val { font-size: 28px; font-weight: 500; }
-    .chart-box { background: var(--surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 15px; }
-    #debug { background: #333; color: #0f0; padding: 15px; border-radius: 8px; font-size: 12px; margin-bottom: 20px; display: none; white-space: pre-wrap; font-family: monospace; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .val { font-size: 24px; font-weight: 500; }
+    .chart-container { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <div id="debug"></div>
-
   <header>
     <div>
-      <h1 style="font-size: 20px; font-weight: 500;">Treinos de Corrida</h1>
-      <p style="font-size: 12px; color: var(--text-muted);">Dashboard Ativo</p>
+      <h1 style="font-size: 22px;">Treinos de Corrida</h1>
+      <p style="font-size: 13px; color: var(--muted);">Meta: 74,0 kg</p>
     </div>
-    <div id="status" class="status">Sincronizando...</div>
+    <div id="status" style="font-size: 11px; color: var(--muted);">Carregando...</div>
   </header>
 
   <div class="grid">
@@ -41,36 +37,109 @@
     <div class="card"><div class="label">Total Treinos</div><div id="v-count" class="val">—</div></div>
   </div>
 
-  <div class="chart-box">
-    <p class="label">Volume por Semana (km)</p>
+  <div class="chart-container">
+    <div class="label">Volume Semanal (km)</div>
     <div style="height: 250px;"><canvas id="chartSemana"></canvas></div>
   </div>
 
-  <div class="chart-box">
-    <p class="label">Evolução do Peso (kg)</p>
+  <div class="chart-container">
+    <div class="label">Evolução do Peso (kg)</div>
     <div style="height: 200px;"><canvas id="chartPeso"></canvas></div>
   </div>
 </div>
 
 <script>
-  const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv';
+  const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv';
 
-  function showDebug(msg) {
-    const d = document.getElementById('debug');
-    d.style.display = 'block';
-    d.innerHTML += "> " + msg + "\n";
-  }
-
-  // Limpa números brasileiros (78,50 KG -> 78.5)
-  function cleanNum(val) {
+  // Função robusta para converter "78,50 KG" ou "5.50 K" em número real
+  function toNum(val) {
     if (!val) return 0;
-    let s = val.toString().replace('KG', '').replace('K', '').replace(',', '.').trim();
+    let s = val.toString().replace(/[a-zA-Z\s]/g, '').replace(',', '.').trim();
     return parseFloat(s) || 0;
   }
 
-  async function render() {
+  async function init() {
     try {
-      const res = await fetch(URL_CSV);
-      const text = await res.text();
+      const res = await fetch(URL);
+      const csv = await res.text();
+      const lines = csv.split(/\r?\n/);
+      const sep = csv.includes(';') ? ';' : ',';
       
-      const lines = text.split(/\r?\
+      const rawRows = lines.map(l => l.split(sep).map(c => c.replace(/"/g, '').trim()));
+      const head = rawRows.find(r => r.some(c => c.toLowerCase().includes('dia')));
+      
+      if (!head) return;
+
+      const idx = {
+        dia: head.findIndex(c => c.toLowerCase() === 'dia'),
+        dist: head.findIndex(c => c.toLowerCase().includes('dist')),
+        peso: head.findIndex(c => c.toLowerCase().includes('peso')),
+        comp: head.findIndex(c => c.toLowerCase().includes('comp'))
+      };
+
+      const data = rawRows.slice(rawRows.indexOf(head) + 1)
+        .filter(r => r[idx.dia] && r[idx.dia].includes('/'))
+        .map(r => ({
+          dia: r[idx.dia],
+          dist: toNum(r[idx.dist]),
+          peso: toNum(r[idx.peso]),
+          academia: (r[idx.comp] || '').toLowerCase().includes('academia')
+        }));
+
+      // Atualiza Números
+      const pesos = data.filter(d => d.peso > 50);
+      document.getElementById('v-peso').innerText = pesos.length ? pesos[pesos.length-1].peso.toFixed(1) + ' kg' : '—';
+      document.getElementById('v-dist').innerText = data.reduce((acc, cur) => acc + cur.dist, 0).toFixed(1) + ' km';
+      document.getElementById('v-gym').innerText = data.filter(d => d.academia).length + 'x';
+      document.getElementById('v-count').innerText = data.length;
+      document.getElementById('status').innerText = 'Sincronizado';
+
+      // Gráfico Peso
+      new Chart(document.getElementById('chartPeso'), {
+        type: 'line',
+        data: {
+          labels: pesos.map(d => d.dia),
+          datasets: [{ 
+            data: pesos.map(d => d.peso), 
+            borderColor: '#9b87f5', 
+            backgroundColor: 'rgba(155, 135, 245, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 3 
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+      // Gráfico Semanal
+      const semanas = {};
+      data.forEach(d => {
+        let [dia, mes] = d.dia.split('/').map(Number);
+        let dt = new Date(2026, mes-1, dia);
+        dt.setDate(dt.getDate() - dt.getDay());
+        let k = dt.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+        semanas[k] = (semanas[k] || 0) + d.dist;
+      });
+
+      new Chart(document.getElementById('chartSemana'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(semanas),
+          datasets: [{ 
+            data: Object.values(semanas), 
+            backgroundColor: '#7EBF8E',
+            borderRadius: 6
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+    } catch (e) {
+      document.getElementById('status').innerText = 'Erro na leitura';
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
