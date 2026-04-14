@@ -685,8 +685,20 @@
     if (DATA_SOURCE === 'sheets') {
       try {
         const res  = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv');
-        const data = await res.json();
-        buildDashboard(data);
+       const csvText = await res.text(); // Mudamos de .json() para .text()
+
+      // Converte o CSV em um array de objetos que o dashboard entende
+      const rows = csvText.split('\n').map(row => row.split(','));
+      const headers = rows[0];
+      const data = rows.slice(1).map(row => {
+        let obj = {};
+        headers.forEach((header, i) => {
+          obj[header.trim()] = row[i] ? row[i].trim() : "";
+        });
+        return obj;
+      });
+
+      buildDashboard(data);
       } catch (e) {
         document.querySelector('.container').innerHTML =
           '<div class="loading-state">erro ao carregar dados do Google Sheets.<br>verifique a URL do Apps Script.</div>';
