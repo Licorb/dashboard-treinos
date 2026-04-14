@@ -387,7 +387,7 @@
                               do seu Apps Script Web App.
   ============================================================ */
   /* ============================================================
-      CONFIGURAÇÃO DE DADOS
+      CONFIGURAÇÃO E PROCESSAMENTO (VERSÃO ROBUSTA)
   ============================================================ */
   const DATA_SOURCE = 'sheets'; 
   const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv';
@@ -402,65 +402,34 @@
   };
   const META_PESO = 74.0;
 
-  /* ============================================================
-      PROCESSAMENTO E LÓGICA
-  ============================================================ */
-  
-  function parseDia(s) {
-    if(!s) return new Date();
-    const [d, m] = s.split('/').map(Number);
-    return new Date(2026, m - 1, d);
+  function limparValorPlanilha(val) {
+    if (!val) return 0;
+    // Remove "K", "KG", aspas e troca vírgula por ponto
+    let limpo = val.toString().toUpperCase().replace('KG', '').replace('K', '').replace(/"/g, '').replace(',', '.').trim();
+    return parseFloat(limpo) || 0;
   }
 
   function getSemanaKey(dateStr) {
-    const d = parseDia(dateStr);
-    const sun = new Date(d);
-    sun.setDate(d.getDate() - d.getDay());
+    if(!dateStr || !dateStr.includes('/')) return '01/01';
+    const [d, m] = dateStr.split('/').map(Number);
+    const date = new Date(2026, m - 1, d);
+    const sun = new Date(date);
+    sun.setDate(date.getDate() - date.getDay());
     return sun.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-  }
-
-  function cleanNum(val) {
-    if (!val) return null;
-    let n = parseFloat(val.toString().replace(',', '.'));
-    return isNaN(n) ? null : n;
-  }
-
-  // Ajuste leve no buildDashboard para não dar erro com pesos nulos
-  function buildDashboard(data) {
-    const comPeso = data.filter(r => r.peso && r.peso > 10); // Filtra pesos válidos
-    const ultimoPeso = comPeso.length ? comPeso[comPeso.length - 1].peso : null;
-    const primPeso = comPeso.length ? comPeso[0].peso : 78; // 78 como base inicial se falhar
-    
-    const distTotal = data.reduce((s, r) => s + r.distEf, 0);
-    const academia = data.filter(r => r.comp).length;
-    const provas = data.filter(r => r.tipo.toLowerCase() === 'prova').length;
-
-    // Atualiza interface
-    document.getElementById('val-peso').textContent = ultimoPeso ? ultimoPeso.toFixed(1) + ' kg' : '—';
-    document.getElementById('val-dist').textContent = distTotal.toFixed(1) + ' km';
-    document.getElementById('val-gym').textContent = academia + 'x';
-    document.getElementById('val-provas').textContent = provas;
-    
-    if(ultimoPeso) {
-        const diff = ultimoPeso - primPeso;
-        const el = document.getElementById('val-peso-delta');
-        el.textContent = (diff <= 0 ? '▼ ' : '▲ ') + Math.abs(diff).toFixed(1) + ' kg desde o início';
-        el.className = 'delta ' + (diff <= 0 ? 'down' : 'up');
-        
-        const pct = Math.min(100, Math.max(0, ((primPeso - ultimoPeso) / (primPeso - 74)) * 100));
-        document.getElementById('meta-bar').style.width = pct + '%';
-    }
-
-    renderCharts(data);
   }
 
   function renderCharts(data) {
     const gridColor = 'rgba(0,0,0,0.05)';
     const tickFont  = { family: "'DM Mono', monospace", size: 10 };
 
-    // Semanas
+    // Gráfico de Semanas
     const semMap = {};
-    data.forEach(r => { if (r.distEf > 0) { const k = getSemanaKey(r.dia); semMap[k] = (semMap[k] || 0) + r.distEf; } });
+    data.forEach(r => { 
+      if (r.distEf > 0) { 
+        const k = getSemanaKey(r.dia); 
+        semMap[k] = (semMap[k] || 0) + r.distEf; 
+      } 
+    });
     
     new Chart(document.getElementById('chartSemanas'), {
       type: 'bar',
@@ -468,16 +437,14 @@
         labels: Object.keys(semMap),
         datasets: [{ label: 'km', data: Object.values(semMap), backgroundColor: '#A8C8F0', borderRadius: 5 }]
       },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: gridColor }, ticks: { font: tickFont } }, x: { grid: { display: false }, ticks: { font: tickFont } } } }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
 
-    // Tipos
+    // Gráfico de Tipos
     const tiposMap = {};
     data.forEach(r => { if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre') { tiposMap[r.tipo] = (tiposMap[r.tipo] || 0) + 1; } });
     const tLabels = Object.keys(tiposMap);
-    
-    const legendEl = document.getElementById('legend-tipos');
-    legendEl.innerHTML = tLabels.map(t => `<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t] || '#D0D0D0'}"></span>${t} (${tiposMap[t]})</span>`).join('');
+    document.getElementById('legend-tipos').innerHTML = tLabels.map(t => `<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t] || '#D0D0D0'}"></span>${t} (${tiposMap[t]})</span>`).join('');
 
     new Chart(document.getElementById('chartTipos'), {
       type: 'bar',
@@ -485,76 +452,10 @@
         labels: tLabels,
         datasets: [{ data: Object.values(tiposMap), backgroundColor: tLabels.map(t => TIPO_CORES[t] || '#D0D0D0'), borderRadius: 5 }]
       },
-      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { font: tickFont, stepSize: 1 } }, y: { ticks: { font: tickFont } } } }
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
 
-    // Peso
-    const pesoRows = data.filter(r => r.peso != null);
+    // Gráfico de Peso
+    const pesoRows = data.filter(r => r.peso && r.peso > 10);
     new Chart(document.getElementById('chartPeso'), {
       type: 'line',
-      data: {
-        labels: pesoRows.map(r => r.dia),
-        datasets: [
-          { label: 'Peso', data: pesoRows.map(r => r.peso), borderColor: '#C8B4E8', tension: 0.3, fill: true, backgroundColor: 'rgba(200,180,232,0.1)' },
-          { label: 'Meta', data: pesoRows.map(() => META_PESO), borderColor: 'rgba(61,107,79,0.3)', borderDash: [5, 5], pointRadius: 0, fill: false }
-        ]
-      },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 70, max: 80, ticks: { font: tickFont } }, x: { ticks: { font: tickFont } } } }
-    });
-  }
-
-  function limparValorPlanilha(val) {
-    if (!val) return 0;
-    // Remove "K", "KG", espaços e troca vírgula por ponto
-    let limpo = val.toString().toUpperCase().replace('KG', '').replace('K', '').replace(',', '.').trim();
-    return parseFloat(limpo) || 0;
-  }
-
-  async function init() {
-    if (DATA_SOURCE === 'sheets') {
-      try {
-        const res = await fetch(URL_CSV);
-        const csvText = await res.text();
-        const rows = csvText.split(/\r?\n/).map(row => row.split(/[,;]/));
-
-        // Como a linha 1 está em branco, pegamos os cabeçalhos da linha 2 (index 1)
-        const headers = rows[1].map(h => h.trim().toLowerCase());
-        
-        // Começamos a ler os dados a partir da linha 3 (index 2)
-        const data = rows.slice(2).filter(row => row.length > 1).map(row => {
-          let obj = {};
-          headers.forEach((header, i) => {
-            let val = row[i] ? row[i].replace(/"/g, '').trim() : "";
-            obj[header] = val;
-          });
-          return obj;
-        });
-
-        // Converte os textos da sua planilha em dados que o gráfico entende
-        const dataTratada = data.map(r => ({
-          dia: r.dia,
-          peso: r.peso ? limparValorPlanilha(r.peso) : null,
-          distEf: r.distef ? limparValorPlanilha(r.distef) : 0,
-          tipo: r.tipo || 'Livre',
-          // Verifica se você escreveu "Academia" na coluna comp
-          comp: r.comp && r.comp.toLowerCase().includes('academia')
-        })).filter(r => r.dia); // Remove linhas totalmente vazias
-
-        // Ordenar por data (DD/MM)
-        dataTratada.sort((a, b) => {
-          const [da, ma] = a.dia.split('/').map(Number);
-          const [db, mb] = b.dia.split('/').map(Number);
-          return new Date(2026, ma, da) - new Date(2026, mb, db);
-        });
-
-        buildDashboard(dataTratada);
-      } catch (e) {
-        console.error("Erro ao ler planilha:", e);
-      }
-    }
-  }
-  init();
-
-</script>
-</body>
-</html>
