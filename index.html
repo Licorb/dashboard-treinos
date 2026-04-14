@@ -2,129 +2,110 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard de Treinos</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #F5F3EF; --surface: #FFFFFF; --surface2: #EDEAE4; --border: rgba(0,0,0,0.08);
-      --text: #1A1916; --text-muted: #7A7770; --text-hint: #B0ADA8; --accent: #3D6B4F;
-      --accent-light: #D4E8DC; --blue: #A8C8F0; --purple: #C8B4E8; --green: #B8E0C8;
-      --amber: #FAD4A0; --pink: #F4A8B4; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 18px;
+    :root { --bg: #F5F3EF; --text: #1A1916; --accent: #3D6B4F; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+    #debug-screen { 
+      background: #000; color: #0f0; font-family: 'DM Mono', monospace; 
+      padding: 15px; font-size: 12px; border-radius: 8px; margin-bottom: 20px;
+      max-height: 200px; overflow-y: auto; border: 2px solid #333;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 0 4rem; }
-    header { padding: 2.5rem 2.5rem 1.5rem; display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface); margin-bottom: 2rem; }
-    .header-left h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
-    .header-left p { font-size: 0.85rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-    .header-right { text-align: right; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--text-hint); }
-    .last-update { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 0.72rem; padding: 3px 10px; border-radius: 20px; margin-top: 6px; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-    .cards-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 1.8rem; }
-    .card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
-    .card-label { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--text-hint); text-transform: uppercase; margin-bottom: 10px; }
-    .card-value { font-size: 2rem; font-weight: 300; letter-spacing: -0.03em; }
-    .card-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
-    .delta.down { color: var(--accent); } .delta.up { color: #C0533A; }
-    .card-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
-    .card-peso .card-accent { background: var(--purple); }
-    .card-dist .card-accent { background: var(--blue); }
-    .card-gym .card-accent { background: var(--green); }
-    .card-provas .card-accent { background: var(--pink); }
-    .meta-bar-track { height: 4px; background: var(--surface2); border-radius: 10px; margin-top: 5px; overflow: hidden; }
-    .meta-bar-fill { height: 100%; background: var(--purple); width: 0%; transition: width 1s; }
-    .meta-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-hint); font-family: 'DM Mono', monospace; }
-    .charts-row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 14px; margin-bottom: 1.4rem; }
-    .chart-card, .peso-chart-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.4rem 1.6rem; }
-    .chart-title { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--text-hint); text-transform: uppercase; margin-bottom: 16px; }
-    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-    .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
-    @media (max-width: 768px) { .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .charts-row { grid-template-columns: 1fr; } }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .card { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); }
+    .val { font-size: 24px; font-weight: 500; }
+    .label { font-size: 12px; color: #777; text-transform: uppercase; }
+    canvas { background: #fff; border-radius: 12px; padding: 10px; border: 1px solid rgba(0,0,0,0.1); }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-left">
-    <h1>Treinos de Corrida</h1>
-    <p>jan 2026 → presente</p>
-  </div>
-  <div class="header-right">
-    <div id="status-debug" style="color: orange; font-size: 0.6rem; margin-bottom: 4px;">Aguardando script...</div>
-    <div class="last-update" id="last-update">carregando dados...</div>
-  </div>
-</header>
+  <div id="debug-screen">SISTEMA: Aguardando inicialização...</div>
 
-<div class="container">
-  <div class="cards-grid">
-    <div class="card card-peso">
-      <div class="card-label">Último peso</div>
-      <div class="card-value" id="val-peso">—</div>
-      <div class="card-sub"><span id="val-peso-delta"></span></div>
-      <div class="meta-bar-wrap">
-        <div class="meta-label"><span id="meta-inicio">—</span><span>meta 74,0</span></div>
-        <div class="meta-bar-track"><div class="meta-bar-fill" id="meta-bar"></div></div>
-      </div>
-      <div class="card-accent"></div>
-    </div>
-    <div class="card card-dist">
-      <div class="card-label">Distância total</div>
-      <div class="card-value" id="val-dist">—</div>
-      <div class="card-sub" id="val-dist-sub">—</div>
-      <div class="card-accent"></div>
-    </div>
-    <div class="card card-gym">
-      <div class="card-label">Academia</div>
-      <div class="card-value" id="val-gym">—</div>
-      <div class="card-sub">sessões realizadas</div>
-      <div class="card-accent"></div>
-    </div>
-    <div class="card card-provas">
-      <div class="card-label">Provas</div>
-      <div class="card-value" id="val-provas">—</div>
-      <div class="card-sub">corridas oficiais</div>
-      <div class="card-accent"></div>
-    </div>
+  <div class="grid">
+    <div class="card"><div class="label">Último Peso</div><div id="v-peso" class="val">—</div></div>
+    <div class="card"><div class="label">Total KM</div><div id="v-dist" class="val">—</div></div>
+    <div class="card"><div class="label">Treinos</div><div id="v-count" class="val">—</div></div>
   </div>
 
-  <div class="charts-row">
-    <div class="chart-card">
-      <div class="chart-title">Distância por semana (km)</div>
-      <div style="height:230px;"><canvas id="chartSemanas"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Tipos de treino</div>
-      <div class="legend" id="legend-tipos"></div>
-      <div style="height:190px;"><canvas id="chartTipos"></canvas></div>
-    </div>
+  <div style="height: 300px; margin-bottom: 20px;">
+    <canvas id="chartPeso"></canvas>
   </div>
-
-  <div class="peso-chart-card">
-    <div class="chart-title">Evolução do peso (kg)</div>
-    <div style="height:200px;"><canvas id="chartPeso"></canvas></div>
-  </div>
-</div>
 
 <script>
-  // --- SEGURANÇA ---
-  if (sessionStorage.getItem("dashboard_acesso") !== "concedido") {
-    let t = prompt("Senha:");
-    if (t === "treinos2026") sessionStorage.setItem("dashboard_acesso", "concedido");
-    else window.location.href = "https://google.com";
+  // Função de log que escreve na tela e no console
+  function monitor(msg, color = "#0f0") {
+    const screen = document.getElementById('debug-screen');
+    console.log(msg);
+    screen.innerHTML += `<div style="color:${color}">> ${msg}</div>`;
+    screen.scrollTop = screen.scrollHeight;
   }
 
-  // --- CONFIGURAÇÃO ---
-  const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv';
-  const TIPO_CORES = { 'Intervalado': '#A8C8F0', 'Regenerativo': '#B8E0C8', 'Longo': '#C8B4E8', 'Tempo': '#FAD4A0', 'Prova': '#F4A8B4', 'Rodagem': '#B8D8E8' };
+  async function start() {
+    monitor("Passo 1: Script iniciado.");
+    
+    const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv';
 
-  function log(msg) { 
-    console.log(msg); 
-    document.getElementById('status-debug').innerText = msg; 
+    try {
+      monitor("Passo 2: Tentando baixar planilha...");
+      const response = await fetch(URL_CSV);
+      
+      if (!response.ok) throw new Error("Erro ao acessar link da planilha. Status: " + response.status);
+      
+      const text = await response.text();
+      monitor("Passo 3: Planilha baixada. Processando linhas...");
+
+      const rows = text.split(/\r?\n/).map(l => l.split(/[,;]/));
+      
+      // Achar cabeçalho
+      const headerIdx = rows.findIndex(r => r.some(c => c.toLowerCase().includes('dia')));
+      if (headerIdx === -1) throw new Error("Não achei a coluna 'dia' na sua planilha.");
+
+      const headers = rows[headerIdx].map(h => h.trim().toLowerCase());
+      const data = rows.slice(headerIdx + 1).map(row => {
+        let obj = {};
+        headers.forEach((h, i) => obj[h] = row[i] ? row[i].trim() : "");
+        return obj;
+      }).filter(r => r.dia && r.dia.includes('/'));
+
+      monitor("Passo 4: " + data.length + " linhas de dados encontradas.");
+
+      // Cálculos Simples
+      const pesos = data.filter(d => d.peso).map(d => parseFloat(d.peso.replace(',', '.')));
+      const dists = data.filter(d => d.distef).map(d => parseFloat(d.distef.replace(',', '.')));
+      
+      document.getElementById('v-peso').innerText = pesos.length ? pesos[pesos.length-1] + " kg" : "—";
+      document.getElementById('v-dist').innerText = dists.reduce((a,b) => a+b, 0).toFixed(1) + " km";
+      document.getElementById('v-count').innerText = data.length;
+
+      // Gráfico Básico
+      monitor("Passo 5: Desenhando gráfico...");
+      new Chart(document.getElementById('chartPeso'), {
+        type: 'line',
+        data: {
+          labels: data.map(d => d.dia),
+          datasets: [{
+            label: 'Peso',
+            data: pesos,
+            borderColor: '#3D6B4F',
+            tension: 0.2
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      monitor("SUCESSO: Dashboard carregado.", "cyan");
+
+    } catch (err) {
+      monitor("ERRO: " + err.message, "red");
+      console.error(err);
+    }
   }
 
-  function limparNum(v) {
-    if (!v) return 0;
-    let n = parseFloat(v.toString().replace(/[^\d
+  // Tenta rodar imediatamente
+  start();
+</script>
+</body>
+</html>
