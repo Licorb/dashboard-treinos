@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard de Treinos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    :root {
+      --bg: #F5F3EF;
+      --surface: #FFFFFF;
+      --surface2: #EDEAE4;
+      --border: rgba(0,0,0,0.08);
+      --text: #1A1916;
+      --text-muted: #7A7770;
+      --text-hint: #B0ADA8;
+      --accent: #3D6B4F;
+      --accent-light: #D4E8DC;
+      --blue: #A8C8F0;
+      --purple: #C8B4E8;
+      --green: #B8E0C8;
+      --amber: #FAD4A0;
+      --pink: #F4A8B4;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 4rem;
+    }
+
+    /* Header */
+    header {
+      padding: 2.5rem 2.5rem 1.5rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 2rem;
+    }
+    .header-left h1 {
+      font-size: 1.6rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .header-left p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-family: 'DM Mono', monospace;
+    }
+    .header-right {
+      text-align: right;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-hint);
+    }
+    .last-update {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Cards topo */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 1.8rem;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.2rem 1.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-label {
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-hint);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .card-value {
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .card-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    .card-sub .delta {
+      font-weight: 500;
+    }
+    .delta.down { color: var(--accent); }
+    .delta.up { color: #C0533A; }
+    .card-accent {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    /* Peso card especial */
+    .card-peso .card-value {
+      font-size: 2.4rem;
+      font-weight: 400;
+    }
+    .card-peso .card-accent { background: var(--purple); }
+    .card-dist .card-accent { background: var(--blue); }
+    .card-gym .card-accent { background: var(--green); }
+    .card-provas .card-accent { background: var(--pink); }
+
+    /* Objetivo */
+    .meta-bar-wrap {
+      margin-top: 10px;
+    }
+    .meta-bar-track {
+      height: 4px;
+      background: var(--surface2);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    .meta-bar-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 10px;
+      transition: width 0.6s ease;
+    }
+    .meta-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-hint);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* Charts row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+      gap: 14px;
+      margin-bottom: 1.4rem;
+    }
+    .chart-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.4rem 1.6rem;
+    }
+    .chart-title {
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-hint);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* Peso chart */
+    .peso-chart-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1.4rem;
+    }
+
+    /* Legenda */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: 'DM Mono', monospace;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    /* Footer note */
+    .footer-note {
+      text-align: center;
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-hint);
+      margin-top: 2.5rem;
+    }
+
+    /* Loading state */
+    .loading-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 1.5rem; flex-direction: column; align-items: flex-start; gap: 10px; }
+      .container { padding: 0 1rem; }
+      .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .charts-row { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Treinos de Corrida</h1>
+    <p>jan 2025 → presente</p>
+  </div>
+  <div class="header-right">
+    <div>objetivo: 74,0 kg</div>
+    <div class="last-update" id="last-update">carregando...</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Cards topo -->
+  <div class="cards-grid">
+    <div class="card card-peso">
+      <div class="card-label">Último peso</div>
+      <div class="card-value" id="val-peso">—</div>
+      <div class="card-sub"><span class="delta" id="val-peso-delta"></span></div>
+      <div class="meta-bar-wrap">
+        <div class="meta-label">
+          <span id="meta-inicio">—</span>
+          <span>meta 74,0</span>
+        </div>
+        <div class="meta-bar-track">
+          <div class="meta-bar-fill" id="meta-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="card-accent"></div>
+    </div>
+
+    <div class="card card-dist">
+      <div class="card-label">Distância total</div>
+      <div class="card-value" id="val-dist">—</div>
+      <div class="card-sub" id="val-dist-sub">treinos registrados</div>
+      <div class="card-accent"></div>
+    </div>
+
+    <div class="card card-gym">
+      <div class="card-label">Academia</div>
+      <div class="card-value" id="val-gym">—</div>
+      <div class="card-sub">sessões complementares</div>
+      <div class="card-accent"></div>
+    </div>
+
+    <div class="card card-provas">
+      <div class="card-label">Provas</div>
+      <div class="card-value" id="val-provas">—</div>
+      <div class="card-sub" id="val-provas-sub">corridas oficiais</div>
+      <div class="card-accent"></div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Distância por semana (km)</div>
+      <div style="position:relative;height:230px;">
+        <canvas id="chartSemanas" role="img" aria-label="Distância efetiva por semana em km">Gráfico de barras com distância efetiva por semana.</canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Tipos de treino</div>
+      <div class="legend" id="legend-tipos"></div>
+      <div style="position:relative;height:190px;">
+        <canvas id="chartTipos" role="img" aria-label="Distribuição de tipos de treino">Gráfico horizontal com tipos de treino.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Peso chart -->
+  <div class="peso-chart-card">
+    <div class="chart-title">Evolução do peso (kg)</div>
+    <div style="position:relative;height:200px;">
+      <canvas id="chartPeso" role="img" aria-label="Evolução do peso ao longo dos treinos">Gráfico de linha com evolução do peso.</canvas>
+    </div>
+  </div>
+
+  <div class="footer-note" id="footer-note">dados atualizados manualmente · dashboard-treinos</div>
+</div>
+
+<script>
+  /* ============================================================
+     FONTE DE DADOS
+     Para usar dados estáticos: deixe DATA_SOURCE = 'static'
+     Para usar Google Sheets: DATA_SOURCE = 'sheets'
+                              e preencha SHEETS_URL com a URL
+                              do seu Apps Script Web App.
+  ============================================================ */
+  const DATA_SOURCE = 'static';
+  const SHEETS_URL  = 'COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT';
+
+  /* ============================================================
+     DADOS ESTÁTICOS — substitua este array quando quiser
+     ou aponte para o Google Sheets acima.
+  ============================================================ */
+  const STATIC_DATA = [
+    {dia:'27/01',distEf:5.5,tipo:'Intervalado',comp:false,peso:78.0},
+    {dia:'28/01',distEf:0,tipo:'Livre',comp:false,peso:76.9},
+    {dia:'29/01',distEf:7.0,tipo:'Tempo',comp:true,peso:77.3},
+    {dia:'30/01',distEf:6.5,tipo:'Regenerativo',comp:true,peso:null},
+    {dia:'01/02',distEf:10.0,tipo:'Longo',comp:false,peso:null},
+    {dia:'02/02',distEf:0,tipo:'Livre',comp:false,peso:78.3},
+    {dia:'03/02',distEf:8.0,tipo:'Regenerativo',comp:true,peso:null},
+    {dia:'04/02',distEf:0,tipo:'Livre',comp:false,peso:77.0},
+    {dia:'05/02',distEf:8.2,tipo:'Intervalado',comp:true,peso:null},
+    {dia:'06/02',distEf:5.5,tipo:'Regenerativo',comp:false,peso:76.4},
+    {dia:'07/02',distEf:0,tipo:'Livre',comp:false,peso:77.0},
+    {dia:'08/02',distEf:11.0,tipo:'Longo',comp:false,peso:77.6},
+    {dia:'10/02',distEf:6.0,tipo:'Intervalado',comp:true,peso:77.3},
+    {dia:'11/02',distEf:0,tipo:'Livre',comp:false,peso:76.7},
+    {dia:'12/02',distEf:6.5,tipo:'Intervalado',comp:false,peso:76.3},
+    {dia:'14/02',distEf:5.9,tipo:'Regenerativo',comp:true,peso:null},
+    {dia:'15/02',distEf:7.3,tipo:'Longo',comp:false,peso:null},
+    {dia:'17/02',distEf:0,tipo:'Regenerativo',comp:false,peso:null},
+    {dia:'18/02',distEf:8.2,tipo:'Livre',comp:true,peso:null},
+    {dia:'19/02',distEf:7.4,tipo:'Intervalado',comp:false,peso:78.2},
+    {dia:'20/02',distEf:6.5,tipo:'Regenerativo',comp:true,peso:77.6},
+    {dia:'21/02',distEf:0,tipo:'Livre',comp:false,peso:76.1},
+    {dia:'22/02',distEf:13.0,tipo:'Longo',comp:false,peso:75.9},
+    {dia:'23/02',distEf:0,tipo:'Livre',comp:false,peso:76.4},
+    {dia:'24/02',distEf:6.5,tipo:'Intervalado',comp:false,peso:76.0},
+    {dia:'25/02',distEf:0,tipo:'Livre',comp:true,peso:74.9},
+    {dia:'26/02',distEf:6.0,tipo:'Intervalado',comp:false,peso:74.4},
+    {dia:'27/02',distEf:0,tipo:'Regenerativo',comp:false,peso:74.9},
+    {dia:'28/02',distEf:0,tipo:'Livre',comp:false,peso:74.7},
+    {dia:'01/03',distEf:11.0,tipo:'Prova',comp:false,peso:74.8},
+    {dia:'02/03',distEf:0,tipo:'Livre',comp:false,peso:75.8},
+    {dia:'03/03',distEf:7.0,tipo:'Regenerativo',comp:true,peso:76.1},
+    {dia:'04/03',distEf:5.0,tipo:'Intervalado',comp:false,peso:75.3},
+    {dia:'05/03',distEf:0,tipo:'Livre',comp:true,peso:74.45},
+    {dia:'06/03',distEf:6.0,tipo:'Regenerativo',comp:false,peso:74.8},
+    {dia:'07/03',distEf:0,tipo:'Livre',comp:false,peso:74.0},
+    {dia:'08/03',distEf:8.0,tipo:'Longo',comp:false,peso:73.2},
+    {dia:'09/03',distEf:0,tipo:'Livre',comp:false,peso:75.2},
+    {dia:'10/03',distEf:6.5,tipo:'Intervalado',comp:true,peso:74.8},
+    {dia:'11/03',distEf:7.0,tipo:'Regenerativo',comp:false,peso:74.6},
+    {dia:'12/03',distEf:0,tipo:'Livre',comp:false,peso:74.45},
+    {dia:'13/03',distEf:0,tipo:'Livre',comp:false,peso:73.8},
+    {dia:'14/03',distEf:6.0,tipo:'Prova',comp:false,peso:73.9},
+    {dia:'15/03',distEf:0,tipo:'Livre',comp:false,peso:75.3},
+    {dia:'16/03',distEf:0,tipo:'Livre',comp:false,peso:75.3},
+    {dia:'17/03',distEf:13.5,tipo:'Regenerativo',comp:false,peso:74.8},
+    {dia:'18/03',distEf:0,tipo:'Livre',comp:true,peso:74.3},
+    {dia:'19/03',distEf:7.0,tipo:'Intervalado',comp:false,peso:74.8},
+    {dia:'20/03',distEf:6.5,tipo:'Regenerativo',comp:true,peso:74.6},
+    {dia:'21/03',distEf:0,tipo:'Livre',comp:false,peso:75.0},
+    {dia:'22/03',distEf:11.0,tipo:'Longo',comp:false,peso:74.5},
+    {dia:'23/03',distEf:0,tipo:'Livre',comp:false,peso:75.3},
+    {dia:'24/03',distEf:7.0,tipo:'Intervalado',comp:false,peso:74.45},
+    {dia:'25/03',distEf:0,tipo:'Livre',comp:true,peso:73.4},
+    {dia:'26/03',distEf:6.2,tipo:'Tempo',comp:false,peso:72.9},
+    {dia:'27/03',distEf:8.0,tipo:'Regenerativo',comp:false,peso:73.5},
+    {dia:'28/03',distEf:0,tipo:'Livre',comp:true,peso:74.5},
+    {dia:'29/03',distEf:12.0,tipo:'Longo',comp:false,peso:74.0},
+    {dia:'30/03',distEf:0,tipo:'Livre',comp:false,peso:75.3},
+    {dia:'31/03',distEf:8.0,tipo:'Regenerativo',comp:false,peso:73.85},
+    {dia:'01/04',distEf:0,tipo:'Livre',comp:true,peso:73.05},
+    {dia:'02/04',distEf:9.0,tipo:'Intervalado',comp:false,peso:72.5},
+    {dia:'03/04',distEf:7.0,tipo:'Regenerativo',comp:true,peso:72.8},
+    {dia:'04/04',distEf:0,tipo:'Livre',comp:false,peso:73.3},
+    {dia:'05/04',distEf:14.0,tipo:'Prova',comp:false,peso:75.0},
+    {dia:'06/04',distEf:0,tipo:'Livre',comp:false,peso:74.9},
+    {dia:'07/04',distEf:6.3,tipo:'Tempo',comp:false,peso:74.25},
+    {dia:'08/04',distEf:0,tipo:'Livre',comp:true,peso:73.25},
+    {dia:'09/04',distEf:7.0,tipo:'Intervalado',comp:false,peso:72.15},
+    {dia:'10/04',distEf:0,tipo:'Regenerativo',comp:true,peso:72.05},
+    {dia:'11/04',distEf:6.0,tipo:'Livre',comp:false,peso:72.95},
+    {dia:'12/04',distEf:7.5,tipo:'Longo',comp:false,peso:72.5},
+    {dia:'13/04',distEf:0,tipo:'Livre',comp:false,peso:73.95},
+    {dia:'14/04',distEf:0,tipo:'Regenerativo',comp:false,peso:73.45},
+  ];
+
+  /* ============================================================
+     LÓGICA
+  ============================================================ */
+  const TIPO_CORES = {
+    'Intervalado': '#A8C8F0',
+    'Regenerativo': '#B8E0C8',
+    'Longo':        '#C8B4E8',
+    'Tempo':        '#FAD4A0',
+    'Prova':        '#F4A8B4',
+    'Rodagem':      '#B8D8E8',
+  };
+  const META_PESO = 74.0;
+
+  function parseDia(s) {
+    const [d, m] = s.split('/').map(Number);
+    return new Date(2025, m - 1, d);
+  }
+
+  function getSemanaKey(dateStr) {
+    const d = parseDia(dateStr);
+    const sun = new Date(d);
+    sun.setDate(d.getDate() - d.getDay());
+    return sun.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  }
+
+  function buildDashboard(data) {
+    /* --- métricas --- */
+    const comPeso   = data.filter(r => r.peso != null);
+    const ultimoPeso = comPeso.length ? comPeso[comPeso.length - 1].peso : null;
+    const primPeso   = comPeso.length ? comPeso[0].peso : null;
+    const distTotal  = data.reduce((s, r) => s + (r.distEf || 0), 0);
+    const totalTreinos = data.filter(r => r.distEf > 0).length;
+    const academia   = data.filter(r => r.comp).length;
+    const provas     = data.filter(r => r.tipo === 'Prova' && r.distEf > 0);
+
+    /* cards */
+    document.getElementById('val-peso').textContent = ultimoPeso != null ? ultimoPeso.toFixed(1) + ' kg' : '—';
+    if (primPeso && ultimoPeso) {
+      const diff = ultimoPeso - primPeso;
+      const el = document.getElementById('val-peso-delta');
+      el.textContent = (diff < 0 ? '▼ ' : '▲ ') + Math.abs(diff).toFixed(1) + ' kg desde o início';
+      el.className = 'delta ' + (diff < 0 ? 'down' : 'up');
+      document.getElementById('meta-inicio').textContent = primPeso.toFixed(1);
+      const pct = Math.min(100, Math.max(0, ((primPeso - ultimoPeso) / (primPeso - META_PESO)) * 100));
+      document.getElementById('meta-bar').style.width = pct.toFixed(1) + '%';
+    }
+    document.getElementById('val-dist').textContent = distTotal.toFixed(1) + ' km';
+    document.getElementById('val-dist-sub').textContent = totalTreinos + ' treinos registrados';
+    document.getElementById('val-gym').textContent = academia + 'x';
+    document.getElementById('val-provas').textContent = provas.length;
+
+    /* update info */
+    const ultima = data[data.length - 1];
+    document.getElementById('last-update').textContent = 'atualizado · ' + (ultima?.dia || '—');
+
+    /* --- semanas --- */
+    const semMap = {};
+    data.forEach(r => {
+      if (r.distEf > 0) {
+        const k = getSemanaKey(r.dia);
+        semMap[k] = (semMap[k] || 0) + r.distEf;
+      }
+    });
+    const semLabels = Object.keys(semMap);
+    const semVals   = semLabels.map(k => Math.round(semMap[k] * 10) / 10);
+
+    /* --- tipos --- */
+    const tiposMap = {};
+    data.forEach(r => {
+      if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre') {
+        tiposMap[r.tipo] = (tiposMap[r.tipo] || 0) + 1;
+      }
+    });
+    const tiposLabels = Object.keys(tiposMap);
+    const tiposVals   = tiposLabels.map(k => tiposMap[k]);
+
+    /* legenda tipos */
+    const legendEl = document.getElementById('legend-tipos');
+    legendEl.innerHTML = '';
+    tiposLabels.forEach(t => {
+      legendEl.innerHTML += `
+        <span class="legend-item">
+          <span class="legend-dot" style="background:${TIPO_CORES[t] || '#D0D0D0'}"></span>
+          ${t} (${tiposMap[t]})
+        </span>`;
+    });
+
+    /* --- peso --- */
+    const pesoRows   = data.filter(r => r.peso != null);
+    const pesoLabels = pesoRows.map(r => r.dia);
+    const pesoVals   = pesoRows.map(r => r.peso);
+
+    /* ============================================================
+       GRÁFICOS
+    ============================================================ */
+    const gridColor = 'rgba(0,0,0,0.05)';
+    const tickFont  = { family: "'DM Mono', monospace", size: 10 };
+
+    new Chart(document.getElementById('chartSemanas'), {
+      type: 'bar',
+      data: {
+        labels: semLabels,
+        datasets: [{
+          label: 'km',
+          data: semVals,
+          backgroundColor: '#A8C8F0',
+          borderRadius: 5,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + ' km' } }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { font: tickFont, maxRotation: 45, autoSkip: false }
+          },
+          y: {
+            grid: { color: gridColor },
+            ticks: { font: tickFont, callback: v => v + ' km' }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chartTipos'), {
+      type: 'bar',
+      data: {
+        labels: tiposLabels,
+        datasets: [{
+          label: 'Treinos',
+          data: tiposVals,
+          backgroundColor: tiposLabels.map(t => TIPO_CORES[t] || '#D0D0D0'),
+          borderRadius: 5,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            grid: { color: gridColor },
+            ticks: { font: tickFont, stepSize: 1 }
+          },
+          y: { grid: { display: false }, ticks: { font: tickFont } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chartPeso'), {
+      type: 'line',
+      data: {
+        labels: pesoLabels,
+        datasets: [
+          {
+            label: 'Peso (kg)',
+            data: pesoVals,
+            borderColor: '#C8B4E8',
+            backgroundColor: 'rgba(200,180,232,0.10)',
+            pointBackgroundColor: '#C8B4E8',
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            tension: 0.3,
+            fill: true,
+          },
+          {
+            label: 'Meta',
+            data: pesoLabels.map(() => META_PESO),
+            borderColor: 'rgba(61,107,79,0.35)',
+            borderDash: [6, 4],
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' kg' } }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { font: tickFont, maxTicksLimit: 12, maxRotation: 45 }
+          },
+          y: {
+            min: 71, max: 80,
+            grid: { color: gridColor },
+            ticks: { font: tickFont, callback: v => v + ' kg' }
+          }
+        }
+      }
+    });
+
+    document.getElementById('footer-note').textContent =
+      DATA_SOURCE === 'sheets'
+        ? 'dados ao vivo · google sheets · dashboard-treinos'
+        : 'dados estáticos · atualize o STATIC_DATA no index.html';
+  }
+
+  /* ============================================================
+     INICIALIZAÇÃO
+  ============================================================ */
+  async function init() {
+    if (DATA_SOURCE === 'sheets') {
+      try {
+        const res  = await fetch(SHEETS_URL);
+        const data = await res.json();
+        buildDashboard(data);
+      } catch (e) {
+        document.querySelector('.container').innerHTML =
+          '<div class="loading-state">erro ao carregar dados do Google Sheets.<br>verifique a URL do Apps Script.</div>';
+        console.error(e);
+      }
+    } else {
+      buildDashboard(STATIC_DATA);
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
