@@ -425,47 +425,33 @@
     return isNaN(n) ? null : n;
   }
 
+  // Ajuste leve no buildDashboard para não dar erro com pesos nulos
   function buildDashboard(data) {
-    // Tratamento dos dados vindos do CSV
-    const processedData = data.map(r => ({
-      ...r,
-      peso: cleanNum(r.peso),
-      distEf: cleanNum(r.distEf),
-      comp: r.comp?.toLowerCase() === 'true' || r.comp === '1'
-    }));
-
-    /* --- métricas --- */
-    const comPeso   = processedData.filter(r => r.peso !== null);
+    const comPeso = data.filter(r => r.peso && r.peso > 10); // Filtra pesos válidos
     const ultimoPeso = comPeso.length ? comPeso[comPeso.length - 1].peso : null;
-    const primPeso   = comPeso.length ? comPeso[0].peso : null;
-    const distTotal  = processedData.reduce((s, r) => s + (r.distEf || 0), 0);
-    const totalTreinos = processedData.filter(r => r.distEf > 0).length;
-    const academia   = processedData.filter(r => r.comp).length;
-    const provas     = processedData.filter(r => r.tipo === 'Prova' && r.distEf > 0);
+    const primPeso = comPeso.length ? comPeso[0].peso : 78; // 78 como base inicial se falhar
+    
+    const distTotal = data.reduce((s, r) => s + r.distEf, 0);
+    const academia = data.filter(r => r.comp).length;
+    const provas = data.filter(r => r.tipo.toLowerCase() === 'prova').length;
 
-    /* cards */
+    // Atualiza interface
     document.getElementById('val-peso').textContent = ultimoPeso ? ultimoPeso.toFixed(1) + ' kg' : '—';
-    if (primPeso && ultimoPeso) {
-      const diff = ultimoPeso - primPeso;
-      const el = document.getElementById('val-peso-delta');
-      el.textContent = (diff <= 0 ? '▼ ' : '▲ ') + Math.abs(diff).toFixed(1) + ' kg desde o início';
-      el.className = 'delta ' + (diff <= 0 ? 'down' : 'up');
-      document.getElementById('meta-inicio').textContent = primPeso.toFixed(1);
-      const pct = Math.min(100, Math.max(0, ((primPeso - ultimoPeso) / (primPeso - META_PESO)) * 100));
-      document.getElementById('meta-bar').style.width = pct.toFixed(1) + '%';
-    }
     document.getElementById('val-dist').textContent = distTotal.toFixed(1) + ' km';
-    document.getElementById('val-dist-sub').textContent = totalTreinos + ' treinos registrados';
     document.getElementById('val-gym').textContent = academia + 'x';
-    document.getElementById('val-provas').textContent = provas.length;
+    document.getElementById('val-provas').textContent = provas;
+    
+    if(ultimoPeso) {
+        const diff = ultimoPeso - primPeso;
+        const el = document.getElementById('val-peso-delta');
+        el.textContent = (diff <= 0 ? '▼ ' : '▲ ') + Math.abs(diff).toFixed(1) + ' kg desde o início';
+        el.className = 'delta ' + (diff <= 0 ? 'down' : 'up');
+        
+        const pct = Math.min(100, Math.max(0, ((primPeso - ultimoPeso) / (primPeso - 74)) * 100));
+        document.getElementById('meta-bar').style.width = pct + '%';
+    }
 
-    const ultima = processedData[processedData.length - 1];
-    document.getElementById('last-update').textContent = 'atualizado · ' + (ultima?.dia || '—');
-
-    /* --- Gráficos --- */
-    renderCharts(processedData);
-
-    document.getElementById('footer-note').textContent = 'dados ao vivo · google sheets · dashboard-treinos';
+    renderCharts(data);
   }
 
   function renderCharts(data) {
@@ -517,15 +503,25 @@
     });
   }
 
+  function limparValorPlanilha(val) {
+    if (!val) return 0;
+    // Remove "K", "KG", espaços e troca vírgula por ponto
+    let limpo = val.toString().toUpperCase().replace('KG', '').replace('K', '').replace(',', '.').trim();
+    return parseFloat(limpo) || 0;
+  }
+
   async function init() {
     if (DATA_SOURCE === 'sheets') {
       try {
         const res = await fetch(URL_CSV);
         const csvText = await res.text();
         const rows = csvText.split(/\r?\n/).map(row => row.split(/[,;]/));
-        const headers = rows[0].map(h => h.trim().replace(/"/g, ''));
+
+        // Como a linha 1 está em branco, pegamos os cabeçalhos da linha 2 (index 1)
+        const headers = rows[1].map(h => h.trim().toLowerCase());
         
-        const data = rows.slice(1).filter(row => row.length > 1).map(row => {
+        // Começamos a ler os dados a partir da linha 3 (index 2)
+        const data = rows.slice(2).filter(row => row.length > 1).map(row => {
           let obj = {};
           headers.forEach((header, i) => {
             let val = row[i] ? row[i].replace(/"/g, '').trim() : "";
@@ -533,10 +529,27 @@
           });
           return obj;
         });
-        buildDashboard(data);
+
+        // Converte os textos da sua planilha em dados que o gráfico entende
+        const dataTratada = data.map(r => ({
+          dia: r.dia,
+          peso: r.peso ? limparValorPlanilha(r.peso) : null,
+          distEf: r.distef ? limparValorPlanilha(r.distef) : 0,
+          tipo: r.tipo || 'Livre',
+          // Verifica se você escreveu "Academia" na coluna comp
+          comp: r.comp && r.comp.toLowerCase().includes('academia')
+        })).filter(r => r.dia); // Remove linhas totalmente vazias
+
+        // Ordenar por data (DD/MM)
+        dataTratada.sort((a, b) => {
+          const [da, ma] = a.dia.split('/').map(Number);
+          const [db, mb] = b.dia.split('/').map(Number);
+          return new Date(2026, ma, da) - new Date(2026, mb, db);
+        });
+
+        buildDashboard(dataTratada);
       } catch (e) {
-        console.error("Erro:", e);
-        document.querySelector('.container').innerHTML = '<div class="loading-state">Erro ao conectar com a planilha.</div>';
+        console.error("Erro ao ler planilha:", e);
       }
     }
   }
