@@ -4,33 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard de Treinos</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
-    :root { --bg: #F5F3EF; --surface: #FFFFFF; --border: rgba(0,0,0,0.08); --text: #1A1916; --text-muted: #7A7770; --accent: #3D6B4F; --radius-md: 12px; }
+    :root { --bg: #F5F3EF; --surface: #FFFFFF; --border: rgba(0,0,0,0.08); --text: #1A1916; --text-muted: #7A7770; --radius-md: 12px; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
     .container { max-width: 1100px; margin: 0 auto; }
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .status { font-family: 'DM Mono', monospace; font-size: 11px; padding: 4px 10px; background: #e0e0e0; border-radius: 20px; }
+    .status { font-size: 11px; padding: 4px 10px; background: #eee; border-radius: 20px; color: var(--text-muted); }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
     .card { background: var(--surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border); }
-    .label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
-    .val { font-size: 28px; font-weight: 500; letter-spacing: -1px; }
+    .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+    .val { font-size: 28px; font-weight: 500; }
     .chart-box { background: var(--surface); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 15px; }
-    .chart-title { font-size: 11px; font-family: 'DM Mono', monospace; margin-bottom: 15px; color: var(--text-muted); }
-    #debug-console { display: none; background: #333; color: #fff; padding: 15px; border-radius: 8px; font-family: 'DM Mono'; font-size: 11px; margin-bottom: 20px; white-space: pre-wrap; }
+    #debug { background: #333; color: #0f0; padding: 15px; border-radius: 8px; font-size: 12px; margin-bottom: 20px; display: none; white-space: pre-wrap; font-family: monospace; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <div id="debug-console"></div>
+  <div id="debug"></div>
 
   <header>
     <div>
       <h1 style="font-size: 20px; font-weight: 500;">Treinos de Corrida</h1>
-      <p style="font-size: 12px; color: var(--text-muted);">Objetivo: 74,0 kg</p>
+      <p style="font-size: 12px; color: var(--text-muted);">Dashboard Ativo</p>
     </div>
     <div id="status" class="status">Sincronizando...</div>
   </header>
@@ -42,4 +41,36 @@
     <div class="card"><div class="label">Total Treinos</div><div id="v-count" class="val">—</div></div>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1.5
+  <div class="chart-box">
+    <p class="label">Volume por Semana (km)</p>
+    <div style="height: 250px;"><canvas id="chartSemana"></canvas></div>
+  </div>
+
+  <div class="chart-box">
+    <p class="label">Evolução do Peso (kg)</p>
+    <div style="height: 200px;"><canvas id="chartPeso"></canvas></div>
+  </div>
+</div>
+
+<script>
+  const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv';
+
+  function showDebug(msg) {
+    const d = document.getElementById('debug');
+    d.style.display = 'block';
+    d.innerHTML += "> " + msg + "\n";
+  }
+
+  // Limpa números brasileiros (78,50 KG -> 78.5)
+  function cleanNum(val) {
+    if (!val) return 0;
+    let s = val.toString().replace('KG', '').replace('K', '').replace(',', '.').trim();
+    return parseFloat(s) || 0;
+  }
+
+  async function render() {
+    try {
+      const res = await fetch(URL_CSV);
+      const text = await res.text();
+      
+      const lines = text.split(/\r?\
