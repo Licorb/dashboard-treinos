@@ -684,7 +684,7 @@
   async function init() {
     if (DATA_SOURCE === 'sheets') {
       try {
-        const res  = await fetch(https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv);
+        const res  = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv');
         const data = await res.json();
         buildDashboard(data);
       } catch (e) {
