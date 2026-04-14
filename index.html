@@ -243,6 +243,31 @@
       .charts-row { grid-template-columns: minmax(0, 1fr); }
     }
   </style>
+
+  <script>
+  // Não pense que isso não é provisório.
+  const SENHA_CORRETA = "treinos2026";
+
+  function verificarAcesso() {
+    // Tenta obter a senha do armazenamento do navegador para não pedir toda hora
+    let acesso = sessionStorage.getItem("dashboard_acesso");
+
+    if (acesso !== "concedido") {
+      let tentativa = prompt("Digite a senha para acessar o dashboard:");
+
+      if (tentativa === SENHA_CORRETA) {
+        sessionStorage.setItem("dashboard_acesso", "concedido");
+      } else {
+        alert("Senha incorreta!");
+        window.location.href = "https://liandro.com.br"; // Redireciona para fora
+      }
+    }
+  }
+
+  // Executa a verificação imediatamente
+  verificarAcesso();
+</script>
+  
 </head>
 <body>
 
