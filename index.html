@@ -270,28 +270,28 @@
 
 <script>
   // Substitua pelo seu link de publicação do Google Sheets
-const urlPlanilha = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv";
+//const urlPlanilha = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv";
 
-async function carregarDados() {
-    try {
-        const resposta = await fetch(urlPlanilha);
-        const csvText = await resposta.text();
+//async function carregarDados() {
+    //try {
+        //const resposta = await fetch(urlPlanilha);
+        //const csvText = await resposta.text();
         
         // Esta função transforma o texto do CSV em uma lista de objetos
-        const linhas = csvText.split('\n').map(linha => linha.split(','));
+        //const linhas = csvText.split('\n').map(linha => linha.split(','));
         
         // Aqui você processa os dados para os seus gráficos
-        console.log("Dados carregados:", linhas);
+        //console.log("Dados carregados:", linhas);
         
         // Chame aqui a função que desenha seus gráficos (Chart.js, etc)
         // Exemplo: atualizarGrafico(linhas);
         
-    } catch (erro) {
-        console.error("Erro ao buscar dados da planilha:", erro);
-    }
-}
+    //} catch (erro) {
+        //console.error("Erro ao buscar dados da planilha:", erro);
+    //}
+//}
 
-carregarDados();
+//carregarDados();
 </script>
   
 </head>
@@ -684,7 +684,7 @@ carregarDados();
   async function init() {
     if (DATA_SOURCE === 'sheets') {
       try {
-        const res  = await fetch(SHEETS_URL);
+        const res  = await fetch(https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv);
         const data = await res.json();
         buildDashboard(data);
       } catch (e) {
