@@ -7,16 +7,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #F5F3EF; --card: #FFFFFF; --text: #1A1916; --muted: #7A7770; --border: rgba(0,0,0,0.08); --accent: #7EBF8E; }
+    :root { --bg: #F5F3EF; --card: #FFFFFF; --text: #1A1916; --muted: #7A7770; --border: rgba(0,0,0,0.08); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
     .container { max-width: 1000px; margin: 0 auto; }
     header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
     .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
-    .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .label { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
     .val { font-size: 24px; font-weight: 500; }
-    .chart-container { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; }
+    .chart-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 15px; margin-bottom: 15px; }
+    .chart-container { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); min-height: 300px; }
+    @media (max-width: 768px) { .chart-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -37,9 +39,15 @@
     <div class="card"><div class="label">Total Treinos</div><div id="v-count" class="val">—</div></div>
   </div>
 
-  <div class="chart-container">
-    <div class="label">Volume Semanal (km)</div>
-    <div style="height: 250px;"><canvas id="chartSemana"></canvas></div>
+  <div class="chart-grid">
+    <div class="chart-container">
+      <div class="label">Volume Semanal (km)</div>
+      <div style="height: 250px;"><canvas id="chartSemana"></canvas></div>
+    </div>
+    <div class="chart-container">
+      <div class="label">Tipos de Treino</div>
+      <div style="height: 250px;"><canvas id="chartTipos"></canvas></div>
+    </div>
   </div>
 
   <div class="chart-container">
@@ -51,14 +59,19 @@
 <script>
   const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRECSW_a0hZVBAlWFYcD8CDE8B_zLbdbliNE5hojg-m7Z_1JFe-LWD9CBTcMS5sm59aBZ8Lc797KMva/pub?gid=167949635&single=true&output=csv';
 
-  // Função para limpar números brasileiros (ex: 1.438,50 KG -> 1438.5)
-  function cleanNum(val) {
+  // O "LIMPADOR ATÔMICO"
+  function parseBrNum(val) {
     if (!val) return 0;
-    let s = val.toString().replace(/KG/g, '').replace(/\s/g, '');
-    // Se tiver ponto e vírgula (formato 1.234,56), remove o ponto e troca vírgula por ponto
-    if (s.includes('.') && s.includes(',')) s = s.replace(/\./g, '');
-    s = s.replace(',', '.');
-    return parseFloat(s) || 0;
+    let clean = val.toString().replace(/[a-zA-Z\s]/g, ''); // Remove letras e espaços
+    if (clean.includes('.') && clean.includes(',')) {
+        clean = clean.replace(/\./g, ''); // Remove ponto de milhar (ex: 1.438,0 -> 1438,0)
+    }
+    clean = clean.replace(',', '.'); // Troca vírgula decimal por ponto
+    
+    let n = parseFloat(clean);
+    // Validação extra: se o peso vier como 7600 (sem vírgula na planilha), divide por 100
+    if (n > 500) n = n / 100; 
+    return n || 0;
   }
 
   async function init() {
@@ -71,11 +84,10 @@
       const rawRows = lines.map(l => l.split(sep).map(c => c.replace(/"/g, '').trim()));
       const head = rawRows.find(r => r.some(c => c.toLowerCase().includes('dia')));
       
-      if (!head) return;
-
       const idx = {
         dia: head.findIndex(c => c.toLowerCase() === 'dia'),
         dist: head.findIndex(c => c.toLowerCase().includes('distef')),
+        tipo: head.findIndex(c => c.toLowerCase() === 'tipo'),
         peso: head.findIndex(c => c.toLowerCase() === 'peso'),
         comp: head.findIndex(c => c.toLowerCase().includes('comp'))
       };
@@ -84,11 +96,60 @@
         .filter(r => r[idx.dia] && r[idx.dia].includes('/'))
         .map(r => ({
           dia: r[idx.dia],
-          dist: cleanNum(r[idx.dist]),
-          peso: cleanNum(r[idx.peso]),
+          dist: parseBrNum(r[idx.dist]),
+          tipo: r[idx.tipo] || 'Outros',
+          peso: parseBrNum(r[idx.peso]),
           isGym: (r[idx.comp] || '').toLowerCase().includes('academia')
         }));
 
-      // --- ATUALIZAÇÃO DOS CARDS ---
-      // Peso: Pega apenas o último valor maior que zero
-      const pesosValidos = data.
+      // --- DADOS DOS CARDS ---
+      const pesosValidos = data.filter(d => d.peso > 50 && d.peso < 120);
+      const lastW = pesosValidos.length ? pesosValidos[pesosValidos.length-1].peso : 0;
+      
+      document.getElementById('v-peso').innerText = lastW ? lastW.toFixed(1) + ' kg' : '—';
+      document.getElementById('v-dist').innerText = data.reduce((s, a) => s + a.dist, 0).toFixed(1) + ' km';
+      document.getElementById('v-gym').innerText = data.filter(d => d.isGym).length + 'x';
+      document.getElementById('v-count').innerText = data.length;
+      document.getElementById('status').innerText = 'Sincronizado';
+
+      // --- GRÁFICO PESO ---
+      new Chart(document.getElementById('chartPeso'), {
+        type: 'line',
+        data: {
+          labels: pesosValidos.map(d => d.dia),
+          datasets: [{ data: pesosValidos.map(d => d.peso), borderColor: '#9b87f5', tension: 0.3, pointRadius: 2 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 70, max: 82 } } }
+      });
+
+      // --- GRÁFICO TIPOS (PIZZA) ---
+      const tiposFreq = {};
+      data.forEach(d => { if(d.dist > 0) tiposFreq[d.tipo] = (tiposFreq[d.tipo] || 0) + 1; });
+      new Chart(document.getElementById('chartTipos'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(tiposFreq),
+          datasets: [{ data: Object.values(tiposFreq), backgroundColor: ['#7EBF8E','#A8C8F0','#C8B4E8','#FAD4A0','#E8A8A8'] }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+      });
+
+      // --- GRÁFICO SEMANAL ---
+      const semanas = {};
+      data.forEach(d => {
+        let [dia, mes] = d.dia.split('/').map(Number);
+        let dt = new Date(2026, mes-1, dia);
+        dt.setDate(dt.getDate() - dt.getDay());
+        let k = dt.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+        semanas[k] = (semanas[k] || 0) + d.dist;
+      });
+      new Chart(document.getElementById('chartSemana'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(semanas),
+          datasets: [{ data: Object.values(semanas), backgroundColor: '#7EBF8E', borderRadius: 4 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+    } catch (e) { document.getElementById('status').innerText = '
