@@ -1,53 +1,533 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard de Treinos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #F5F3EF; --card: #FFFFFF; --text: #1A1916; --muted: #7A7770; --border: rgba(0,0,0,0.08); }
+    :root {
+      --bg: #F5F3EF;
+      --surface: #FFFFFF;
+      --surface2: #EDEAE4;
+      --border: rgba(0,0,0,0.08);
+      --text: #1A1916;
+      --text-muted: #7A7770;
+      --text-hint: #B0ADA8;
+      --accent: #3D6B4F;
+      --accent-light: #D4E8DC;
+      --blue: #A8C8F0;
+      --purple: #C8B4E8;
+      --green: #B8E0C8;
+      --amber: #FAD4A0;
+      --pink: #F4A8B4;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-    .container { max-width: 1000px; margin: 0 auto; }
-    header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
-    .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
-    .label { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
-    .val { font-size: 24px; font-weight: 500; }
-    .chart-container { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; min-height: 250px; }
-    #error-log { display: none; background: #fff0f0; color: #c00; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; border: 1px solid #fcc; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 4rem;
+    }
+
+    header {
+      padding: 2.5rem 2.5rem 1.5rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 2rem;
+    }
+    .header-left h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
+    .header-left p  { font-size: 0.85rem; color: var(--text-muted); margin-top: 3px; font-family: 'DM Mono', monospace; }
+    .header-right   { text-align: right; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--text-hint); }
+    .last-update {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 1.8rem;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.2rem 1.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-label {
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-hint);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .card-value { font-size: 2rem; font-weight: 300; color: var(--text); line-height: 1; letter-spacing: -0.03em; }
+    .card-sub   { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; min-height: 1rem; }
+    .delta      { font-weight: 500; }
+    .delta.down { color: var(--accent); }
+    .delta.up   { color: #C0533A; }
+    .card-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+
+    .card-peso .card-value    { font-size: 2.4rem; font-weight: 400; }
+    .card-peso   .card-accent { background: var(--purple); }
+    .card-dist   .card-accent { background: var(--blue); }
+    .card-gym    .card-accent { background: var(--green); }
+    .card-provas .card-accent { background: var(--pink); }
+
+    .meta-bar-wrap  { margin-top: 10px; }
+    .meta-bar-track { height: 4px; background: var(--surface2); border-radius: 10px; overflow: hidden; margin-top: 5px; }
+    .meta-bar-fill  { height: 100%; background: var(--purple); border-radius: 10px; transition: width 0.6s ease; }
+    .meta-label     { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-hint); font-family: 'DM Mono', monospace; }
+
+    .charts-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+      gap: 14px;
+      margin-bottom: 1.4rem;
+    }
+    .chart-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.4rem 1.6rem;
+    }
+    .peso-chart-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1.4rem;
+    }
+    .chart-title {
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-hint);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .legend      { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+    .legend-dot  { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+    .footer-note { text-align: center; font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--text-hint); margin-top: 2.5rem; }
+
+    /* loading / erro */
+    .state-box { text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.8; }
+    .state-box.error { color: #C0533A; }
+    .spinner { width: 28px; height: 28px; border: 2px solid var(--surface2); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 768px) {
+      header { padding: 1.5rem; flex-direction: column; align-items: flex-start; gap: 10px; }
+      .container { padding: 0 1rem; }
+      .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .charts-row { grid-template-columns: minmax(0, 1fr); }
+    }
   </style>
 </head>
 <body>
 
+<header>
+  <div class="header-left">
+    <h1>Treinos de Corrida</h1>
+    <p>jan 2026 → presente</p>
+  </div>
+  <div class="header-right">
+    <div>objetivo: 74,0 kg</div>
+    <div class="last-update" id="last-update">carregando...</div>
+  </div>
+</header>
+
 <div class="container">
-  <div id="error-log"></div>
-  <header>
-    <div>
-      <h1 style="font-size: 22px;">Treinos de Corrida</h1>
-      <p style="font-size: 13px; color: var(--muted);">Meta: 74,0 kg</p>
+
+  <div class="state-box" id="loading-box">
+    <div class="spinner"></div>
+    buscando dados da planilha...
+  </div>
+
+  <div id="dashboard" style="display:none;">
+
+    <div class="cards-grid">
+      <div class="card card-peso">
+        <div class="card-label">Último peso</div>
+        <div class="card-value" id="val-peso">—</div>
+        <div class="card-sub"><span class="delta" id="val-peso-delta"></span></div>
+        <div class="meta-bar-wrap">
+          <div class="meta-label">
+            <span id="meta-inicio">—</span>
+            <span>meta 74,0</span>
+          </div>
+          <div class="meta-bar-track">
+            <div class="meta-bar-fill" id="meta-bar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="card-accent"></div>
+      </div>
+
+      <div class="card card-dist">
+        <div class="card-label">Distância total</div>
+        <div class="card-value" id="val-dist">—</div>
+        <div class="card-sub" id="val-dist-sub"></div>
+        <div class="card-accent"></div>
+      </div>
+
+      <div class="card card-gym">
+        <div class="card-label">Academia</div>
+        <div class="card-value" id="val-gym">—</div>
+        <div class="card-sub">sessões complementares</div>
+        <div class="card-accent"></div>
+      </div>
+
+      <div class="card card-provas">
+        <div class="card-label">Provas</div>
+        <div class="card-value" id="val-provas">—</div>
+        <div class="card-sub">corridas oficiais</div>
+        <div class="card-accent"></div>
+      </div>
     </div>
-    <div id="status" style="font-size: 11px; color: var(--muted);">Conectando...</div>
-  </header>
 
-  <div class="grid">
-    <div class="card"><div class="label">Peso Atual</div><div id="v-peso" class="val">—</div></div>
-    <div class="card"><div class="label">Km Total</div><div id="v-dist" class="val">—</div></div>
-    <div class="card"><div class="label">Academia</div><div id="v-gym" class="val">—</div></div>
-    <div class="card"><div class="label">Sessões</div><div id="v-count" class="val">—</div></div>
-  </div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Distância por semana (km)</div>
+        <div style="position:relative;height:230px;">
+          <canvas id="chartSemanas" role="img" aria-label="Distância efetiva por semana em km">Gráfico de barras com distância por semana.</canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Tipos de treino</div>
+        <div class="legend" id="legend-tipos"></div>
+        <div style="position:relative;height:190px;">
+          <canvas id="chartTipos" role="img" aria-label="Distribuição de tipos de treino">Gráfico horizontal com tipos de treino.</canvas>
+        </div>
+      </div>
+    </div>
 
-  <div class="chart-container">
-    <div class="label">Volume Semanal (km)</div>
-    <div style="height: 200px;"><canvas id="chartSemana"></canvas></div>
-  </div>
+    <div class="peso-chart-card">
+      <div class="chart-title">Evolução do peso (kg)</div>
+      <div style="position:relative;height:200px;">
+        <canvas id="chartPeso" role="img" aria-label="Evolução do peso ao longo dos treinos">Gráfico de linha com evolução do peso.</canvas>
+      </div>
+    </div>
 
-  <div class="chart-container">
-    <div class="label">Evolução do Peso (kg)</div>
-    <div style="height: 200px;"><canvas id="chartPeso"></canvas></div>
+    <div class="footer-note" id="footer-note"></div>
   </div>
 </div>
 
 <script>
+  /* ============================================================
+     CONFIGURAÇÃO
+  ============================================================ */
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyoMkam9danM3ouXKul6wDKXX2D8K92MvD5ccvk9X5HjEHFRnh6zuEll51WPIHjbqqYjA/exec';
+  const META_PESO  = 74.0;
+
+  const TIPO_CORES = {
+    'Intervalado': '#A8C8F0',
+    'Regenerativo': '#B8E0C8',
+    'Longo':        '#C8B4E8',
+    'Tempo':        '#FAD4A0',
+    'Prova':        '#F4A8B4',
+    'Rodagem':      '#B8D8E8',
+  };
+
+  /* ============================================================
+     PARSERS — tratam texto e número para cada campo
+  ============================================================ */
+  function parseKm(val) {
+    if (val === null || val === undefined || val === '') return 0;
+    if (typeof val === 'number') return val;
+    const n = parseFloat(String(val).replace(',', '.').replace(/[^0-9.]/g, ''));
+    return isNaN(n) ? 0 : n;
+  }
+
+  function parsePeso(val) {
+    if (val === null || val === undefined || val === '') return null;
+    if (typeof val === 'number') return val;
+    const n = parseFloat(String(val).replace(',', '.').replace(/[^0-9.]/g, ''));
+    return isNaN(n) ? null : n;
+  }
+
+  function parseComp(val) {
+    if (typeof val === 'boolean') return val;
+    return String(val || '').toLowerCase().includes('academia');
+  }
+
+  /* ============================================================
+     AGRUPAMENTO POR SEMANA
+     Chave = domingo da semana no formato DD/MM
+  ============================================================ */
+  function getSemanaKey(diaStr) {
+    const parts = String(diaStr).split('/');
+    if (parts.length < 2) return diaStr;
+    const d = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    if (isNaN(d) || isNaN(m)) return diaStr;
+    const date = new Date(2026, m - 1, d);
+    const sun  = new Date(date);
+    sun.setDate(date.getDate() - date.getDay());
+    return String(sun.getDate()).padStart(2, '0') + '/' +
+           String(sun.getMonth() + 1).padStart(2, '0');
+  }
+
+  /* ============================================================
+     GRÁFICOS — reutiliza instâncias existentes
+  ============================================================ */
+  const chartInstances = {};
+
+  function upsertChart(id, config) {
+    if (chartInstances[id]) {
+      chartInstances[id].data    = config.data;
+      chartInstances[id].options = config.options;
+      chartInstances[id].update('none');
+    } else {
+      chartInstances[id] = new Chart(document.getElementById(id), config);
+    }
+  }
+
+  /* ============================================================
+     RENDERIZA O DASHBOARD
+  ============================================================ */
+  function buildDashboard(rawRows) {
+
+    /* normaliza */
+    const data = rawRows
+      .map(r => ({
+        dia:    String(r.dia   || '').trim(),
+        distEf: parseKm(r.distEf),
+        tipo:   String(r.tipo  || '').trim(),
+        comp:   parseComp(r.comp),
+        peso:   parsePeso(r.peso),
+      }))
+      .filter(r => r.dia !== '');
+
+    /* corta no último dia com algum dado preenchido */
+    let lastFilled = -1;
+    data.forEach((r, i) => {
+      if (r.distEf > 0 || r.peso !== null || r.comp) lastFilled = i;
+    });
+    const rows = lastFilled >= 0 ? data.slice(0, lastFilled + 1) : data;
+
+    /* métricas */
+    const comPeso      = rows.filter(r => r.peso !== null);
+    const ultimoPeso   = comPeso.length ? comPeso[comPeso.length - 1].peso : null;
+    const primPeso     = comPeso.length ? comPeso[0].peso : null;
+    const distTotal    = rows.reduce((s, r) => s + r.distEf, 0);
+    const totalTreinos = rows.filter(r => r.distEf > 0).length;
+    const academia     = rows.filter(r => r.comp).length;
+    const provas       = rows.filter(r => r.tipo === 'Prova' && r.distEf > 0);
+    const ultimoDia    = rows.length ? rows[rows.length - 1].dia : '—';
+
+    /* cards */
+    document.getElementById('val-peso').textContent =
+      ultimoPeso !== null ? ultimoPeso.toFixed(1) + ' kg' : '—';
+
+    if (primPeso !== null && ultimoPeso !== null) {
+      const diff = ultimoPeso - primPeso;
+      const el   = document.getElementById('val-peso-delta');
+      el.textContent = (diff < 0 ? '▼ ' : '▲ ') + Math.abs(diff).toFixed(1) + ' kg desde o início';
+      el.className   = 'delta ' + (diff < 0 ? 'down' : 'up');
+      document.getElementById('meta-inicio').textContent = primPeso.toFixed(1) + ' kg';
+      const pct = Math.min(100, Math.max(0,
+        ((primPeso - ultimoPeso) / (primPeso - META_PESO)) * 100
+      ));
+      document.getElementById('meta-bar').style.width = pct.toFixed(1) + '%';
+    }
+
+    document.getElementById('val-dist').textContent     = distTotal.toFixed(1) + ' km';
+    document.getElementById('val-dist-sub').textContent = totalTreinos + ' treinos registrados';
+    document.getElementById('val-gym').textContent      = academia + 'x';
+    document.getElementById('val-provas').textContent   = provas.length;
+    document.getElementById('last-update').textContent  = 'atualizado · ' + ultimoDia;
+    document.getElementById('footer-note').textContent  = 'dados ao vivo · google sheets · ' + ultimoDia;
+
+    /* semanas */
+    const semMap = {};
+    rows.forEach(r => {
+      if (r.distEf > 0) {
+        const k = getSemanaKey(r.dia);
+        semMap[k] = (semMap[k] || 0) + r.distEf;
+      }
+    });
+    const semLabels = Object.keys(semMap);
+    const semVals   = semLabels.map(k => Math.round(semMap[k] * 10) / 10);
+
+    /* tipos */
+    const tiposMap = {};
+    rows.forEach(r => {
+      if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre') {
+        tiposMap[r.tipo] = (tiposMap[r.tipo] || 0) + 1;
+      }
+    });
+    const tiposLabels = Object.keys(tiposMap);
+    const tiposVals   = tiposLabels.map(k => tiposMap[k]);
+
+    /* legenda tipos */
+    const legendEl = document.getElementById('legend-tipos');
+    legendEl.innerHTML = '';
+    tiposLabels.forEach(t => {
+      legendEl.innerHTML += `
+        <span class="legend-item">
+          <span class="legend-dot" style="background:${TIPO_CORES[t] || '#D0D0D0'}"></span>
+          ${t} (${tiposMap[t]})
+        </span>`;
+    });
+
+    /* peso */
+    const pesoRows   = rows.filter(r => r.peso !== null);
+    const pesoLabels = pesoRows.map(r => r.dia);
+    const pesoVals   = pesoRows.map(r => r.peso);
+
+    /* chart config reutilizável */
+    const gridColor = 'rgba(0,0,0,0.05)';
+    const tickFont  = { family: "'DM Mono', monospace", size: 10 };
+
+    upsertChart('chartSemanas', {
+      type: 'bar',
+      data: {
+        labels: semLabels,
+        datasets: [{
+          label: 'km',
+          data: semVals,
+          backgroundColor: '#A8C8F0',
+          borderRadius: 5,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + ' km' } }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: tickFont, maxRotation: 45, autoSkip: true, maxTicksLimit: 22 } },
+          y: { grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v + ' km' } }
+        }
+      }
+    });
+
+    upsertChart('chartTipos', {
+      type: 'bar',
+      data: {
+        labels: tiposLabels,
+        datasets: [{
+          label: 'Treinos',
+          data: tiposVals,
+          backgroundColor: tiposLabels.map(t => TIPO_CORES[t] || '#D0D0D0'),
+          borderRadius: 5,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { font: tickFont, stepSize: 1 } },
+          y: { grid: { display: false }, ticks: { font: tickFont } }
+        }
+      }
+    });
+
+    const pesoMin = pesoVals.length ? Math.floor(Math.min(...pesoVals, META_PESO)) - 1 : 68;
+    const pesoMax = pesoVals.length ? Math.ceil(Math.max(...pesoVals)) + 1 : 82;
+
+    upsertChart('chartPeso', {
+      type: 'line',
+      data: {
+        labels: pesoLabels,
+        datasets: [
+          {
+            label: 'Peso',
+            data: pesoVals,
+            borderColor: '#C8B4E8',
+            backgroundColor: 'rgba(200,180,232,0.10)',
+            pointBackgroundColor: '#C8B4E8',
+            pointRadius: 2,
+            pointHoverRadius: 5,
+            tension: 0.3,
+            fill: true,
+          },
+          {
+            label: 'Meta',
+            data: pesoLabels.map(() => META_PESO),
+            borderColor: 'rgba(61,107,79,0.40)',
+            borderDash: [6, 4],
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' kg' } }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: tickFont, maxTicksLimit: 14, maxRotation: 45 } },
+          y: {
+            min: pesoMin, max: pesoMax,
+            grid: { color: gridColor },
+            ticks: { font: tickFont, callback: v => v + ' kg' }
+          }
+        }
+      }
+    });
+  }
+
+  /* ============================================================
+     INIT
+  ============================================================ */
+  async function init() {
+    try {
+      const res = await fetch(SHEETS_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const raw = await res.json();
+
+      document.getElementById('loading-box').style.display = 'none';
+      document.getElementById('dashboard').style.display   = 'block';
+      buildDashboard(raw);
+
+    } catch (err) {
+      console.error('[dashboard]', err);
+      document.getElementById('loading-box').innerHTML = `
+        <div class="state-box error">
+          não foi possível carregar os dados.<br>
+          verifique se o Apps Script está publicado como Web App<br>
+          com acesso para <strong>qualquer pessoa</strong>.<br><br>
+          <small style="color:var(--text-hint)">${err.message}</small>
+        </div>`;
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
