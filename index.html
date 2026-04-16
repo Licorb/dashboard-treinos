@@ -23,119 +23,131 @@
       --green: #B8E0C8;
       --amber: #FAD4A0;
       --pink: #F4A8B4;
-      --radius-sm: 8px;
+      --teal: #B8D8E8;
+      --gray: #D8D5D0;
       --radius-md: 12px;
       --radius-lg: 18px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 0 4rem; }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 0 0 4rem;
-    }
-
+    /* HEADER */
     header {
-      padding: 2.5rem 2.5rem 1.5rem;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
+      padding: 2rem 2.5rem 0;
       background: var(--surface);
+      border-bottom: 1px solid var(--border);
       margin-bottom: 2rem;
     }
-    .header-left h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
-    .header-left p  { font-size: 0.85rem; color: var(--text-muted); margin-top: 3px; font-family: 'DM Mono', monospace; }
-    .header-right   { text-align: right; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--text-hint); }
-    .last-update {
-      display: inline-block;
-      background: var(--accent-light);
-      color: var(--accent);
-      font-size: 0.72rem;
-      font-family: 'DM Mono', monospace;
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-top: 6px;
-    }
+    .header-top { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 1.2rem; }
+    .header-left h1 { font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; }
+    .header-left p  { font-size: 0.82rem; color: var(--text-muted); margin-top: 3px; font-family: 'DM Mono', monospace; }
+    .header-right   { text-align: right; font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--text-hint); }
+    .last-update { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 0.7rem; font-family: 'DM Mono', monospace; padding: 3px 10px; border-radius: 20px; margin-top: 5px; }
 
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 1.8rem;
-    }
-    .card {
-      background: var(--surface);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      padding: 1.2rem 1.4rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .card-label {
-      font-size: 0.72rem;
+    /* TABS */
+    .tabs { display: flex; gap: 0; }
+    .tab-btn {
+      padding: 0.7rem 1.4rem;
+      font-size: 0.82rem;
       font-family: 'DM Mono', monospace;
       color: var(--text-hint);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: color 0.15s, border-color 0.15s;
     }
+    .tab-btn:hover { color: var(--text-muted); }
+    .tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
+
+    /* CONTAINER */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* CARDS */
+    .cards-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 1.8rem; }
+    .card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
+    .card-label { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
     .card-value { font-size: 2rem; font-weight: 300; color: var(--text); line-height: 1; letter-spacing: -0.03em; }
-    .card-sub   { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; min-height: 1rem; }
+    .card-sub   { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; min-height: 1rem; }
     .delta      { font-weight: 500; }
     .delta.down { color: var(--accent); }
     .delta.up   { color: #C0533A; }
     .card-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
-
-    .card-peso .card-value    { font-size: 2.4rem; font-weight: 400; }
+    .card-peso .card-value    { font-size: 2.3rem; font-weight: 400; }
     .card-peso   .card-accent { background: var(--purple); }
     .card-dist   .card-accent { background: var(--blue); }
     .card-gym    .card-accent { background: var(--green); }
     .card-provas .card-accent { background: var(--pink); }
-
     .meta-bar-wrap  { margin-top: 10px; }
     .meta-bar-track { height: 4px; background: var(--surface2); border-radius: 10px; overflow: hidden; margin-top: 5px; }
     .meta-bar-fill  { height: 100%; background: var(--purple); border-radius: 10px; transition: width 0.6s ease; }
-    .meta-label     { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-hint); font-family: 'DM Mono', monospace; }
+    .meta-label     { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-hint); font-family: 'DM Mono', monospace; }
 
-    .charts-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
-      gap: 14px;
-      margin-bottom: 1.4rem;
-    }
-    .chart-card {
+    /* CHARTS */
+    .charts-row { display: grid; grid-template-columns: minmax(0,1.65fr) minmax(0,1fr); gap: 14px; margin-bottom: 1.4rem; }
+    .chart-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.4rem 1.6rem; }
+    .peso-chart-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.4rem 1.6rem; margin-bottom: 1.4rem; }
+    .chart-title { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px; }
+    .legend      { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+    .legend-dot  { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    .footer-note { text-align: center; font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); margin-top: 2.5rem; }
+
+    /* CALENDÁRIO */
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+    .cal-nav { display: flex; align-items: center; gap: 12px; }
+    .cal-nav button { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 5px 14px; font-size: 0.8rem; font-family: 'DM Mono', monospace; color: var(--text-muted); cursor: pointer; }
+    .cal-nav button:hover { background: var(--surface2); }
+    .cal-month { font-size: 1rem; font-weight: 500; font-family: 'DM Mono', monospace; color: var(--text); min-width: 140px; text-align: center; }
+    .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 6px; }
+    .cal-weekday { text-align: center; font-size: 0.65rem; font-family: 'DM Mono', monospace; color: var(--text-hint); padding: 4px 0 8px; letter-spacing: 0.05em; }
+    .cal-day {
       background: var(--surface);
-      border-radius: var(--radius-md);
       border: 1px solid var(--border);
-      padding: 1.4rem 1.6rem;
+      border-radius: 10px;
+      min-height: 82px;
+      padding: 7px 8px 6px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
-    .peso-chart-card {
-      background: var(--surface);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      padding: 1.4rem 1.6rem;
-      margin-bottom: 1.4rem;
+    .cal-day.empty { background: transparent; border-color: transparent; }
+    .cal-day.future { opacity: 0.55; }
+    .cal-day.today { border-color: var(--accent); border-width: 1.5px; }
+    .cal-day-num { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); margin-bottom: 2px; }
+    .cal-day.today .cal-day-num { color: var(--accent); font-weight: 500; }
+    .cal-tipo-badge {
+      font-size: 0.6rem;
+      font-family: 'DM Mono', monospace;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-weight: 500;
+      line-height: 1.4;
+      display: inline-block;
     }
-    .chart-title {
-      font-size: 0.72rem;
+    .cal-dist {
+      font-size: 0.65rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+    .cal-gym-icon {
+      position: absolute;
+      top: 6px; right: 7px;
+      font-size: 11px;
+      line-height: 1;
+    }
+    .cal-dist-ef {
+      font-size: 0.6rem;
       font-family: 'DM Mono', monospace;
       color: var(--text-hint);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
     }
-
-    .legend      { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-    .legend-dot  { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-
-    .footer-note { text-align: center; font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--text-hint); margin-top: 2.5rem; }
 
     /* loading / erro */
     .state-box { text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.8; }
@@ -144,34 +156,45 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 768px) {
-      header { padding: 1.5rem; flex-direction: column; align-items: flex-start; gap: 10px; }
+      header { padding: 1.5rem 1.5rem 0; }
+      .header-top { flex-direction: column; align-items: flex-start; gap: 8px; }
       .container { padding: 0 1rem; }
-      .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .charts-row { grid-template-columns: minmax(0, 1fr); }
+      .cards-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .charts-row { grid-template-columns: minmax(0,1fr); }
+      .cal-grid { gap: 3px; }
+      .cal-day { min-height: 64px; padding: 5px 5px; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="header-left">
-    <h1>Treinos de Corrida</h1>
-    <p>jan 2026 → presente</p>
+  <div class="header-top">
+    <div class="header-left">
+      <h1>Treinos de Corrida</h1>
+      <p>jan 2026 → presente</p>
+    </div>
+    <div class="header-right">
+      <div>objetivo: 74,0 kg</div>
+      <div class="last-update" id="last-update">carregando...</div>
+    </div>
   </div>
-  <div class="header-right">
-    <div>objetivo: 74,0 kg</div>
-    <div class="last-update" id="last-update">carregando...</div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('visao')">visão geral</button>
+    <button class="tab-btn" onclick="switchTab('calendario')">calendário</button>
   </div>
 </header>
 
 <div class="container">
 
+  <!-- LOADING -->
   <div class="state-box" id="loading-box">
     <div class="spinner"></div>
     buscando dados da planilha...
   </div>
 
-  <div id="dashboard" style="display:none;">
+  <!-- ABA: VISÃO GERAL -->
+  <div class="tab-panel active" id="tab-visao">
 
     <div class="cards-grid">
       <div class="card card-peso">
@@ -179,31 +202,23 @@
         <div class="card-value" id="val-peso">—</div>
         <div class="card-sub"><span class="delta" id="val-peso-delta"></span></div>
         <div class="meta-bar-wrap">
-          <div class="meta-label">
-            <span id="meta-inicio">—</span>
-            <span>meta 74,0</span>
-          </div>
-          <div class="meta-bar-track">
-            <div class="meta-bar-fill" id="meta-bar" style="width:0%"></div>
-          </div>
+          <div class="meta-label"><span id="meta-inicio">—</span><span>meta 74,0</span></div>
+          <div class="meta-bar-track"><div class="meta-bar-fill" id="meta-bar" style="width:0%"></div></div>
         </div>
         <div class="card-accent"></div>
       </div>
-
       <div class="card card-dist">
         <div class="card-label">Distância total</div>
         <div class="card-value" id="val-dist">—</div>
         <div class="card-sub" id="val-dist-sub"></div>
         <div class="card-accent"></div>
       </div>
-
       <div class="card card-gym">
         <div class="card-label">Academia</div>
         <div class="card-value" id="val-gym">—</div>
-        <div class="card-sub">sessões complementares</div>
+        <div class="card-sub">sessões realizadas</div>
         <div class="card-accent"></div>
       </div>
-
       <div class="card card-provas">
         <div class="card-label">Provas</div>
         <div class="card-value" id="val-provas">—</div>
@@ -214,9 +229,10 @@
 
     <div class="charts-row">
       <div class="chart-card">
-        <div class="chart-title">Distância por semana (km)</div>
-        <div style="position:relative;height:230px;">
-          <canvas id="chartSemanas" role="img" aria-label="Distância efetiva por semana em km">Gráfico de barras com distância por semana.</canvas>
+        <div class="chart-title">Distância por semana — por tipo (km)</div>
+        <div class="legend" id="legend-semanas"></div>
+        <div style="position:relative;height:220px;">
+          <canvas id="chartSemanas" role="img" aria-label="Distância semanal por tipo de treino">Gráfico de barras empilhadas por tipo de treino.</canvas>
         </div>
       </div>
       <div class="chart-card">
@@ -231,19 +247,34 @@
     <div class="peso-chart-card">
       <div class="chart-title">Evolução do peso (kg)</div>
       <div style="position:relative;height:200px;">
-        <canvas id="chartPeso" role="img" aria-label="Evolução do peso ao longo dos treinos">Gráfico de linha com evolução do peso.</canvas>
+        <canvas id="chartPeso" role="img" aria-label="Evolução do peso">Gráfico de linha com evolução do peso.</canvas>
       </div>
     </div>
 
     <div class="footer-note" id="footer-note"></div>
   </div>
+
+  <!-- ABA: CALENDÁRIO -->
+  <div class="tab-panel" id="tab-calendario">
+    <div class="cal-header">
+      <div class="cal-nav">
+        <button onclick="calNav(-1)">← anterior</button>
+        <div class="cal-month" id="cal-month-label"></div>
+        <button onclick="calNav(1)">próximo →</button>
+      </div>
+      <div class="cal-legend legend" id="cal-legend"></div>
+    </div>
+    <div class="cal-grid" id="cal-weekdays"></div>
+    <div class="cal-grid" id="cal-days" style="margin-top:4px;"></div>
+  </div>
+
 </div>
 
 <script>
   /* ============================================================
-     CONFIGURAÇÃO
+     CONFIG
   ============================================================ */
-  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyoMkam9danM3ouXKul6wDKXX2D8K92MvD5ccvk9X5HjEHFRnh6zuEll51WPIHjbqqYjA/exec';
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwLJEdUwWGYVAH7cWeoPWIundzSAyRI4Ei0icNuh-NiZKymRSriEk9WlV60nSHzvYh43Q/exec';
   const META_PESO  = 74.0;
 
   const TIPO_CORES = {
@@ -253,52 +284,72 @@
     'Tempo':        '#FAD4A0',
     'Prova':        '#F4A8B4',
     'Rodagem':      '#B8D8E8',
+    'Livre':        '#E0DDD8',
+  };
+
+  // cores de texto para badges no calendário (mesmo ramp, tom escuro)
+  const TIPO_TEXT = {
+    'Intervalado': '#2A6090',
+    'Regenerativo': '#2A6645',
+    'Longo':        '#5A3A8A',
+    'Tempo':        '#7A5A10',
+    'Prova':        '#8A2A45',
+    'Rodagem':      '#2A5A6A',
+    'Livre':        '#6A6560',
   };
 
   /* ============================================================
-     PARSERS — tratam texto e número para cada campo
+     TABS
   ============================================================ */
-  function parseKm(val) {
-    if (val === null || val === undefined || val === '') return 0;
-    if (typeof val === 'number') return val;
-    const n = parseFloat(String(val).replace(',', '.').replace(/[^0-9.]/g, ''));
-    return isNaN(n) ? 0 : n;
-  }
-
-  function parsePeso(val) {
-    if (val === null || val === undefined || val === '') return null;
-    if (typeof val === 'number') return val;
-    const n = parseFloat(String(val).replace(',', '.').replace(/[^0-9.]/g, ''));
-    return isNaN(n) ? null : n;
-  }
-
-  function parseComp(val) {
-    if (typeof val === 'boolean') return val;
-    return String(val || '').toLowerCase().includes('academia');
+  function switchTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+    if (name === 'calendario') renderCalendar();
   }
 
   /* ============================================================
-     AGRUPAMENTO POR SEMANA
-     Chave = domingo da semana no formato DD/MM
+     PARSERS
   ============================================================ */
+  function parseKm(v) {
+    if (!v && v !== 0) return 0;
+    if (typeof v === 'number') return v;
+    const n = parseFloat(String(v).replace(',','.').replace(/[^0-9.]/g,''));
+    return isNaN(n) ? 0 : n;
+  }
+  function parsePeso(v) {
+    if (v === '' || v === null || v === undefined) return null;
+    if (typeof v === 'number') return v;
+    const n = parseFloat(String(v).replace(',','.').replace(/[^0-9.]/g,''));
+    return isNaN(n) ? null : n;
+  }
+  function parseComp(v) {
+    if (typeof v === 'boolean') return v;
+    return String(v || '').toLowerCase().includes('academia');
+  }
   function getSemanaKey(diaStr) {
-    const parts = String(diaStr).split('/');
-    if (parts.length < 2) return diaStr;
-    const d = parseInt(parts[0], 10);
-    const m = parseInt(parts[1], 10);
-    if (isNaN(d) || isNaN(m)) return diaStr;
+    const [d, m] = diaStr.split('/').map(Number);
     const date = new Date(2026, m - 1, d);
     const sun  = new Date(date);
     sun.setDate(date.getDate() - date.getDay());
-    return String(sun.getDate()).padStart(2, '0') + '/' +
-           String(sun.getMonth() + 1).padStart(2, '0');
+    return String(sun.getDate()).padStart(2,'0') + '/' + String(sun.getMonth()+1).padStart(2,'0');
+  }
+  function diaToDate(diaStr) {
+    const [d, m] = diaStr.split('/').map(Number);
+    return new Date(2026, m - 1, d);
   }
 
   /* ============================================================
-     GRÁFICOS — reutiliza instâncias existentes
+     ESTADO GLOBAL
+  ============================================================ */
+  let globalRows = [];
+  let calYear = 2026, calMonth = 0; // mês atual do calendário
+
+  /* ============================================================
+     CHARTS
   ============================================================ */
   const chartInstances = {};
-
   function upsertChart(id, config) {
     if (chartInstances[id]) {
       chartInstances[id].data    = config.data;
@@ -310,54 +361,29 @@
   }
 
   /* ============================================================
-     RENDERIZA O DASHBOARD
+     VISÃO GERAL
   ============================================================ */
-  function buildDashboard(rawRows) {
-
-    /* normaliza */
-    const data = rawRows
-      .map(r => ({
-        dia:    String(r.dia   || '').trim(),
-        distEf: parseKm(r.distEf),
-        tipo:   String(r.tipo  || '').trim(),
-        comp:   parseComp(r.comp),
-        peso:   parsePeso(r.peso),
-      }))
-      .filter(r => r.dia !== '');
-
-    /* corta no último dia com algum dado preenchido */
-    let lastFilled = -1;
-    data.forEach((r, i) => {
-      if (r.distEf > 0 || r.peso !== null || r.comp) lastFilled = i;
-    });
-    const rows = lastFilled >= 0 ? data.slice(0, lastFilled + 1) : data;
-
-    /* métricas */
+  function buildDashboard(rows) {
     const comPeso      = rows.filter(r => r.peso !== null);
-    const ultimoPeso   = comPeso.length ? comPeso[comPeso.length - 1].peso : null;
+    const ultimoPeso   = comPeso.length ? comPeso[comPeso.length-1].peso : null;
     const primPeso     = comPeso.length ? comPeso[0].peso : null;
-    const distTotal    = rows.reduce((s, r) => s + r.distEf, 0);
+    const distTotal    = rows.reduce((s,r) => s + r.distEf, 0);
     const totalTreinos = rows.filter(r => r.distEf > 0).length;
-    const academia     = rows.filter(r => r.comp).length;
+    const academia     = rows.filter(r => r.comp && (r.distEf > 0 || r.peso !== null)).length;
     const provas       = rows.filter(r => r.tipo === 'Prova' && r.distEf > 0);
-    const ultimoDia    = rows.length ? rows[rows.length - 1].dia : '—';
+    const ultimoDia    = rows.length ? rows[rows.length-1].dia : '—';
 
-    /* cards */
     document.getElementById('val-peso').textContent =
       ultimoPeso !== null ? ultimoPeso.toFixed(1) + ' kg' : '—';
-
     if (primPeso !== null && ultimoPeso !== null) {
       const diff = ultimoPeso - primPeso;
       const el   = document.getElementById('val-peso-delta');
       el.textContent = (diff < 0 ? '▼ ' : '▲ ') + Math.abs(diff).toFixed(1) + ' kg desde o início';
       el.className   = 'delta ' + (diff < 0 ? 'down' : 'up');
       document.getElementById('meta-inicio').textContent = primPeso.toFixed(1) + ' kg';
-      const pct = Math.min(100, Math.max(0,
-        ((primPeso - ultimoPeso) / (primPeso - META_PESO)) * 100
-      ));
+      const pct = Math.min(100, Math.max(0, ((primPeso - ultimoPeso) / (primPeso - META_PESO)) * 100));
       document.getElementById('meta-bar').style.width = pct.toFixed(1) + '%';
     }
-
     document.getElementById('val-dist').textContent     = distTotal.toFixed(1) + ' km';
     document.getElementById('val-dist-sub').textContent = totalTreinos + ' treinos registrados';
     document.getElementById('val-gym').textContent      = academia + 'x';
@@ -365,18 +391,59 @@
     document.getElementById('last-update').textContent  = 'atualizado · ' + ultimoDia;
     document.getElementById('footer-note').textContent  = 'dados ao vivo · google sheets · ' + ultimoDia;
 
-    /* semanas */
-    const semMap = {};
+    /* --- barras empilhadas por semana e tipo --- */
+    const tiposOrdem = ['Intervalado','Tempo','Longo','Regenerativo','Prova','Rodagem'];
+    const semSet = {};
     rows.forEach(r => {
-      if (r.distEf > 0) {
+      if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre') {
         const k = getSemanaKey(r.dia);
-        semMap[k] = (semMap[k] || 0) + r.distEf;
+        if (!semSet[k]) semSet[k] = {};
+        semSet[k][r.tipo] = (semSet[k][r.tipo] || 0) + r.distEf;
       }
     });
-    const semLabels = Object.keys(semMap);
-    const semVals   = semLabels.map(k => Math.round(semMap[k] * 10) / 10);
+    const semLabels = Object.keys(semSet);
+    const tiposPresentes = tiposOrdem.filter(t => semLabels.some(s => semSet[s][t]));
 
-    /* tipos */
+    const semDatasets = tiposPresentes.map(t => ({
+      label: t,
+      data: semLabels.map(s => Math.round((semSet[s][t] || 0) * 10) / 10),
+      backgroundColor: TIPO_CORES[t] || '#D0D0D0',
+      borderRadius: 3,
+      borderSkipped: false,
+    }));
+
+    // legenda semanas
+    const legSem = document.getElementById('legend-semanas');
+    legSem.innerHTML = '';
+    tiposPresentes.forEach(t => {
+      legSem.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t]||'#D0D0D0'}"></span>${t}</span>`;
+    });
+
+    const gridColor = 'rgba(0,0,0,0.05)';
+    const tickFont  = { family: "'DM Mono', monospace", size: 10 };
+
+    upsertChart('chartSemanas', {
+      type: 'bar',
+      data: { labels: semLabels, datasets: semDatasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + ' km',
+              footer: items => 'total: ' + items.reduce((s,i) => s + i.parsed.y, 0).toFixed(1) + ' km',
+            }
+          }
+        },
+        scales: {
+          x: { stacked: true, grid: { display: false }, ticks: { font: tickFont, maxRotation: 45, autoSkip: true, maxTicksLimit: 20 } },
+          y: { stacked: true, grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v + ' km' } }
+        }
+      }
+    });
+
+    /* --- tipos totais (horizontal) --- */
     const tiposMap = {};
     rows.forEach(r => {
       if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre') {
@@ -386,66 +453,20 @@
     const tiposLabels = Object.keys(tiposMap);
     const tiposVals   = tiposLabels.map(k => tiposMap[k]);
 
-    /* legenda tipos */
-    const legendEl = document.getElementById('legend-tipos');
-    legendEl.innerHTML = '';
+    const legTipos = document.getElementById('legend-tipos');
+    legTipos.innerHTML = '';
     tiposLabels.forEach(t => {
-      legendEl.innerHTML += `
-        <span class="legend-item">
-          <span class="legend-dot" style="background:${TIPO_CORES[t] || '#D0D0D0'}"></span>
-          ${t} (${tiposMap[t]})
-        </span>`;
-    });
-
-    /* peso */
-    const pesoRows   = rows.filter(r => r.peso !== null);
-    const pesoLabels = pesoRows.map(r => r.dia);
-    const pesoVals   = pesoRows.map(r => r.peso);
-
-    /* chart config reutilizável */
-    const gridColor = 'rgba(0,0,0,0.05)';
-    const tickFont  = { family: "'DM Mono', monospace", size: 10 };
-
-    upsertChart('chartSemanas', {
-      type: 'bar',
-      data: {
-        labels: semLabels,
-        datasets: [{
-          label: 'km',
-          data: semVals,
-          backgroundColor: '#A8C8F0',
-          borderRadius: 5,
-          borderSkipped: false,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + ' km' } }
-        },
-        scales: {
-          x: { grid: { display: false }, ticks: { font: tickFont, maxRotation: 45, autoSkip: true, maxTicksLimit: 22 } },
-          y: { grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v + ' km' } }
-        }
-      }
+      legTipos.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t]||'#D0D0D0'}"></span>${t} (${tiposMap[t]})</span>`;
     });
 
     upsertChart('chartTipos', {
       type: 'bar',
       data: {
         labels: tiposLabels,
-        datasets: [{
-          label: 'Treinos',
-          data: tiposVals,
-          backgroundColor: tiposLabels.map(t => TIPO_CORES[t] || '#D0D0D0'),
-          borderRadius: 5,
-          borderSkipped: false,
-        }]
+        datasets: [{ label: 'Treinos', data: tiposVals, backgroundColor: tiposLabels.map(t => TIPO_CORES[t]||'#D0D0D0'), borderRadius: 5, borderSkipped: false }]
       },
       options: {
-        indexAxis: 'y',
-        responsive: true, maintainAspectRatio: false,
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
           x: { grid: { color: gridColor }, ticks: { font: tickFont, stepSize: 1 } },
@@ -454,66 +475,186 @@
       }
     });
 
-    const pesoMin = pesoVals.length ? Math.floor(Math.min(...pesoVals, META_PESO)) - 1 : 68;
-    const pesoMax = pesoVals.length ? Math.ceil(Math.max(...pesoVals)) + 1 : 82;
+    /* --- peso --- */
+    const pesoRows   = rows.filter(r => r.peso !== null);
+    const pesoLabels = pesoRows.map(r => r.dia);
+    const pesoVals   = pesoRows.map(r => r.peso);
+    const pesoMin    = pesoVals.length ? Math.floor(Math.min(...pesoVals, META_PESO)) - 1 : 68;
+    const pesoMax    = pesoVals.length ? Math.ceil(Math.max(...pesoVals)) + 1 : 82;
 
     upsertChart('chartPeso', {
       type: 'line',
       data: {
         labels: pesoLabels,
         datasets: [
-          {
-            label: 'Peso',
-            data: pesoVals,
-            borderColor: '#C8B4E8',
-            backgroundColor: 'rgba(200,180,232,0.10)',
-            pointBackgroundColor: '#C8B4E8',
-            pointRadius: 2,
-            pointHoverRadius: 5,
-            tension: 0.3,
-            fill: true,
-          },
-          {
-            label: 'Meta',
-            data: pesoLabels.map(() => META_PESO),
-            borderColor: 'rgba(61,107,79,0.40)',
-            borderDash: [6, 4],
-            borderWidth: 1.5,
-            pointRadius: 0,
-            fill: false,
-          }
+          { label: 'Peso', data: pesoVals, borderColor: '#C8B4E8', backgroundColor: 'rgba(200,180,232,0.10)', pointBackgroundColor: '#C8B4E8', pointRadius: 2, pointHoverRadius: 5, tension: 0.3, fill: true },
+          { label: 'Meta', data: pesoLabels.map(() => META_PESO), borderColor: 'rgba(61,107,79,0.40)', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false }
         ]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' kg' } }
-        },
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' kg' } } },
         scales: {
           x: { grid: { display: false }, ticks: { font: tickFont, maxTicksLimit: 14, maxRotation: 45 } },
-          y: {
-            min: pesoMin, max: pesoMax,
-            grid: { color: gridColor },
-            ticks: { font: tickFont, callback: v => v + ' kg' }
-          }
+          y: { min: pesoMin, max: pesoMax, grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v + ' kg' } }
         }
       }
     });
   }
 
   /* ============================================================
+     CALENDÁRIO
+  ============================================================ */
+  const MESES_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const DIAS_PT  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+  function calNav(dir) {
+    calMonth += dir;
+    if (calMonth < 0)  { calMonth = 11; calYear--; }
+    if (calMonth > 11) { calMonth = 0;  calYear++; }
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    document.getElementById('cal-month-label').textContent = MESES_PT[calMonth] + ' ' + calYear;
+
+    // legenda
+    const legEl = document.getElementById('cal-legend');
+    legEl.innerHTML = '';
+    Object.entries(TIPO_CORES).filter(([t]) => t !== 'Livre').forEach(([t, c]) => {
+      legEl.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${c}"></span>${t}</span>`;
+    });
+
+    // cabeçalho dias da semana
+    const wdEl = document.getElementById('cal-weekdays');
+    wdEl.innerHTML = '';
+    DIAS_PT.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'cal-weekday';
+      el.textContent = d;
+      wdEl.appendChild(el);
+    });
+
+    // monta índice de dados por dia "DD/MM"
+    const dataMap = {};
+    globalRows.forEach(r => { dataMap[r.dia] = r; });
+
+    const hoje = new Date();
+    const firstDay = new Date(calYear, calMonth, 1);
+    const lastDay  = new Date(calYear, calMonth + 1, 0);
+    const startDow = firstDay.getDay(); // 0=dom
+
+    const daysEl = document.getElementById('cal-days');
+    daysEl.innerHTML = '';
+
+    // células vazias antes do dia 1
+    for (let i = 0; i < startDow; i++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day empty';
+      daysEl.appendChild(el);
+    }
+
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const dateObj = new Date(calYear, calMonth, day);
+      const dStr    = String(day).padStart(2,'0') + '/' + String(calMonth+1).padStart(2,'0');
+      const row     = dataMap[dStr];
+      const isFuture = dateObj > hoje;
+      const isToday  = dateObj.toDateString() === hoje.toDateString();
+
+      const el = document.createElement('div');
+      el.className = 'cal-day' + (isFuture ? ' future' : '') + (isToday ? ' today' : '');
+
+      // número do dia
+      const numEl = document.createElement('div');
+      numEl.className = 'cal-day-num';
+      numEl.textContent = day;
+      el.appendChild(numEl);
+
+      if (row) {
+        const tipo = row.tipo || '';
+
+        // ícone academia
+        if (row.comp) {
+          const gym = document.createElement('div');
+          gym.className = 'cal-gym-icon';
+          gym.title = 'Academia';
+          gym.textContent = '🏋️';
+          el.appendChild(gym);
+        }
+
+        // badge tipo (só se não for Livre ou vazio)
+        if (tipo && tipo !== 'Livre') {
+          const badge = document.createElement('div');
+          badge.className = 'cal-tipo-badge';
+          badge.style.background = TIPO_CORES[tipo] || '#E0DDD8';
+          badge.style.color      = TIPO_TEXT[tipo]  || '#444';
+          badge.textContent = tipo;
+          el.appendChild(badge);
+        }
+
+        // dist planejada
+        if (row.distPlan > 0) {
+          const dp = document.createElement('div');
+          dp.className = 'cal-dist';
+          dp.textContent = row.distPlan.toFixed(1) + ' km plan.';
+          el.appendChild(dp);
+        }
+
+        // dist efetiva (se realizado)
+        if (row.distEf > 0 && !isFuture) {
+          const de = document.createElement('div');
+          de.className = 'cal-dist-ef';
+          de.textContent = '→ ' + row.distEf.toFixed(1) + ' km ef.';
+          el.appendChild(de);
+        }
+      }
+
+      daysEl.appendChild(el);
+    }
+  }
+
+  /* ============================================================
      INIT
   ============================================================ */
   async function init() {
+    // inicializa calendário no mês atual
+    const now = new Date();
+    calYear  = now.getFullYear();
+    calMonth = now.getMonth();
+
     try {
       const res = await fetch(SHEETS_URL);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const raw = await res.json();
 
+      // normaliza
+      const data = raw.map(r => ({
+        diaSemana: String(r.diaSemana || '').trim(),
+        dia:       String(r.dia       || '').trim(),
+        distPlan:  parseKm(r.distPlan),
+        distEf:    parseKm(r.distEf),
+        tipo:      String(r.tipo      || '').trim(),
+        comp:      parseComp(r.comp),
+        peso:      parsePeso(r.peso),
+      })).filter(r => r.dia !== '');
+
+      // corta no último dia com dado real
+      let lastFilled = -1;
+      data.forEach((r, i) => {
+        if (r.distEf > 0 || r.peso !== null || r.comp) lastFilled = i;
+      });
+
+      // para o dashboard: só até o último dia preenchido
+      const rows = lastFilled >= 0 ? data.slice(0, lastFilled + 1) : data;
+
+      // para o calendário: todos os dados (inclui futuros planejados)
+      globalRows = data;
+
       document.getElementById('loading-box').style.display = 'none';
-      document.getElementById('dashboard').style.display   = 'block';
-      buildDashboard(raw);
+      document.getElementById('tab-visao').style.display   = 'block';
+
+      buildDashboard(rows);
+      renderCalendar();
 
     } catch (err) {
       console.error('[dashboard]', err);
@@ -522,7 +663,7 @@
           não foi possível carregar os dados.<br>
           verifique se o Apps Script está publicado como Web App<br>
           com acesso para <strong>qualquer pessoa</strong>.<br><br>
-          <small style="color:var(--text-hint)">${err.message}</small>
+          <small style="color:#B0ADA8">${err.message}</small>
         </div>`;
     }
   }
