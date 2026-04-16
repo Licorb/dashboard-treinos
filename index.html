@@ -338,7 +338,7 @@
     const primPeso     = comPeso.length ? comPeso[0].peso : null;
     const distTotal    = rows.reduce((s, r) => s + r.distEf, 0);
     const totalTreinos = rows.filter(r => r.distEf > 0).length;
-    const academia     = rows.filter(r => r.comp).length;
+    const academia     = rows.filter(r => r.comp && (r.distEf > 0 || r.peso !== null)).length;
     const provas       = rows.filter(r => r.tipo === 'Prova' && r.distEf > 0);
     const ultimoDia    = rows.length ? rows[rows.length - 1].dia : '—';
 
