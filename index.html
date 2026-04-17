@@ -164,6 +164,17 @@
       .cal-day { min-height: 68px; padding: 5px 5px; }
       .cal-header { flex-direction: column; align-items: flex-start; }
     }
+
+    /* TABLE STYLES */
+    table { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; margin-top: 14px; }
+    th { background: var(--surface2); font-weight: 500; padding: 10px 8px; text-align: left; border: 1px solid var(--border); }
+    th.sortable { cursor: pointer; }
+    th.sortable:hover { color: var(--text); }
+    .sort-icon { font-size: 0.8rem; margin-left: 4px; color: var(--text-hint); }
+    tbody tr:nth-child(odd) { background: rgba(0,0,0,0.02); }
+    td { padding: 8px; border: 1px solid var(--border); font-family: 'DM Mono', monospace; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -182,6 +193,7 @@
   <div class="tabs">
     <button class="tab-btn active" id="btn-visao"      onclick="switchTab('visao',this)">visão geral</button>
     <button class="tab-btn"        id="btn-calendario" onclick="switchTab('calendario',this)">calendário</button>
+    <button class="tab-btn"        id="btn-resultados" onclick="switchTab('resultados',this)">resultados</button>
   </div>
 </header>
 
@@ -267,6 +279,30 @@
     <div class="cal-grid" id="cal-days"></div>
   </div>
 
+  <!-- ABA RESULTADOS -->
+  <div class="tab-panel" id="tab-resultados">
+    <div class="chart-card">
+      <div class="chart-title">Resultados de Corridas</div>
+      <table id="resultados-table" style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th class="sortable" onclick="sortResultados('data')">Data <span class="sort-icon" id="sort-icon-data"></span></th>
+            <th>Corrida</th>
+            <th class="sortable" onclick="sortResultados('distancia')">Distância <span class="sort-icon" id="sort-icon-distancia"></span></th>
+            <th>Local</th>
+            <th>Tempo</th>
+            <th>Geral</th>
+            <th class="sortable" onclick="sortResultados('pctGeral')">% Geral <span class="sort-icon" id="sort-icon-pctGeral"></span></th>
+            <th>Categoria</th>
+            <th class="sortable" onclick="sortResultados('pctCat')">% Categoria <span class="sort-icon" id="sort-icon-pctCat"></span></th>
+          </tr>
+        </thead>
+        <tbody id="resultados-tbody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -302,6 +338,7 @@
     document.getElementById('tab-' + name).classList.add('active');
     btn.classList.add('active');
     if (name === 'calendario') renderCalendar();
+    if (name === 'resultados') renderResultados();
   }
 
   /* ============================================================
@@ -335,6 +372,9 @@
      ESTADO GLOBAL
   ============================================================ */
   let globalRows = [];
+  let resultadosData = [];
+  let sortColumn = 'data';
+  let sortDirection = 'desc'; // desc for recent first
   let calYear = new Date().getFullYear();
   let calMonth = new Date().getMonth();
 
@@ -633,6 +673,108 @@
   }
 
   /* ============================================================
+     RESULTADOS
+  ============================================================ */
+  function sortResultados(column) {
+    if (sortColumn === column) {
+      sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortColumn = column;
+      sortDirection = 'asc';
+    }
+    renderResultados();
+  }
+
+  function formatTime(t) {
+    if (!t) return '';
+    if (typeof t === 'number') {
+      const hours = Math.floor(t / 3600);
+      const minutes = Math.floor((t % 3600) / 60);
+      const seconds = Math.floor(t % 60);
+      return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+    }
+    return String(t);
+  }
+
+  function formatPct(pct) {
+    if (pct === '-' || pct === '' || pct === null || pct === undefined) return '-';
+    const val = parseFloat(pct);
+    if (isNaN(val)) return '-';
+    return val.toFixed(1) + '%';
+  }
+
+  function getColorForPct(pct) {
+    if (pct === '-' || pct === '' || pct === null || pct === undefined) return '#FFCC80'; // laranja suave
+    const val = parseFloat(pct);
+    if (isNaN(val)) return '#FFCC80';
+    if (val <= 1.0) return '#A5D6A7'; // verde claro
+    if (val <= 5.0) return '#C8E6C9'; // verde dessaturado
+    if (val <= 10.0) return '#E8F5E8'; // verde escuro dessaturado
+    if (val <= 25.0) return '#d6deba'; // verde amarelado
+    if (val <= 50.0) return '#FFF59D'; // amarelo
+    return '#FFCC80'; // laranja suave
+  }
+
+  function updateSortIcons() {
+    const columns = ['data', 'distancia', 'pctGeral', 'pctCat'];
+    columns.forEach(column => {
+      const icon = document.getElementById('sort-icon-' + column);
+      if (!icon) return;
+      if (sortColumn === column) {
+        icon.textContent = sortDirection === 'asc' ? '▲' : '▼';
+      } else {
+        icon.textContent = '⇵';
+      }
+    });
+  }
+
+  function renderResultados() {
+    updateSortIcons();
+
+    const sorted = [...resultadosData].sort((a, b) => {
+      let valA, valB;
+      if (sortColumn === 'data') {
+        valA = new Date(a.data.split('/').reverse().join('-'));
+        valB = new Date(b.data.split('/').reverse().join('-'));
+      } else if (sortColumn === 'distancia') {
+        valA = parseFloat(a.distancia.replace(',', '.'));
+        valB = parseFloat(b.distancia.replace(',', '.'));
+      } else if (sortColumn === 'pctGeral') {
+        valA = parseFloat(a.pctGeral);
+        valB = parseFloat(b.pctGeral);
+      } else if (sortColumn === 'pctCat') {
+        valA = parseFloat(a.pctCat);
+        valB = parseFloat(b.pctCat);
+      }
+      if (sortDirection === 'asc') {
+        return valA > valB ? 1 : valA < valB ? -1 : 0;
+      } else {
+        return valA < valB ? 1 : valA > valB ? -1 : 0;
+      }
+    });
+
+    const tbody = document.getElementById('resultados-tbody');
+    tbody.innerHTML = '';
+    sorted.forEach(r => {
+      const tr = document.createElement('tr');
+      const pctGeralFormatted = formatPct(r.pctGeral);
+      const pctCatFormatted = formatPct(r.pctCat);
+      tr.innerHTML = `
+        <td>${r.data}</td>
+        <td>${r.notion ? `<a href="${r.notion}" target="_blank">${r.corrida}</a>` : r.corrida}</td>
+        <td>${r.distancia}</td>
+        <td>${r.local}</td>
+        <td>${formatTime(r.tempo)}</td>
+        <td>${r.geral}</td>
+        <td style="background-color: ${getColorForPct(r.pctGeral)}">${pctGeralFormatted}</td>
+        <td>${r.cat}</td>
+        <td style="background-color: ${getColorForPct(r.pctCat)}">${pctCatFormatted}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* ============================================================
      INIT
   ============================================================ */
   async function init() {
@@ -664,6 +806,9 @@
 
       /* calendário usa todos os dados (inclui futuros planejados) */
       globalRows = data;
+
+      /* resultados */
+      resultadosData = raw.resultados || [];
 
       /* esconde loading, mostra aba ativa */
       document.getElementById('loading-box').style.display = 'none';
