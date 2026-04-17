@@ -164,6 +164,13 @@
       .cal-day { min-height: 68px; padding: 5px 5px; }
       .cal-header { flex-direction: column; align-items: flex-start; }
     }
+
+    /* TABLE STYLES */
+    table { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; margin-top: 14px; }
+    th { background: var(--surface2); font-weight: 500; padding: 10px 8px; text-align: left; border: 1px solid var(--border); }
+    td { padding: 8px; border: 1px solid var(--border); font-family: 'DM Mono', monospace; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -182,6 +189,7 @@
   <div class="tabs">
     <button class="tab-btn active" id="btn-visao"      onclick="switchTab('visao',this)">visão geral</button>
     <button class="tab-btn"        id="btn-calendario" onclick="switchTab('calendario',this)">calendário</button>
+    <button class="tab-btn"        id="btn-resultados" onclick="switchTab('resultados',this)">resultados</button>
   </div>
 </header>
 
@@ -267,6 +275,30 @@
     <div class="cal-grid" id="cal-days"></div>
   </div>
 
+  <!-- ABA RESULTADOS -->
+  <div class="tab-panel" id="tab-resultados">
+    <div class="chart-card">
+      <div class="chart-title">Resultados de Corridas</div>
+      <table id="resultados-table" style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Corrida</th>
+            <th>Distância</th>
+            <th>Local</th>
+            <th>Tempo</th>
+            <th>Geral</th>
+            <th>% Geral</th>
+            <th>Categoria</th>
+            <th>% Categoria</th>
+          </tr>
+        </thead>
+        <tbody id="resultados-tbody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -302,6 +334,7 @@
     document.getElementById('tab-' + name).classList.add('active');
     btn.classList.add('active');
     if (name === 'calendario') renderCalendar();
+    if (name === 'resultados') renderResultados();
   }
 
   /* ============================================================
@@ -335,6 +368,7 @@
      ESTADO GLOBAL
   ============================================================ */
   let globalRows = [];
+  let resultadosData = [];
   let calYear = new Date().getFullYear();
   let calMonth = new Date().getMonth();
 
@@ -633,6 +667,29 @@
   }
 
   /* ============================================================
+     RESULTADOS
+  ============================================================ */
+  function renderResultados() {
+    const tbody = document.getElementById('resultados-tbody');
+    tbody.innerHTML = '';
+    resultadosData.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${r.data}</td>
+        <td>${r.notion ? `<a href="${r.notion}" target="_blank">${r.corrida}</a>` : r.corrida}</td>
+        <td>${r.distancia}</td>
+        <td>${r.local}</td>
+        <td>${r.tempo}</td>
+        <td>${r.geral}</td>
+        <td>${r.pctGeral}</td>
+        <td>${r.cat}</td>
+        <td>${r.pctCat}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* ============================================================
      INIT
   ============================================================ */
   async function init() {
@@ -664,6 +721,9 @@
 
       /* calendário usa todos os dados (inclui futuros planejados) */
       globalRows = data;
+
+      /* resultados */
+      resultadosData = raw.resultados || [];
 
       /* esconde loading, mostra aba ativa */
       document.getElementById('loading-box').style.display = 'none';
