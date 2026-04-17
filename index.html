@@ -168,6 +168,10 @@
     /* TABLE STYLES */
     table { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; margin-top: 14px; }
     th { background: var(--surface2); font-weight: 500; padding: 10px 8px; text-align: left; border: 1px solid var(--border); }
+    th.sortable { cursor: pointer; }
+    th.sortable:hover { color: var(--text); }
+    .sort-icon { font-size: 0.8rem; margin-left: 4px; color: var(--text-hint); }
+    tbody tr:nth-child(odd) { background: rgba(0,0,0,0.02); }
     td { padding: 8px; border: 1px solid var(--border); font-family: 'DM Mono', monospace; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
@@ -282,15 +286,15 @@
       <table id="resultados-table" style="width:100%; border-collapse:collapse;">
         <thead>
           <tr>
-            <th onclick="sortResultados('data')">Data</th>
+            <th class="sortable" onclick="sortResultados('data')">Data <span class="sort-icon" id="sort-icon-data"></span></th>
             <th>Corrida</th>
-            <th onclick="sortResultados('distancia')">Distância</th>
+            <th class="sortable" onclick="sortResultados('distancia')">Distância <span class="sort-icon" id="sort-icon-distancia"></span></th>
             <th>Local</th>
             <th>Tempo</th>
             <th>Geral</th>
-            <th onclick="sortResultados('pctGeral')">% Geral</th>
+            <th class="sortable" onclick="sortResultados('pctGeral')">% Geral <span class="sort-icon" id="sort-icon-pctGeral"></span></th>
             <th>Categoria</th>
-            <th onclick="sortResultados('pctCat')">% Categoria</th>
+            <th class="sortable" onclick="sortResultados('pctCat')">% Categoria <span class="sort-icon" id="sort-icon-pctCat"></span></th>
           </tr>
         </thead>
         <tbody id="resultados-tbody">
@@ -692,7 +696,22 @@
     return String(t);
   }
 
+  function updateSortIcons() {
+    const columns = ['data', 'distancia', 'pctGeral', 'pctCat'];
+    columns.forEach(column => {
+      const icon = document.getElementById('sort-icon-' + column);
+      if (!icon) return;
+      if (sortColumn === column) {
+        icon.textContent = sortDirection === 'asc' ? '▲' : '▼';
+      } else {
+        icon.textContent = '⇵';
+      }
+    });
+  }
+
   function renderResultados() {
+    updateSortIcons();
+
     const sorted = [...resultadosData].sort((a, b) => {
       let valA, valB;
       if (sortColumn === 'data') {
