@@ -282,15 +282,15 @@
       <table id="resultados-table" style="width:100%; border-collapse:collapse;">
         <thead>
           <tr>
-            <th>Data</th>
+            <th onclick="sortResultados('data')">Data</th>
             <th>Corrida</th>
-            <th>Distância</th>
+            <th onclick="sortResultados('distancia')">Distância</th>
             <th>Local</th>
             <th>Tempo</th>
             <th>Geral</th>
-            <th>% Geral</th>
+            <th onclick="sortResultados('pctGeral')">% Geral</th>
             <th>Categoria</th>
-            <th>% Categoria</th>
+            <th onclick="sortResultados('pctCat')">% Categoria</th>
           </tr>
         </thead>
         <tbody id="resultados-tbody">
@@ -369,6 +369,8 @@
   ============================================================ */
   let globalRows = [];
   let resultadosData = [];
+  let sortColumn = 'data';
+  let sortDirection = 'desc'; // desc for recent first
   let calYear = new Date().getFullYear();
   let calMonth = new Date().getMonth();
 
@@ -669,21 +671,64 @@
   /* ============================================================
      RESULTADOS
   ============================================================ */
+  function sortResultados(column) {
+    if (sortColumn === column) {
+      sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortColumn = column;
+      sortDirection = 'asc';
+    }
+    renderResultados();
+  }
+
+  function formatTime(t) {
+    if (!t) return '';
+    if (typeof t === 'number') {
+      const hours = Math.floor(t / 3600);
+      const minutes = Math.floor((t % 3600) / 60);
+      const seconds = Math.floor(t % 60);
+      return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+    }
+    return String(t);
+  }
+
   function renderResultados() {
+    const sorted = [...resultadosData].sort((a, b) => {
+      let valA, valB;
+      if (sortColumn === 'data') {
+        valA = new Date(a.data.split('/').reverse().join('-'));
+        valB = new Date(b.data.split('/').reverse().join('-'));
+      } else if (sortColumn === 'distancia') {
+        valA = parseFloat(a.distancia.replace(',', '.'));
+        valB = parseFloat(b.distancia.replace(',', '.'));
+      } else if (sortColumn === 'pctGeral') {
+        valA = parseFloat(a.pctGeral);
+        valB = parseFloat(b.pctGeral);
+      } else if (sortColumn === 'pctCat') {
+        valA = parseFloat(a.pctCat);
+        valB = parseFloat(b.pctCat);
+      }
+      if (sortDirection === 'asc') {
+        return valA > valB ? 1 : valA < valB ? -1 : 0;
+      } else {
+        return valA < valB ? 1 : valA > valB ? -1 : 0;
+      }
+    });
+
     const tbody = document.getElementById('resultados-tbody');
     tbody.innerHTML = '';
-    resultadosData.forEach(r => {
+    sorted.forEach(r => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${r.data}</td>
         <td>${r.notion ? `<a href="${r.notion}" target="_blank">${r.corrida}</a>` : r.corrida}</td>
         <td>${r.distancia}</td>
         <td>${r.local}</td>
-        <td>${r.tempo}</td>
+        <td>${formatTime(r.tempo)}</td>
         <td>${r.geral}</td>
-        <td>${r.pctGeral}</td>
+        <td>${parseFloat(r.pctGeral).toFixed(1)}%</td>
         <td>${r.cat}</td>
-        <td>${r.pctCat}</td>
+        <td>${parseFloat(r.pctCat).toFixed(1)}%</td>
       `;
       tbody.appendChild(tr);
     });
