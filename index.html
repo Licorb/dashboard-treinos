@@ -707,10 +707,10 @@
     if (pct === '-' || pct === '' || pct === null || pct === undefined) return '#FFCC80'; // laranja suave
     const val = parseFloat(pct);
     if (isNaN(val)) return '#FFCC80';
-    if (val <= 1.0) return '#C8E6C9'; // verde claro
-    if (val <= 5.0) return '#A5D6A7'; // verde dessaturado
+    if (val <= 1.0) return '#A5D6A7'; // verde claro
+    if (val <= 5.0) return '#C5E1A5'; // verde dessaturado
     if (val <= 10.0) return '#E8F5E8'; // verde escuro dessaturado
-    if (val <= 25.0) return '#C5E1A5'; // verde amarelado
+    if (val <= 25.0) return '#C8E6C9'; // verde amarelado
     if (val <= 50.0) return '#FFF59D'; // amarelo
     return '#FFCC80'; // laranja suave
   }
