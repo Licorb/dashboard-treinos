@@ -696,6 +696,25 @@
     return String(t);
   }
 
+  function formatPct(pct) {
+    if (pct === '-' || pct === '' || pct === null || pct === undefined) return '-';
+    const val = parseFloat(pct);
+    if (isNaN(val)) return '-';
+    return val.toFixed(1) + '%';
+  }
+
+  function getColorForPct(pct) {
+    if (pct === '-' || pct === '' || pct === null || pct === undefined) return '#FFCC80'; // laranja suave
+    const val = parseFloat(pct);
+    if (isNaN(val)) return '#FFCC80';
+    if (val <= 1.0) return '#E8F5E8'; // verde claro
+    if (val <= 5.0) return '#C8E6C9'; // verde dessaturado
+    if (val <= 10.0) return '#A5D6A7'; // verde escuro dessaturado
+    if (val <= 25.0) return '#C5E1A5'; // verde amarelado
+    if (val <= 50.0) return '#FFF59D'; // amarelo
+    return '#FFCC80'; // laranja suave
+  }
+
   function updateSortIcons() {
     const columns = ['data', 'distancia', 'pctGeral', 'pctCat'];
     columns.forEach(column => {
@@ -738,6 +757,8 @@
     tbody.innerHTML = '';
     sorted.forEach(r => {
       const tr = document.createElement('tr');
+      const pctGeralFormatted = formatPct(r.pctGeral);
+      const pctCatFormatted = formatPct(r.pctCat);
       tr.innerHTML = `
         <td>${r.data}</td>
         <td>${r.notion ? `<a href="${r.notion}" target="_blank">${r.corrida}</a>` : r.corrida}</td>
@@ -745,9 +766,9 @@
         <td>${r.local}</td>
         <td>${formatTime(r.tempo)}</td>
         <td>${r.geral}</td>
-        <td>${parseFloat(r.pctGeral).toFixed(1)}%</td>
+        <td style="background-color: ${getColorForPct(r.pctGeral)}">${pctGeralFormatted}</td>
         <td>${r.cat}</td>
-        <td>${parseFloat(r.pctCat).toFixed(1)}%</td>
+        <td style="background-color: ${getColorForPct(r.pctCat)}">${pctCatFormatted}</td>
       `;
       tbody.appendChild(tr);
     });
