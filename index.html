@@ -323,13 +323,26 @@
     if (typeof v === 'boolean') return v;
     return String(v || '').toLowerCase().includes('academia');
   }
+
   function getSemanaKey(diaStr) {
-    const [d, m] = diaStr.split('/').map(Number);
-    const date = new Date(2026, m - 1, d);
-    const sun  = new Date(date);
-    sun.setDate(date.getDate() - date.getDay());
-    return String(sun.getDate()).padStart(2,'0') + '/' + String(sun.getMonth()+1).padStart(2,'0');
-  }
+  const [d, m] = diaStr.split('/').map(Number);
+  const date = new Date(2026, m - 1, d);
+  
+  // Achar a segunda-feira daquela semana
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1); 
+  const mon = new Date(date.setDate(diff));
+  
+  return String(mon.getDate()).padStart(2,'0') + '/' + String(mon.getMonth()+1).padStart(2,'0');
+}
+  
+  // function getSemanaKey(diaStr) {
+  //   const [d, m] = diaStr.split('/').map(Number);
+  //   const date = new Date(2026, m - 1, d);
+  //   const sun  = new Date(date);
+  //   sun.setDate(date.getDate() - date.getDay());
+  //   return String(sun.getDate()).padStart(2,'0') + '/' + String(sun.getMonth()+1).padStart(2,'0');
+  // }
 
   /* ============================================================
      ESTADO GLOBAL
@@ -538,7 +551,8 @@
     hoje.setHours(0,0,0,0);
     const firstDay = new Date(calYear, calMonth, 1);
     const lastDay  = new Date(calYear, calMonth + 1, 0);
-    const startDow = firstDay.getDay();
+    const startDow = firstDay.getDay() - 1;
+    if (startDow === -1) startDow = 6;
 
     const daysEl = document.getElementById('cal-days');
     daysEl.innerHTML = '';
