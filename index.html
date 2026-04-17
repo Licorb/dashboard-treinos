@@ -641,6 +641,10 @@
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const raw = await res.json();
 
+      if (!Array.isArray(raw)) {
+        throw new Error('Dados retornados não são um array. Verifique o Apps Script: ' + JSON.stringify(raw));
+      }
+
       const data = raw.map(r => ({
         diaSemana: String(r.diaSemana || '').trim(),
         dia:       String(r.dia       || '').trim(),
