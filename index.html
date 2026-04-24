@@ -83,7 +83,6 @@
     .cal-nav button:hover { background: var(--surface2); }
     .cal-month { font-size: 1rem; font-weight: 500; font-family: 'DM Mono', monospace; color: var(--text); min-width: 150px; text-align: center; }
     .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; }
-
     .cal-grid-hdr { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 6px; margin-bottom: 4px; }
     .cal-grid     { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 6px; }
     .cal-weekday  { text-align: center; font-size: 0.65rem; font-family: 'DM Mono', monospace; color: var(--text-hint); padding: 4px 0 6px; letter-spacing: 0.04em; }
@@ -93,35 +92,29 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
-      min-height: 88px;
+      min-height: 96px;
       padding: 7px 8px 6px;
       position: relative;
       display: flex;
       flex-direction: column;
       gap: 3px;
       transition: box-shadow 0.1s;
+      overflow: visible;
     }
-    .cal-day:hover { box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+    .cal-day:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     .cal-day.empty { background: transparent; border-color: transparent; pointer-events: none; }
-
-    /* dia realizado — fundo cinza suave + check */
-    .cal-day.done {
-      background: var(--done-bg);
-      border-color: var(--done-border);
-    }
-
-    /* dia futuro com treino planejado — contraste normal, sem opacidade */
+    .cal-day.done  { background: var(--done-bg); border-color: var(--done-border); }
     .cal-day.planned { background: var(--surface); }
-
-    /* dia de hoje */
     .cal-day.today { border-color: var(--accent); border-width: 1.5px; }
 
-    /* número do dia + check */
+    /* topo do card: número + ícones */
     .cal-day-top { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
     .cal-day-num { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); }
     .cal-day.today .cal-day-num { color: var(--accent); font-weight: 500; }
+
+    /* check verde */
     .cal-check {
-      width: 13px; height: 13px;
+      width: 14px; height: 14px;
       background: var(--accent);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -129,24 +122,66 @@
     }
     .cal-check svg { width: 8px; height: 8px; }
 
+    /* termômetro — botão clicável */
+    .cal-thermo {
+      background: none; border: none; padding: 0;
+      cursor: pointer; font-size: 13px; line-height: 1;
+      flex-shrink: 0; display: flex; align-items: center;
+      position: relative;
+    }
+    .cal-thermo:hover { transform: scale(1.15); }
+
+    /* POPOVER DE CLIMA */
+    .weather-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      z-index: 999;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      min-width: 148px;
+      flex-direction: column;
+      gap: 5px;
+      pointer-events: none;
+    }
+    .weather-popover.open { display: flex; pointer-events: auto; }
+    /* ajusta para não sair da tela nos últimos dias da semana */
+    .cal-day:nth-child(7n)   .weather-popover,
+    .cal-day:nth-child(7n-1) .weather-popover,
+    .cal-day:nth-child(7n-2) .weather-popover { left: auto; right: 0; }
+
+    .wp-emoji { font-size: 1.8rem; text-align: center; line-height: 1.2; }
+    .wp-cond  { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); text-align: center; }
+    .wp-temp  { font-size: 0.82rem; font-family: 'DM Mono', monospace; color: var(--text); font-weight: 500; text-align: center; }
+    .wp-rain  { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); text-align: center; }
+    .wp-div   { border-top: 1px solid var(--border); margin: 3px 0; }
+    .wp-src   { font-size: 0.55rem; font-family: 'DM Mono', monospace; color: var(--text-hint); text-align: center; }
+
     /* badge tipo */
     .cal-tipo-badge {
-      font-size: 0.58rem;
-      font-family: 'DM Mono', monospace;
-      padding: 2px 6px;
-      border-radius: 5px;
-      font-weight: 500;
-      line-height: 1.4;
-      display: inline-block;
-      width: fit-content;
+      font-size: 0.58rem; font-family: 'DM Mono', monospace;
+      padding: 2px 6px; border-radius: 5px;
+      font-weight: 500; line-height: 1.4;
+      display: inline-block; width: fit-content;
     }
-
-    /* distâncias */
     .cal-dist    { font-size: 0.63rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
     .cal-dist-ef { font-size: 0.60rem; font-family: 'DM Mono', monospace; color: var(--text-hint); }
-
-    /* ícone academia */
     .cal-gym-icon { position: absolute; top: 6px; right: 7px; font-size: 11px; line-height: 1; }
+
+    /* TABLE */
+    table { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; margin-top: 14px; }
+    th { background: var(--surface2); font-weight: 500; padding: 10px 8px; text-align: left; border: 1px solid var(--border); }
+    th.sortable { cursor: pointer; }
+    th.sortable:hover { color: var(--text); }
+    .sort-icon { font-size: 0.8rem; margin-left: 4px; color: var(--text-hint); }
+    tbody tr:nth-child(odd) { background: rgba(0,0,0,0.02); }
+    td { padding: 8px; border: 1px solid var(--border); font-family: 'DM Mono', monospace; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
     /* loading / erro */
     .state-box { text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.8; }
@@ -161,20 +196,9 @@
       .cards-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .charts-row { grid-template-columns: minmax(0,1fr); }
       .cal-grid, .cal-grid-hdr { gap: 3px; }
-      .cal-day { min-height: 68px; padding: 5px 5px; }
+      .cal-day { min-height: 72px; padding: 5px; }
       .cal-header { flex-direction: column; align-items: flex-start; }
     }
-
-    /* TABLE STYLES */
-    table { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; margin-top: 14px; }
-    th { background: var(--surface2); font-weight: 500; padding: 10px 8px; text-align: left; border: 1px solid var(--border); }
-    th.sortable { cursor: pointer; }
-    th.sortable:hover { color: var(--text); }
-    .sort-icon { font-size: 0.8rem; margin-left: 4px; color: var(--text-hint); }
-    tbody tr:nth-child(odd) { background: rgba(0,0,0,0.02); }
-    td { padding: 8px; border: 1px solid var(--border); font-family: 'DM Mono', monospace; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -186,7 +210,7 @@
       <p>jan 2026 → presente</p>
     </div>
     <div class="header-right">
-      <div>objetivo: 74,0 kg</div>
+      <div>objetivo: 68,0 kg</div>
       <div class="last-update" id="last-update">carregando...</div>
     </div>
   </div>
@@ -199,7 +223,6 @@
 
 <div class="container">
 
-  <!-- LOADING -->
   <div id="loading-box" class="state-box">
     <div class="spinner"></div>
     buscando dados da planilha...
@@ -213,7 +236,7 @@
         <div class="card-value" id="val-peso">—</div>
         <div class="card-sub"><span class="delta" id="val-peso-delta"></span></div>
         <div class="meta-bar-wrap">
-          <div class="meta-label"><span id="meta-inicio">—</span><span>meta 74,0</span></div>
+          <div class="meta-label"><span id="meta-inicio">—</span><span>meta 68,0</span></div>
           <div class="meta-bar-track"><div class="meta-bar-fill" id="meta-bar" style="width:0%"></div></div>
         </div>
         <div class="card-accent"></div>
@@ -261,7 +284,6 @@
         <canvas id="chartPeso" role="img" aria-label="Evolução do peso">Linha de peso ao longo do tempo.</canvas>
       </div>
     </div>
-
     <div class="footer-note" id="footer-note"></div>
   </div>
 
@@ -286,19 +308,18 @@
       <table id="resultados-table" style="width:100%; border-collapse:collapse;">
         <thead>
           <tr>
-            <th class="sortable" onclick="sortResultados('data')">Data <span class="sort-icon" id="sort-icon-data"></span></th>
+            <th class="sortable" onclick="sortResultados('data')">Data <span class="sort-icon" id="sort-icon-data">⇵</span></th>
             <th>Corrida</th>
-            <th class="sortable" onclick="sortResultados('distancia')">Distância <span class="sort-icon" id="sort-icon-distancia"></span></th>
+            <th class="sortable" onclick="sortResultados('distancia')">Distância <span class="sort-icon" id="sort-icon-distancia">⇵</span></th>
             <th>Local</th>
             <th>Tempo</th>
             <th>Geral</th>
-            <th class="sortable" onclick="sortResultados('pctGeral')">% Geral <span class="sort-icon" id="sort-icon-pctGeral"></span></th>
+            <th class="sortable" onclick="sortResultados('pctGeral')">% Geral <span class="sort-icon" id="sort-icon-pctGeral">⇵</span></th>
             <th>Categoria</th>
-            <th class="sortable" onclick="sortResultados('pctCat')">% Categoria <span class="sort-icon" id="sort-icon-pctCat"></span></th>
+            <th class="sortable" onclick="sortResultados('pctCat')">% Categoria <span class="sort-icon" id="sort-icon-pctCat">⇵</span></th>
           </tr>
         </thead>
-        <tbody id="resultados-tbody">
-        </tbody>
+        <tbody id="resultados-tbody"></tbody>
       </table>
     </div>
   </div>
@@ -312,7 +333,7 @@
   const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyoMkam9danM3ouXKul6wDKXX2D8K92MvD5ccvk9X5HjEHFRnh6zuEll51WPIHjbqqYjA/exec';
   const META_PESO  = 68.0;
 
-   const TIPO_CORES = {
+  const TIPO_CORES = {
     'Intervalado': '#ffc8aa',
     'Regenerativo': '#d4edbc',
     'Longo':        '#A8C8F0',
@@ -371,12 +392,99 @@
   /* ============================================================
      ESTADO GLOBAL
   ============================================================ */
-  let globalRows = [];
+  let globalRows     = [];
   let resultadosData = [];
-  let sortColumn = 'data';
-  let sortDirection = 'desc'; // desc for recent first
-  let calYear = new Date().getFullYear();
-  let calMonth = new Date().getMonth();
+  let sortColumn     = 'data';
+  let sortDirection  = 'desc';
+  let calYear        = new Date().getFullYear();
+  let calMonth       = new Date().getMonth();
+
+  /* ============================================================
+     PREVISÃO DO TEMPO — Open-Meteo (Rio de Janeiro)
+     Lat: -22.9068  Lng: -43.1729
+  ============================================================ */
+  function wmoToInfo(code) {
+    if (code === 0)         return { emoji: '☀️',  label: 'céu limpo' };
+    if (code <= 2)          return { emoji: '🌤️', label: 'poucas nuvens' };
+    if (code <= 3)          return { emoji: '☁️',  label: 'nublado' };
+    if (code <= 49)         return { emoji: '🌫️', label: 'névoa' };
+    if (code <= 57)         return { emoji: '🌦️', label: 'garoa' };
+    if (code <= 67)         return { emoji: '🌧️', label: 'chuva' };
+    if (code <= 77)         return { emoji: '🌨️', label: 'neve' };
+    if (code <= 82)         return { emoji: '🌦️', label: 'pancadas' };
+    if (code <= 99)         return { emoji: '⛈️',  label: 'tempestade' };
+    return { emoji: '🌡️', label: '—' };
+  }
+
+  // cache: { "2026-04-25": { emoji, label, temp7h, tempMin, tempMax, rain } }
+  let weatherCache = {};
+
+  async function fetchWeather() {
+    const url =
+      'https://api.open-meteo.com/v1/forecast' +
+      '?latitude=-22.9068&longitude=-43.1729' +
+      '&hourly=temperature_2m' +
+      '&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max' +
+      '&timezone=America%2FSao_Paulo' +
+      '&forecast_days=5';
+    try {
+      const res  = await fetch(url);
+      const json = await res.json();
+
+      const dates   = json.daily.time;                    // ["2026-04-24", ...]
+      const codes   = json.daily.weathercode;
+      const tMax    = json.daily.temperature_2m_max;
+      const tMin    = json.daily.temperature_2m_min;
+      const rainPct = json.daily.precipitation_probability_max;
+      const hTimes  = json.hourly.time;                  // ["2026-04-24T00:00", ...]
+      const hTemps  = json.hourly.temperature_2m;
+
+      dates.forEach((date, i) => {
+        const target = date + 'T07:00';
+        const hIdx   = hTimes.indexOf(target);
+        const temp7h = hIdx >= 0 ? Math.round(hTemps[hIdx]) : null;
+        const info   = wmoToInfo(codes[i]);
+        weatherCache[date] = {
+          emoji:   info.emoji,
+          label:   info.label,
+          temp7h,
+          tempMin: Math.round(tMin[i]),
+          tempMax: Math.round(tMax[i]),
+          rain:    Math.round(rainPct[i]),
+        };
+      });
+    } catch (e) {
+      console.warn('[weather] falha ao buscar previsão:', e);
+    }
+  }
+
+  // "DD/MM" + ano → "YYYY-MM-DD"
+  function dStrToISO(dStr, year) {
+    const [d, m] = dStr.split('/');
+    return `${year}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+
+  // Controle de popover ativo
+  let activePopover = null;
+
+  function openWeatherPopover(btn) {
+    // fecha o anterior se existir
+    if (activePopover && activePopover !== btn._popover) {
+      activePopover.classList.remove('open');
+    }
+    const pop    = btn._popover;
+    const isOpen = pop.classList.contains('open');
+    pop.classList.toggle('open', !isOpen);
+    activePopover = !isOpen ? pop : null;
+  }
+
+  document.addEventListener('click', e => {
+    if (!activePopover) return;
+    if (!e.target.closest('.cal-thermo') && !e.target.closest('.weather-popover')) {
+      activePopover.classList.remove('open');
+      activePopover = null;
+    }
+  });
 
   /* ============================================================
      CHARTS
@@ -423,7 +531,7 @@
     document.getElementById('last-update').textContent  = 'atualizado · ' + ultimoDia;
     document.getElementById('footer-note').textContent  = 'dados ao vivo · google sheets · ' + ultimoDia;
 
-    /* barras empilhadas por semana */
+    /* barras empilhadas */
     const tiposOrdem = ['Intervalado','Tempo','Longo','Regenerativo','Prova','Rodagem'];
     const semSet = {};
     rows.forEach(r => {
@@ -439,8 +547,7 @@
       label: t,
       data: semLabels.map(s => Math.round((semSet[s][t] || 0) * 10) / 10),
       backgroundColor: TIPO_CORES[t] || '#D0D0D0',
-      borderRadius: 3,
-      borderSkipped: false,
+      borderRadius: 3, borderSkipped: false,
     }));
 
     const legSem = document.getElementById('legend-semanas');
@@ -476,9 +583,8 @@
     /* tipos totais */
     const tiposMap = {};
     rows.forEach(r => {
-      if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre') {
+      if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre')
         tiposMap[r.tipo] = (tiposMap[r.tipo] || 0) + 1;
-      }
     });
     const tiposLabels = Object.keys(tiposMap);
     const tiposVals   = tiposLabels.map(k => tiposMap[k]);
@@ -508,8 +614,8 @@
     const pesoRows   = rows.filter(r => r.peso !== null);
     const pesoLabels = pesoRows.map(r => r.dia);
     const pesoVals   = pesoRows.map(r => r.peso);
-    const pesoMin    = pesoVals.length ? Math.floor(Math.min(...pesoVals, META_PESO)) - 1 : 68;
-    const pesoMax    = pesoVals.length ? Math.ceil(Math.max(...pesoVals)) + 1 : 82;
+    const pesoMin    = pesoVals.length ? Math.floor(Math.min(...pesoVals, META_PESO)) - 1 : 60;
+    const pesoMax    = pesoVals.length ? Math.ceil(Math.max(...pesoVals)) + 1 : 85;
 
     upsertChart('chartPeso', {
       type: 'line',
@@ -557,10 +663,10 @@
     Object.entries(TIPO_CORES).forEach(([t, c]) => {
       legEl.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${c}"></span>${t}</span>`;
     });
-    /* ícone academia na legenda */
     legEl.innerHTML += `<span class="legend-item">🏋️ academia</span>`;
+    legEl.innerHTML += `<span class="legend-item">🌡️ previsão</span>`;
 
-    /* cabeçalho dias da semana */
+    /* cabeçalho semana */
     const wdEl = document.getElementById('cal-weekdays');
     wdEl.innerHTML = '';
     DIAS_PT.forEach(d => {
@@ -570,7 +676,6 @@
       wdEl.appendChild(el);
     });
 
-    /* índice de dados */
     const dataMap = {};
     globalRows.forEach(r => { dataMap[r.dia] = r; });
 
@@ -583,7 +688,6 @@
     const daysEl = document.getElementById('cal-days');
     daysEl.innerHTML = '';
 
-    /* células vazias antes do dia 1 */
     for (let i = 0; i < startDow; i++) {
       const el = document.createElement('div');
       el.className = 'cal-day empty';
@@ -593,15 +697,15 @@
     for (let day = 1; day <= lastDay.getDate(); day++) {
       const dateObj = new Date(calYear, calMonth, day);
       dateObj.setHours(0,0,0,0);
-      const dStr    = String(day).padStart(2,'0') + '/' + String(calMonth+1).padStart(2,'0');
-      const row     = dataMap[dStr];
+      const dStr   = String(day).padStart(2,'0') + '/' + String(calMonth+1).padStart(2,'0');
+      const isoStr = dStrToISO(dStr, calYear);
+      const row    = dataMap[dStr];
+      const wx     = weatherCache[isoStr];
 
       const isPast   = dateObj < hoje;
       const isToday  = dateObj.getTime() === hoje.getTime();
       const isFuture = dateObj > hoje;
-
-      /* determina estado do dia */
-      const isDone    = row && (row.distEf > 0 || row.peso !== null) && (isPast || isToday);
+      const isDone   = row && (row.distEf > 0 || row.peso !== null) && (isPast || isToday);
       const isPlanned = row && row.distPlan > 0 && isFuture;
 
       const el = document.createElement('div');
@@ -611,7 +715,7 @@
       if (isToday)   cls += ' today';
       el.className = cls;
 
-      /* linha topo: número + check */
+      /* ── TOPO: número + check + termômetro ── */
       const topEl = document.createElement('div');
       topEl.className = 'cal-day-top';
 
@@ -620,6 +724,7 @@
       numEl.textContent = day;
       topEl.appendChild(numEl);
 
+      // check para dias realizados
       if (isDone) {
         const chk = document.createElement('div');
         chk.className = 'cal-check';
@@ -627,12 +732,47 @@
         topEl.appendChild(chk);
       }
 
+      // termômetro para dias com previsão (hoje + futuros)
+      if (wx && (isToday || isFuture)) {
+        const btn = document.createElement('button');
+        btn.className = 'cal-thermo';
+        btn.title     = 'previsão do tempo';
+        btn.setAttribute('aria-label', 'ver previsão');
+        btn.textContent = '🌡️';
+
+        // monta popover
+        const pop = document.createElement('div');
+        pop.className = 'weather-popover';
+
+        const tempLine = wx.temp7h !== null
+          ? `${wx.temp7h}°C às 7h`
+          : `${wx.tempMin}° – ${wx.tempMax}°C`;
+
+        pop.innerHTML = `
+          <div class="wp-emoji">${wx.emoji}</div>
+          <div class="wp-cond">${wx.label}</div>
+          <div class="wp-temp">${tempLine}</div>
+          <div class="wp-rain">💧 ${wx.rain}% chuva</div>
+          <div class="wp-div"></div>
+          <div class="wp-src">open-meteo · rio de janeiro</div>
+        `;
+
+        btn._popover = pop;
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          openWeatherPopover(btn);
+        });
+
+        topEl.appendChild(btn);
+        el.appendChild(pop); // popover filho do card (não do topEl) para posicionar corretamente
+      }
+
       el.appendChild(topEl);
 
+      /* ── CONTEÚDO DO DIA ── */
       if (row) {
         const tipo = row.tipo || '';
 
-        /* ícone academia */
         if (row.comp) {
           const gym = document.createElement('div');
           gym.className = 'cal-gym-icon';
@@ -641,7 +781,6 @@
           el.appendChild(gym);
         }
 
-        /* badge tipo */
         if (tipo && tipo !== 'Livre') {
           const badge = document.createElement('div');
           badge.className = 'cal-tipo-badge';
@@ -651,7 +790,6 @@
           el.appendChild(badge);
         }
 
-        /* dist planejada */
         if (row.distPlan > 0) {
           const dp = document.createElement('div');
           dp.className   = 'cal-dist';
@@ -659,7 +797,6 @@
           el.appendChild(dp);
         }
 
-        /* dist efetiva */
         if (row.distEf > 0 && !isFuture) {
           const de = document.createElement('div');
           de.className   = 'cal-dist-ef';
@@ -688,10 +825,10 @@
   function formatTime(t) {
     if (!t) return '';
     if (typeof t === 'number') {
-      const hours = Math.floor(t / 3600);
-      const minutes = Math.floor((t % 3600) / 60);
-      const seconds = Math.floor(t % 60);
-      return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+      const h = Math.floor(t / 3600);
+      const m = Math.floor((t % 3600) / 60);
+      const s = Math.floor(t % 60);
+      return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     }
     return String(t);
   }
@@ -699,46 +836,38 @@
   function formatPct(pct) {
     if (pct === '-' || pct === '' || pct === null || pct === undefined) return '-';
     const val = parseFloat(pct);
-    if (isNaN(val)) return '-';
-    return val.toFixed(1) + '%';
+    return isNaN(val) ? '-' : val.toFixed(1) + '%';
   }
 
   function getColorForPct(pct) {
-    if (pct === '-' || pct === '' || pct === null || pct === undefined) return '#FFCC80'; // laranja suave
     const val = parseFloat(pct);
     if (isNaN(val)) return '#FFCC80';
-    if (val <= 1.0) return '#E8F5E8'; // verde claro
-    if (val <= 5.0) return '#C8E6C9'; // verde dessaturado
-    if (val <= 10.0) return '#A5D6A7'; // verde escuro dessaturado
-    if (val <= 25.0) return '#C5E1A5'; // verde amarelado
-    if (val <= 50.0) return '#FFF59D'; // amarelo
-    return '#FFCC80'; // laranja suave
+    if (val <= 1.0)  return '#E8F5E8';
+    if (val <= 5.0)  return '#C8E6C9';
+    if (val <= 10.0) return '#A5D6A7';
+    if (val <= 25.0) return '#C5E1A5';
+    if (val <= 50.0) return '#FFF59D';
+    return '#FFCC80';
   }
 
   function updateSortIcons() {
-    const columns = ['data', 'distancia', 'pctGeral', 'pctCat'];
-    columns.forEach(column => {
-      const icon = document.getElementById('sort-icon-' + column);
+    ['data','distancia','pctGeral','pctCat'].forEach(col => {
+      const icon = document.getElementById('sort-icon-' + col);
       if (!icon) return;
-      if (sortColumn === column) {
-        icon.textContent = sortDirection === 'asc' ? '▲' : '▼';
-      } else {
-        icon.textContent = '⇵';
-      }
+      icon.textContent = sortColumn === col ? (sortDirection === 'asc' ? '▲' : '▼') : '⇵';
     });
   }
 
   function renderResultados() {
     updateSortIcons();
-
     const sorted = [...resultadosData].sort((a, b) => {
       let valA, valB;
       if (sortColumn === 'data') {
         valA = new Date(a.data.split('/').reverse().join('-'));
         valB = new Date(b.data.split('/').reverse().join('-'));
       } else if (sortColumn === 'distancia') {
-        valA = parseFloat(a.distancia.replace(',', '.'));
-        valB = parseFloat(b.distancia.replace(',', '.'));
+        valA = parseFloat(a.distancia.replace(',','.'));
+        valB = parseFloat(b.distancia.replace(',','.'));
       } else if (sortColumn === 'pctGeral') {
         valA = parseFloat(a.pctGeral);
         valB = parseFloat(b.pctGeral);
@@ -746,29 +875,24 @@
         valA = parseFloat(a.pctCat);
         valB = parseFloat(b.pctCat);
       }
-      if (sortDirection === 'asc') {
-        return valA > valB ? 1 : valA < valB ? -1 : 0;
-      } else {
-        return valA < valB ? 1 : valA > valB ? -1 : 0;
-      }
+      if (sortDirection === 'asc') return valA > valB ? 1 : valA < valB ? -1 : 0;
+      return valA < valB ? 1 : valA > valB ? -1 : 0;
     });
 
     const tbody = document.getElementById('resultados-tbody');
     tbody.innerHTML = '';
     sorted.forEach(r => {
       const tr = document.createElement('tr');
-      const pctGeralFormatted = formatPct(r.pctGeral);
-      const pctCatFormatted = formatPct(r.pctCat);
       tr.innerHTML = `
         <td>${r.data}</td>
-        <td>${r.notion ? `<a href="${r.notion}" target="_blank">${r.corrida}</a>` : r.corrida}</td>
+        <td>${r.notion ? `<a href="${r.notion}" target="_blank" rel="noopener">${r.corrida}</a>` : r.corrida}</td>
         <td>${r.distancia}</td>
         <td>${r.local}</td>
         <td>${formatTime(r.tempo)}</td>
         <td>${r.geral}</td>
-        <td style="background-color: ${getColorForPct(r.pctGeral)}">${pctGeralFormatted}</td>
+        <td style="background:${getColorForPct(r.pctGeral)}">${formatPct(r.pctGeral)}</td>
         <td>${r.cat}</td>
-        <td style="background-color: ${getColorForPct(r.pctCat)}">${pctCatFormatted}</td>
+        <td style="background:${getColorForPct(r.pctCat)}">${formatPct(r.pctCat)}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -779,12 +903,17 @@
   ============================================================ */
   async function init() {
     try {
-      const res = await fetch(SHEETS_URL);
+      // busca planilha e clima em paralelo
+      const [res] = await Promise.all([
+        fetch(SHEETS_URL),
+        fetchWeather(),
+      ]);
+
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const raw = await res.json();
 
       if (!raw.treinos || !Array.isArray(raw.treinos)) {
-        throw new Error('Dados retornados não contêm um array "treinos". Verifique o Apps Script: ' + JSON.stringify(raw));
+        throw new Error('Dados sem "treinos". Verifique o Apps Script.');
       }
 
       const data = raw.treinos.map(r => ({
@@ -797,20 +926,15 @@
         peso:      parsePeso(r.peso),
       })).filter(r => r.dia !== '');
 
-      /* corta no último dia com dado real (para dashboard) */
       let lastFilled = -1;
       data.forEach((r, i) => {
         if (r.distEf > 0 || r.peso !== null || r.comp) lastFilled = i;
       });
       const dashRows = lastFilled >= 0 ? data.slice(0, lastFilled + 1) : data;
 
-      /* calendário usa todos os dados (inclui futuros planejados) */
-      globalRows = data;
-
-      /* resultados */
+      globalRows     = data;
       resultadosData = raw.resultados || [];
 
-      /* esconde loading, mostra aba ativa */
       document.getElementById('loading-box').style.display = 'none';
       document.getElementById('tab-visao').classList.add('active');
 
