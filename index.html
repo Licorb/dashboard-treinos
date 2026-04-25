@@ -591,14 +591,56 @@
     const gc='rgba(0,0,0,0.05)',tf={family:"'DM Mono', monospace",size:10};
     const cfg={
       type:'bar',
-      data:{labels,datasets:[
-         // barra base: volume total (cor clara da fase)
-        {label:'Volume total planejado',data:volTotal,backgroundColor:barColors,borderWidth:0,borderRadius:{topLeft:4,topRight:4,bottomLeft:0,bottomRight:0},borderSkipped:'bottom',order:3},
-        // sobreposição: longo (cor escura), não empilhado — só visualmente mais escuro na base
-        {label:'Longão planejado',data:volLongo,backgroundColor:darkColors,borderWidth:0,borderSkipped:'bottom',borderRadius:0,order:3},
-        {label:'Vol. realizado',data:volReal,type:'line',borderColor:'#3D6B4F',backgroundColor:'transparent',borderWidth:2.5,pointBackgroundColor:'#3D6B4F',pointRadius:4,pointHoverRadius:6,tension:0.3,order:1},
-        {label:'Longo realizado',data:volLgReal,type:'line',borderColor:'#7A5A10',backgroundColor:'transparent',borderWidth:2,borderDash:[5,4],pointBackgroundColor:'#7A5A10',pointRadius:3,pointHoverRadius:5,tension:0.3,order:1},
-      ]},
+      data:{labels,datasets: [
+          {
+            // LONGO — base da barra (cor escura)
+            label: 'Longão planejado',
+            data: volLongo,
+            backgroundColor: darkColors,
+            borderWidth: 0,
+            borderSkipped: 'bottom',
+            stack: 'plan',
+            order: 2,
+          },
+          {
+            // CURTO — topo da barra (cor clara), empilhado acima do longo
+            label: 'Volume planejado',
+            data: volTotal,
+            backgroundColor: barColors,
+            borderWidth: 0,
+            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
+            borderSkipped: 'bottom',
+            stack: 'plan',
+            order: 2,
+          },
+          {
+            label: 'Vol. realizado',
+            data: volReal,
+            type: 'line',
+            borderColor: '#3D6B4F',
+            backgroundColor: 'transparent',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#3D6B4F',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            tension: 0.3,
+            order: 1,
+          },
+          {
+            label: 'Longo realizado',
+            data: volLgReal,
+            type: 'line',
+            borderColor: '#7A5A10',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [5, 4],
+            pointBackgroundColor: '#7A5A10',
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            tension: 0.3,
+            order: 1,
+          },
+        ]},
       options:{
         responsive:true,maintainAspectRatio:false,
         interaction:{mode:'index',intersect:false},
