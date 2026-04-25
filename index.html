@@ -573,9 +573,9 @@
       }
     });
     document.getElementById('macro-km-main').innerHTML =
-      `${kmRealAcum.toFixed(0)} km <span>/ ${kmPlanAcum.toFixed(0)} km</span>`;
+      `${kmRealAcum.toFixed(0)*2} km <span>/ ${kmPlanAcum.toFixed(0)*2} km</span>`;
     document.getElementById('macro-km-sub').textContent =
-      `volume planejado anual: ${kmPlanTotal.toFixed(0)} km`;
+      `volume planejado anual: ${kmPlanTotal.toFixed(0)*2} km`;
 
     /* ── LEGENDA ── */
     const legEl=document.getElementById('macro-legend');legEl.innerHTML='';
