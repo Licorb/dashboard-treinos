@@ -164,7 +164,7 @@
     .prova-popover {
       display: none;
       position: absolute;
-      bottom: calc(100% + 6px);
+      top: calc(100% + 6px);
       left: 50%;
       transform: translateX(-50%);
       z-index: 200;
@@ -800,6 +800,8 @@
     const labels     = data.map(q => q.id);
     const volTotal   = data.map(q => q.volTotal);
     const volLongo   = data.map(q => q.volLongo);
+    // volOther = volume que NÃO é longo (base da barra)
+    // volLongo = topo da barra — ambos empilhados somam volTotal
     const volOther   = data.map((q,i) => Math.max(0, volTotal[i] - volLongo[i]));
     const volReal    = data.map(q => q.volReal > 0 ? q.volReal : null);
     const volLgReal  = data.map(q => q.volLgReal > 0 ? q.volLgReal : null);
@@ -836,12 +838,10 @@
         labels,
         datasets: [
           {
-            label: 'Volume planejado (outros)',
+            label: 'Volume planejado',
             data: volOther,
             backgroundColor: barColors,
-            borderColor: barColors.map((_,i) => darkColors[i]),
             borderWidth: 0,
-            borderRadius: { topLeft: 4, topRight: 4 },
             borderSkipped: 'bottom',
             stack: 'plan',
             order: 2,
@@ -851,8 +851,8 @@
             data: volLongo,
             backgroundColor: darkColors,
             borderWidth: 0,
-            borderRadius: { topLeft: 0, topRight: 0 },
-            borderSkipped: false,
+            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
+            borderSkipped: 'bottom',
             stack: 'plan',
             order: 2,
           },
@@ -897,8 +897,8 @@
                 const idx = items[0].dataIndex;
                 const q   = data[idx];
                 const d1  = q.dataInicio ? q.dataInicio.slice(8,10)+'/'+q.dataInicio.slice(5,7) : '';
-                const d2  = q.dataFim    ? q.dataFim.slice(8,10)   +'/'+q.dataFim.slice(5,7)   : '';
-                return `${q.id} · ${q.fase}${d1 ? ' ('+d1+' – '+d2+')' : ''}`;
+                const d2  = q.dataFim    ? q.dataFim.slice(8,10)+'/'+q.dataFim.slice(5,7) : '';
+                return `${q.id} · ${q.fase} · ${d1} – ${d2}`;
               },
               label: ctx => {
                 if (ctx.parsed.y === null) return null;
@@ -919,7 +919,7 @@
           x: {
             stacked: true,
             grid: { display: false },
-            ticks: { font: tickFont, maxRotation: 45 }
+            ticks: { font: tickFont, maxRotation: 0, autoSkip: false }
           },
           y: {
             stacked: false,
@@ -969,9 +969,9 @@
           badge.className = 'prova-badge';
           badge.style.left = xPos + 'px';
           badge.style.top  = (yPos - pi * 26) + 'px';
-          badge.innerHTML  = `<span class="star">★</span>${pv.nome}`;
+          badge.innerHTML  = `<span class="star">★</span>`;
 
-          // popover
+          // popover ABAIXO do badge
           const pop = document.createElement('div');
           pop.className = 'prova-popover';
           pop.innerHTML = `<div class="pp-name">${pv.nome}</div><div class="pp-dist">${pv.tipo}</div>`;
