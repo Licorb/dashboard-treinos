@@ -671,7 +671,7 @@
 
           const pop = document.createElement('div');
           pop.className = 'prova-popover';
-          pop.innerHTML = `<div class="pp-name">${pv.nome}</div><div class="pp-dist">${pv.tipo}</div>`;
+          pop.innerHTML = `<div class="pp-name">${pv.nome}</div><div class="pp-dist">${pv.tipo} Km</div>`;
           badge.appendChild(pop);
           badge.addEventListener('mouseenter', () => pop.classList.add('open'));
           badge.addEventListener('mouseleave', () => pop.classList.remove('open'));
