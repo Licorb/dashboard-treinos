@@ -899,7 +899,8 @@
             callbacks: {
               title: items => {
                 const q = data[items[0].dataIndex];
-                return `${q.id} · ${q.fase}`;
+                // return `${q.id} · ${q.fase}`;
+                return `${q.fase}`;
               },
               label: ctx => {
                 if (ctx.parsed.y === null) return null;
