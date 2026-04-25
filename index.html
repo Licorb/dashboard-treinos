@@ -27,7 +27,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 0 4rem; }
 
-    /* HEADER */
     header { padding: 2rem 2.5rem 0; background: var(--surface); border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
     .header-top { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 1.2rem; }
     .header-left h1 { font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; }
@@ -35,14 +34,12 @@
     .header-right   { text-align: right; font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--text-hint); }
     .last-update { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 0.7rem; font-family: 'DM Mono', monospace; padding: 3px 10px; border-radius: 20px; margin-top: 5px; }
 
-    /* TABS */
     .tabs { display: flex; }
     .tab-btn { padding: 0.7rem 1.4rem; font-size: 0.82rem; font-family: 'DM Mono', monospace; color: var(--text-hint); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; letter-spacing: 0.04em; transition: color 0.15s, border-color 0.15s; }
     .tab-btn:hover { color: var(--text-muted); }
     .tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
 
-    /* PANELS */
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
@@ -86,87 +83,27 @@
     .cal-grid-hdr { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 6px; margin-bottom: 4px; }
     .cal-grid     { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 6px; }
     .cal-weekday  { text-align: center; font-size: 0.65rem; font-family: 'DM Mono', monospace; color: var(--text-hint); padding: 4px 0 6px; letter-spacing: 0.04em; }
-
-    /* dia base */
-    .cal-day {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      min-height: 96px;
-      padding: 7px 8px 6px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      transition: box-shadow 0.1s;
-      overflow: visible;
-    }
+    .cal-day { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; min-height: 96px; padding: 7px 8px 6px; position: relative; display: flex; flex-direction: column; gap: 3px; transition: box-shadow 0.1s; overflow: visible; }
     .cal-day:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .cal-day.empty { background: transparent; border-color: transparent; pointer-events: none; }
-    .cal-day.done  { background: var(--done-bg); border-color: var(--done-border); }
+    .cal-day.empty   { background: transparent; border-color: transparent; pointer-events: none; }
+    .cal-day.done    { background: var(--done-bg); border-color: var(--done-border); }
     .cal-day.planned { background: var(--surface); }
-    .cal-day.today { border-color: var(--accent); border-width: 1.5px; }
-
-    /* topo do card: número + ícones */
+    .cal-day.today   { border-color: var(--accent); border-width: 1.5px; }
     .cal-day-top { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
     .cal-day-num { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); }
     .cal-day.today .cal-day-num { color: var(--accent); font-weight: 500; }
-
-    /* check verde */
-    .cal-check {
-      width: 14px; height: 14px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
+    .cal-check { width: 14px; height: 14px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .cal-check svg { width: 8px; height: 8px; }
-
-    /* termômetro — botão clicável */
-    .cal-thermo {
-      background: none; border: none; padding: 0;
-      cursor: pointer; font-size: 13px; line-height: 1;
-      flex-shrink: 0; display: flex; align-items: center;
-      position: relative;
-    }
+    .cal-thermo { background: none; border: none; padding: 0; cursor: pointer; font-size: 13px; line-height: 1; flex-shrink: 0; display: flex; align-items: center; position: relative; }
     .cal-thermo:hover { transform: scale(1.15); }
-
-    /* POPOVER DE CLIMA */
-    .weather-popover {
-      display: none;
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      z-index: 999;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-      min-width: 148px;
-      flex-direction: column;
-      gap: 5px;
-      pointer-events: none;
-    }
+    .weather-popover { display: none; position: absolute; top: calc(100% + 4px); left: 0; z-index: 999; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); min-width: 148px; flex-direction: column; gap: 5px; pointer-events: none; }
     .weather-popover.open { display: flex; pointer-events: auto; }
-    /* ajusta para não sair da tela nos últimos dias da semana */
-    .cal-day:nth-child(7n)   .weather-popover,
-    .cal-day:nth-child(7n-1) .weather-popover,
-    .cal-day:nth-child(7n-2) .weather-popover { left: auto; right: 0; }
-
+    .cal-day:nth-child(7n) .weather-popover, .cal-day:nth-child(7n-1) .weather-popover, .cal-day:nth-child(7n-2) .weather-popover { left: auto; right: 0; }
     .wp-emoji { font-size: 1.8rem; text-align: center; line-height: 1.2; }
     .wp-cond  { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); text-align: center; }
     .wp-temp  { font-size: 0.82rem; font-family: 'DM Mono', monospace; color: var(--text); font-weight: 500; text-align: center; }
     .wp-rain  { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); text-align: center; }
-
-
-    /* badge tipo */
-    .cal-tipo-badge {
-      font-size: 0.58rem; font-family: 'DM Mono', monospace;
-      padding: 2px 6px; border-radius: 5px;
-      font-weight: 500; line-height: 1.4;
-      display: inline-block; width: fit-content;
-    }
+    .cal-tipo-badge { font-size: 0.58rem; font-family: 'DM Mono', monospace; padding: 2px 6px; border-radius: 5px; font-weight: 500; line-height: 1.4; display: inline-block; width: fit-content; }
     .cal-dist    { font-size: 0.63rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
     .cal-dist-ef { font-size: 0.60rem; font-family: 'DM Mono', monospace; color: var(--text-hint); }
     .cal-gym-icon { position: absolute; top: 6px; right: 7px; font-size: 11px; line-height: 1; }
@@ -181,6 +118,80 @@
     td { padding: 8px; border: 1px solid var(--border); font-family: 'DM Mono', monospace; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
+
+    /* PLANEJAMENTO */
+    .macro-wrap {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.6rem;
+      margin-bottom: 1.4rem;
+      overflow-x: auto;
+    }
+    .macro-legend {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      margin-bottom: 1.2rem; align-items: center;
+    }
+    .macro-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
+    .macro-legend-line { width: 22px; height: 2px; border-radius: 1px; }
+    .macro-legend-line.dashed { background: repeating-linear-gradient(to right, currentColor 0, currentColor 4px, transparent 4px, transparent 8px); }
+
+    /* container relativo para o gráfico + badges de prova sobrepostos */
+    .macro-chart-outer { position: relative; }
+
+    /* badges de prova flutuantes sobre o canvas */
+    .prova-badge {
+      position: absolute;
+      transform: translateX(-50%);
+      background: #F4A8B4;
+      color: #7A1838;
+      font-size: 0.58rem;
+      font-family: 'DM Mono', monospace;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+      white-space: nowrap;
+      cursor: default;
+      z-index: 10;
+      display: flex; align-items: center; gap: 3px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      transition: box-shadow 0.12s;
+    }
+    .prova-badge:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.18); }
+    .prova-badge .star { font-size: 10px; }
+
+    /* popover de prova */
+    .prova-popover {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      min-width: 140px;
+      flex-direction: column;
+      gap: 4px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .prova-popover.open { display: flex; pointer-events: auto; }
+    .pp-name { font-size: 0.78rem; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--text); }
+    .pp-dist { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
+
+    /* faixa de fase no rodapé do gráfico */
+    .fase-strip { display: flex; margin-top: 6px; border-radius: 6px; overflow: hidden; }
+    .fase-block {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.58rem; font-family: 'DM Mono', monospace;
+      font-weight: 600; letter-spacing: 0.04em;
+      padding: 5px 4px; overflow: hidden;
+      color: #444;
+    }
 
     /* loading / erro */
     .state-box { text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.8; }
@@ -214,9 +225,10 @@
     </div>
   </div>
   <div class="tabs">
-    <button class="tab-btn active" id="btn-visao"      onclick="switchTab('visao',this)">visão geral</button>
-    <button class="tab-btn"        id="btn-calendario" onclick="switchTab('calendario',this)">calendário</button>
-    <button class="tab-btn"        id="btn-resultados" onclick="switchTab('resultados',this)">resultados</button>
+    <button class="tab-btn active" id="btn-visao"         onclick="switchTab('visao',this)">visão geral</button>
+    <button class="tab-btn"        id="btn-calendario"    onclick="switchTab('calendario',this)">calendário</button>
+    <button class="tab-btn"        id="btn-resultados"    onclick="switchTab('resultados',this)">resultados</button>
+    <button class="tab-btn"        id="btn-planejamento"  onclick="switchTab('planejamento',this)">planejamento</button>
   </div>
 </header>
 
@@ -259,28 +271,26 @@
         <div class="card-accent"></div>
       </div>
     </div>
-
     <div class="charts-row">
       <div class="chart-card">
         <div class="chart-title">Distância por semana — por tipo (km)</div>
         <div class="legend" id="legend-semanas"></div>
         <div style="position:relative;height:220px;">
-          <canvas id="chartSemanas" role="img" aria-label="Distância semanal empilhada por tipo">Barras empilhadas por tipo de treino.</canvas>
+          <canvas id="chartSemanas">Barras empilhadas por tipo de treino.</canvas>
         </div>
       </div>
       <div class="chart-card">
         <div class="chart-title">Tipos de treino</div>
         <div class="legend" id="legend-tipos"></div>
         <div style="position:relative;height:190px;">
-          <canvas id="chartTipos" role="img" aria-label="Contagem de tipos de treino">Gráfico horizontal com tipos.</canvas>
+          <canvas id="chartTipos">Gráfico horizontal com tipos.</canvas>
         </div>
       </div>
     </div>
-
     <div class="peso-chart-card">
       <div class="chart-title">Evolução do peso (kg)</div>
       <div style="position:relative;height:200px;">
-        <canvas id="chartPeso" role="img" aria-label="Evolução do peso">Linha de peso ao longo do tempo.</canvas>
+        <canvas id="chartPeso">Linha de peso ao longo do tempo.</canvas>
       </div>
     </div>
     <div class="footer-note" id="footer-note"></div>
@@ -323,6 +333,21 @@
     </div>
   </div>
 
+  <!-- ABA PLANEJAMENTO -->
+  <div class="tab-panel" id="tab-planejamento">
+    <div class="macro-wrap">
+      <div class="chart-title">Linha do tempo — volume quinzenal (km)</div>
+      <div class="macro-legend" id="macro-legend"></div>
+      <div class="macro-chart-outer" id="macro-chart-outer">
+        <div style="position:relative; height:320px;">
+          <canvas id="chartMacro">Linha do tempo macro de treinos.</canvas>
+        </div>
+        <!-- badges de prova injetados via JS aqui -->
+      </div>
+      <div class="fase-strip" id="fase-strip"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -349,6 +374,18 @@
     'Rodagem':      '#1A4858',
   };
 
+  // Cores por fase (pastel)
+  const FASE_CORES = {
+    'BASE':   { bar: '#C8B4E8', dark: '#A090C8', strip: '#EDE8F8' },
+    'CURTAS': { bar: '#FAD4A0', dark: '#D4A860', strip: '#FDF0DC' },
+    'PRIME':  { bar: '#A8C8F0', dark: '#6A9ED0', strip: '#E0EEF8' },
+    'FÉRIAS': { bar: '#B8E0C8', dark: '#6CAC88', strip: '#E4F4EC' },
+  };
+  function getFaseCor(fase) {
+    const key = Object.keys(FASE_CORES).find(k => fase.toUpperCase().includes(k));
+    return FASE_CORES[key] || { bar: '#D8D5D0', dark: '#A8A5A0', strip: '#EDEAE4' };
+  }
+
   /* ============================================================
      TABS
   ============================================================ */
@@ -357,8 +394,9 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     btn.classList.add('active');
-    if (name === 'calendario') renderCalendar();
-    if (name === 'resultados') renderResultados();
+    if (name === 'calendario')   renderCalendar();
+    if (name === 'resultados')   renderResultados();
+    if (name === 'planejamento') renderMacro();
   }
 
   /* ============================================================
@@ -383,9 +421,8 @@
   function getSemanaKey(diaStr) {
     const [d, m] = diaStr.split('/').map(Number);
     const date = new Date(2026, m - 1, d);
+    const dow  = date.getDay();
     const mon  = new Date(date);
-    // recua até a segunda-feira da semana
-    const dow = date.getDay(); // 0=dom
     mon.setDate(date.getDate() - ((dow + 6) % 7));
     return String(mon.getDate()).padStart(2,'0') + '/' + String(mon.getMonth()+1).padStart(2,'0');
   }
@@ -395,90 +432,64 @@
   ============================================================ */
   let globalRows     = [];
   let resultadosData = [];
+  let macroData      = [];
   let sortColumn     = 'data';
   let sortDirection  = 'desc';
   let calYear        = new Date().getFullYear();
   let calMonth       = new Date().getMonth();
+  let macroRendered  = false;
 
   /* ============================================================
-     PREVISÃO DO TEMPO — Open-Meteo (Rio de Janeiro)
-     Lat: -22.9068  Lng: -43.1729
+     PREVISÃO DO TEMPO
   ============================================================ */
   function wmoToInfo(code) {
-    if (code === 0)         return { emoji: '☀️',  label: 'céu limpo' };
-    if (code <= 2)          return { emoji: '🌤️', label: 'poucas nuvens' };
-    if (code <= 3)          return { emoji: '☁️',  label: 'nublado' };
-    if (code <= 49)         return { emoji: '🌫️', label: 'névoa' };
-    if (code <= 57)         return { emoji: '🌦️', label: 'garoa' };
-    if (code <= 67)         return { emoji: '🌧️', label: 'chuva' };
-    if (code <= 77)         return { emoji: '🌨️', label: 'neve' };
-    if (code <= 82)         return { emoji: '🌦️', label: 'pancadas' };
-    if (code <= 99)         return { emoji: '⛈️',  label: 'tempestade' };
+    if (code === 0)    return { emoji: '☀️',  label: 'céu limpo' };
+    if (code <= 2)     return { emoji: '🌤️', label: 'poucas nuvens' };
+    if (code <= 3)     return { emoji: '☁️',  label: 'nublado' };
+    if (code <= 49)    return { emoji: '🌫️', label: 'névoa' };
+    if (code <= 57)    return { emoji: '🌦️', label: 'garoa' };
+    if (code <= 67)    return { emoji: '🌧️', label: 'chuva' };
+    if (code <= 77)    return { emoji: '🌨️', label: 'neve' };
+    if (code <= 82)    return { emoji: '🌦️', label: 'pancadas' };
+    if (code <= 99)    return { emoji: '⛈️',  label: 'tempestade' };
     return { emoji: '🌡️', label: '—' };
   }
-
-  // cache: { "2026-04-25": { emoji, label, temp7h, tempMin, tempMax, rain } }
   let weatherCache = {};
-
   async function fetchWeather() {
     const url =
       'https://api.open-meteo.com/v1/forecast' +
       '?latitude=-22.9068&longitude=-43.1729' +
       '&hourly=temperature_2m' +
       '&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max' +
-      '&timezone=America%2FSao_Paulo' +
-      '&forecast_days=5';
+      '&timezone=America%2FSao_Paulo&forecast_days=5';
     try {
       const res  = await fetch(url);
       const json = await res.json();
-
-      const dates   = json.daily.time;                    // ["2026-04-24", ...]
-      const codes   = json.daily.weathercode;
-      const tMax    = json.daily.temperature_2m_max;
-      const tMin    = json.daily.temperature_2m_min;
-      const rainPct = json.daily.precipitation_probability_max;
-      const hTimes  = json.hourly.time;                  // ["2026-04-24T00:00", ...]
-      const hTemps  = json.hourly.temperature_2m;
-
+      const { time: dates, weathercode: codes, temperature_2m_max: tMax,
+              temperature_2m_min: tMin, precipitation_probability_max: rainPct } = json.daily;
+      const hTimes = json.hourly.time;
+      const hTemps = json.hourly.temperature_2m;
       dates.forEach((date, i) => {
-        const target = date + 'T07:00';
-        const hIdx   = hTimes.indexOf(target);
+        const hIdx   = hTimes.indexOf(date + 'T07:00');
         const temp7h = hIdx >= 0 ? Math.round(hTemps[hIdx]) : null;
         const info   = wmoToInfo(codes[i]);
-        weatherCache[date] = {
-          emoji:   info.emoji,
-          label:   info.label,
-          temp7h,
-          tempMin: Math.round(tMin[i]),
-          tempMax: Math.round(tMax[i]),
-          rain:    Math.round(rainPct[i]),
-        };
+        weatherCache[date] = { emoji: info.emoji, label: info.label, temp7h,
+          tempMin: Math.round(tMin[i]), tempMax: Math.round(tMax[i]), rain: Math.round(rainPct[i]) };
       });
-    } catch (e) {
-      console.warn('[weather] falha ao buscar previsão:', e);
-    }
+    } catch(e) { console.warn('[weather]', e); }
   }
-
-  // "DD/MM" + ano → "YYYY-MM-DD"
   function dStrToISO(dStr, year) {
     const [d, m] = dStr.split('/');
     return `${year}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
   }
-
-  // Controle de popover ativo
   let activePopover = null;
-
   function openWeatherPopover(btn) {
-    // fecha o anterior se existir
-    if (activePopover && activePopover !== btn._popover) {
-      activePopover.classList.remove('open');
-    }
-    const pop    = btn._popover;
+    if (activePopover && activePopover !== btn._popover) activePopover.classList.remove('open');
+    const pop = btn._popover;
     const isOpen = pop.classList.contains('open');
     pop.classList.toggle('open', !isOpen);
     activePopover = !isOpen ? pop : null;
   }
-
   document.addEventListener('click', e => {
     if (!activePopover) return;
     if (!e.target.closest('.cal-thermo') && !e.target.closest('.weather-popover')) {
@@ -488,7 +499,7 @@
   });
 
   /* ============================================================
-     CHARTS
+     CHARTS HELPER
   ============================================================ */
   const chartInstances = {};
   function upsertChart(id, config) {
@@ -532,7 +543,6 @@
     document.getElementById('last-update').textContent  = 'atualizado · ' + ultimoDia;
     document.getElementById('footer-note').textContent  = 'dados ao vivo · google sheets · ' + ultimoDia;
 
-    /* barras empilhadas */
     const tiposOrdem = ['Intervalado','Tempo','Longo','Regenerativo','Prova','Rodagem'];
     const semSet = {};
     rows.forEach(r => {
@@ -545,96 +555,64 @@
     const semLabels      = Object.keys(semSet);
     const tiposPresentes = tiposOrdem.filter(t => semLabels.some(s => semSet[s][t]));
     const semDatasets    = tiposPresentes.map(t => ({
-      label: t,
-      data: semLabels.map(s => Math.round((semSet[s][t] || 0) * 10) / 10),
-      backgroundColor: TIPO_CORES[t] || '#D0D0D0',
-      borderRadius: 3, borderSkipped: false,
+      label: t, data: semLabels.map(s => Math.round((semSet[s][t]||0)*10)/10),
+      backgroundColor: TIPO_CORES[t]||'#D0D0D0', borderRadius: 3, borderSkipped: false,
     }));
-
     const legSem = document.getElementById('legend-semanas');
     legSem.innerHTML = '';
     tiposPresentes.forEach(t => {
       legSem.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t]||'#D0D0D0'}"></span>${t}</span>`;
     });
-
     const gridColor = 'rgba(0,0,0,0.05)';
     const tickFont  = { family: "'DM Mono', monospace", size: 10 };
-
     upsertChart('chartSemanas', {
-      type: 'bar',
-      data: { labels: semLabels, datasets: semDatasets },
+      type: 'bar', data: { labels: semLabels, datasets: semDatasets },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + ' km',
-              footer: items => 'total: ' + items.reduce((s,i) => s + i.parsed.y, 0).toFixed(1) + ' km',
-            }
-          }
-        },
+        plugins: { legend: { display: false }, tooltip: { callbacks: {
+          label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + ' km',
+          footer: items => 'total: ' + items.reduce((s,i) => s+i.parsed.y,0).toFixed(1) + ' km',
+        }}},
         scales: {
           x: { stacked: true, grid: { display: false }, ticks: { font: tickFont, maxRotation: 45, autoSkip: true, maxTicksLimit: 20 } },
-          y: { stacked: true, grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v + ' km' } }
+          y: { stacked: true, grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v+' km' } }
         }
       }
     });
 
-    /* tipos totais */
     const tiposMap = {};
     rows.forEach(r => {
       if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre')
-        tiposMap[r.tipo] = (tiposMap[r.tipo] || 0) + 1;
+        tiposMap[r.tipo] = (tiposMap[r.tipo]||0) + 1;
     });
     const tiposLabels = Object.keys(tiposMap);
     const tiposVals   = tiposLabels.map(k => tiposMap[k]);
-    const legTipos    = document.getElementById('legend-tipos');
+    const legTipos = document.getElementById('legend-tipos');
     legTipos.innerHTML = '';
     tiposLabels.forEach(t => {
       legTipos.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t]||'#D0D0D0'}"></span>${t} (${tiposMap[t]})</span>`;
     });
-
     upsertChart('chartTipos', {
-      type: 'bar',
-      data: {
-        labels: tiposLabels,
-        datasets: [{ label: 'Treinos', data: tiposVals, backgroundColor: tiposLabels.map(t => TIPO_CORES[t]||'#D0D0D0'), borderRadius: 5, borderSkipped: false }]
-      },
-      options: {
-        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { color: gridColor }, ticks: { font: tickFont, stepSize: 1 } },
-          y: { grid: { display: false }, ticks: { font: tickFont } }
-        }
-      }
+      type: 'bar', data: { labels: tiposLabels, datasets: [{ label: 'Treinos', data: tiposVals, backgroundColor: tiposLabels.map(t=>TIPO_CORES[t]||'#D0D0D0'), borderRadius: 5, borderSkipped: false }] },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { grid: { color: gridColor }, ticks: { font: tickFont, stepSize: 1 } }, y: { grid: { display: false }, ticks: { font: tickFont } } } }
     });
 
-    /* peso */
     const pesoRows   = rows.filter(r => r.peso !== null);
     const pesoLabels = pesoRows.map(r => r.dia);
     const pesoVals   = pesoRows.map(r => r.peso);
     const pesoMin    = pesoVals.length ? Math.floor(Math.min(...pesoVals, META_PESO)) - 1 : 60;
     const pesoMax    = pesoVals.length ? Math.ceil(Math.max(...pesoVals)) + 1 : 85;
-
     upsertChart('chartPeso', {
       type: 'line',
-      data: {
-        labels: pesoLabels,
-        datasets: [
-          { label: 'Peso', data: pesoVals, borderColor: '#C8B4E8', backgroundColor: 'rgba(200,180,232,0.10)', pointBackgroundColor: '#C8B4E8', pointRadius: 2, pointHoverRadius: 5, tension: 0.3, fill: true },
-          { label: 'Meta', data: pesoLabels.map(() => META_PESO), borderColor: 'rgba(61,107,79,0.40)', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' kg' } } },
-        scales: {
-          x: { grid: { display: false }, ticks: { font: tickFont, maxTicksLimit: 14, maxRotation: 45 } },
-          y: { min: pesoMin, max: pesoMax, grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v + ' kg' } }
-        }
-      }
+      data: { labels: pesoLabels, datasets: [
+        { label: 'Peso', data: pesoVals, borderColor: '#C8B4E8', backgroundColor: 'rgba(200,180,232,0.10)', pointBackgroundColor: '#C8B4E8', pointRadius: 2, pointHoverRadius: 5, tension: 0.3, fill: true },
+        { label: 'Meta', data: pesoLabels.map(()=>META_PESO), borderColor: 'rgba(61,107,79,0.40)', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false }
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2)+' kg' } } },
+        scales: { x: { grid: { display: false }, ticks: { font: tickFont, maxTicksLimit: 14, maxRotation: 45 } },
+          y: { min: pesoMin, max: pesoMax, grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v+' kg' } } } }
     });
   }
 
@@ -643,10 +621,7 @@
   ============================================================ */
   const MESES_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const DIAS_PT  = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
-
-  const CHECK_SVG = `<svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <polyline points="1,4 3,6.5 7,1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`;
+  const CHECK_SVG = `<svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1,4 3,6.5 7,1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
   function calNav(dir) {
     calMonth += dir;
@@ -657,17 +632,13 @@
 
   function renderCalendar() {
     document.getElementById('cal-month-label').textContent = MESES_PT[calMonth] + ' ' + calYear;
-
-    /* legenda */
     const legEl = document.getElementById('cal-legend');
     legEl.innerHTML = '';
     Object.entries(TIPO_CORES).forEach(([t, c]) => {
       legEl.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${c}"></span>${t}</span>`;
     });
-    legEl.innerHTML += `<span class="legend-item">🏋️ academia</span>`;
-    legEl.innerHTML += `<span class="legend-item">🌡️ previsão</span>`;
+    legEl.innerHTML += `<span class="legend-item">🏋️ academia</span><span class="legend-item">🌡️ previsão</span>`;
 
-    /* cabeçalho semana */
     const wdEl = document.getElementById('cal-weekdays');
     wdEl.innerHTML = '';
     DIAS_PT.forEach(d => {
@@ -680,130 +651,78 @@
     const dataMap = {};
     globalRows.forEach(r => { dataMap[r.dia] = r; });
 
-    const hoje     = new Date();
-    hoje.setHours(0,0,0,0);
+    const hoje     = new Date(); hoje.setHours(0,0,0,0);
     const firstDay = new Date(calYear, calMonth, 1);
     const lastDay  = new Date(calYear, calMonth + 1, 0);
-    const startDow = (firstDay.getDay() + 6) % 7; // 0=seg … 6=dom
+    const startDow = (firstDay.getDay() + 6) % 7;
 
     const daysEl = document.getElementById('cal-days');
     daysEl.innerHTML = '';
-
     for (let i = 0; i < startDow; i++) {
-      const el = document.createElement('div');
-      el.className = 'cal-day empty';
-      daysEl.appendChild(el);
+      const el = document.createElement('div'); el.className = 'cal-day empty'; daysEl.appendChild(el);
     }
 
     for (let day = 1; day <= lastDay.getDate(); day++) {
-      const dateObj = new Date(calYear, calMonth, day);
-      dateObj.setHours(0,0,0,0);
-      const dStr   = String(day).padStart(2,'0') + '/' + String(calMonth+1).padStart(2,'0');
-      const isoStr = dStrToISO(dStr, calYear);
-      const row    = dataMap[dStr];
-      const wx     = weatherCache[isoStr];
-
-      const isPast   = dateObj < hoje;
-      const isToday  = dateObj.getTime() === hoje.getTime();
+      const dateObj = new Date(calYear, calMonth, day); dateObj.setHours(0,0,0,0);
+      const dStr    = String(day).padStart(2,'0') + '/' + String(calMonth+1).padStart(2,'0');
+      const isoStr  = dStrToISO(dStr, calYear);
+      const row     = dataMap[dStr];
+      const wx      = weatherCache[isoStr];
+      const isPast  = dateObj < hoje;
+      const isToday = dateObj.getTime() === hoje.getTime();
       const isFuture = dateObj > hoje;
-      const isDone   = row && (row.distEf > 0 || row.peso !== null) && (isPast || isToday);
-      const isPlanned = row && row.distPlan > 0 && isFuture;
+      const isDone  = row && (row.distEf > 0 || row.peso !== null) && (isPast || isToday);
 
       const el = document.createElement('div');
-      let cls = 'cal-day';
-      if (isDone)    cls += ' done';
-      if (isPlanned) cls += ' planned';
-      if (isToday)   cls += ' today';
-      el.className = cls;
+      el.className = 'cal-day' + (isDone ? ' done' : '') + (isToday ? ' today' : '');
 
-      /* ── TOPO: número + check + termômetro ── */
       const topEl = document.createElement('div');
       topEl.className = 'cal-day-top';
-
       const numEl = document.createElement('div');
       numEl.className = 'cal-day-num';
       numEl.textContent = day;
       topEl.appendChild(numEl);
 
-      // check para dias realizados
       if (isDone) {
         const chk = document.createElement('div');
-        chk.className = 'cal-check';
-        chk.innerHTML = CHECK_SVG;
+        chk.className = 'cal-check'; chk.innerHTML = CHECK_SVG;
         topEl.appendChild(chk);
       }
-
-      // termômetro para dias com previsão (hoje + futuros)
       if (wx && (isToday || isFuture)) {
         const btn = document.createElement('button');
-        btn.className = 'cal-thermo';
-        btn.title     = 'previsão do tempo';
-        btn.setAttribute('aria-label', 'ver previsão');
+        btn.className = 'cal-thermo'; btn.title = 'previsão do tempo';
         btn.textContent = wx.emoji;
-
-        // monta popover
         const pop = document.createElement('div');
         pop.className = 'weather-popover';
-
-        const tempLine = wx.temp7h !== null
-          ? `${wx.temp7h}°C às 7h`
-          : `${wx.tempMin}° – ${wx.tempMax}°C`;
-
-        pop.innerHTML = `
-          <div class="wp-emoji">${wx.emoji}</div>
-          <div class="wp-cond">${wx.label}</div>
-          <div class="wp-temp">${tempLine}</div>
-          <div class="wp-rain">💧 ${wx.rain}% chuva</div>
-        `;
-
+        const tempLine = wx.temp7h !== null ? `${wx.temp7h}°C às 7h` : `${wx.tempMin}° – ${wx.tempMax}°C`;
+        pop.innerHTML = `<div class="wp-emoji">${wx.emoji}</div><div class="wp-cond">${wx.label}</div><div class="wp-temp">${tempLine}</div><div class="wp-rain">💧 ${wx.rain}% chuva</div>`;
         btn._popover = pop;
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          openWeatherPopover(btn);
-        });
-
+        btn.addEventListener('click', e => { e.stopPropagation(); openWeatherPopover(btn); });
         topEl.appendChild(btn);
-        el.appendChild(pop); // popover filho do card (não do topEl) para posicionar corretamente
+        el.appendChild(pop);
       }
-
       el.appendChild(topEl);
 
-      /* ── CONTEÚDO DO DIA ── */
       if (row) {
         const tipo = row.tipo || '';
-
         if (row.comp) {
-          const gym = document.createElement('div');
-          gym.className = 'cal-gym-icon';
-          gym.title = 'Academia';
-          gym.textContent = '🏋️';
-          el.appendChild(gym);
+          const gym = document.createElement('div'); gym.className = 'cal-gym-icon'; gym.textContent = '🏋️'; el.appendChild(gym);
         }
-
         if (tipo && tipo !== 'Livre') {
           const badge = document.createElement('div');
           badge.className = 'cal-tipo-badge';
-          badge.style.background = TIPO_CORES[tipo] || '#E0DDD8';
-          badge.style.color      = TIPO_TEXT[tipo]  || '#444';
-          badge.textContent      = tipo;
+          badge.style.background = TIPO_CORES[tipo]||'#E0DDD8';
+          badge.style.color      = TIPO_TEXT[tipo]||'#444';
+          badge.textContent = tipo;
           el.appendChild(badge);
         }
-
         if (row.distPlan > 0) {
-          const dp = document.createElement('div');
-          dp.className   = 'cal-dist';
-          dp.textContent = row.distPlan.toFixed(1) + ' km plan.';
-          el.appendChild(dp);
+          const dp = document.createElement('div'); dp.className = 'cal-dist'; dp.textContent = row.distPlan.toFixed(1)+' km plan.'; el.appendChild(dp);
         }
-
         if (row.distEf > 0 && !isFuture) {
-          const de = document.createElement('div');
-          de.className   = 'cal-dist-ef';
-          de.textContent = '→ ' + row.distEf.toFixed(1) + ' km ef.';
-          el.appendChild(de);
+          const de = document.createElement('div'); de.className = 'cal-dist-ef'; de.textContent = '→ '+row.distEf.toFixed(1)+' km ef.'; el.appendChild(de);
         }
       }
-
       daysEl.appendChild(el);
     }
   }
@@ -812,72 +731,49 @@
      RESULTADOS
   ============================================================ */
   function sortResultados(column) {
-    if (sortColumn === column) {
-      sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      sortColumn = column;
-      sortDirection = 'asc';
-    }
+    sortDirection = sortColumn === column ? (sortDirection === 'asc' ? 'desc' : 'asc') : 'asc';
+    sortColumn = column;
     renderResultados();
   }
-
   function formatTime(t) {
     if (!t) return '';
     if (typeof t === 'number') {
-      const h = Math.floor(t / 3600);
-      const m = Math.floor((t % 3600) / 60);
-      const s = Math.floor(t % 60);
-      return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      const h=Math.floor(t/3600), m=Math.floor((t%3600)/60), s=Math.floor(t%60);
+      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
     return String(t);
   }
-
   function formatPct(pct) {
-    if (pct === '-' || pct === '' || pct === null || pct === undefined) return '-';
+    if (!pct && pct !== 0) return '-';
     const val = parseFloat(pct);
-    return isNaN(val) ? '-' : val.toFixed(1) + '%';
+    return isNaN(val) ? '-' : val.toFixed(1)+'%';
   }
-
   function getColorForPct(pct) {
     const val = parseFloat(pct);
-    if (isNaN(val)) return '#FFCC80';
-    if (val <= 1.0)  return '#E8F5E8';
-    if (val <= 5.0)  return '#C8E6C9';
-    if (val <= 10.0) return '#A5D6A7';
-    if (val <= 25.0) return '#C5E1A5';
-    if (val <= 50.0) return '#FFF59D';
+    if (isNaN(val)) return 'transparent';
+    if (val <= 1)   return '#E8F5E8';
+    if (val <= 5)   return '#C8E6C9';
+    if (val <= 10)  return '#A5D6A7';
+    if (val <= 25)  return '#C5E1A5';
+    if (val <= 50)  return '#FFF59D';
     return '#FFCC80';
   }
-
   function updateSortIcons() {
     ['data','distancia','pctGeral','pctCat'].forEach(col => {
-      const icon = document.getElementById('sort-icon-' + col);
-      if (!icon) return;
-      icon.textContent = sortColumn === col ? (sortDirection === 'asc' ? '▲' : '▼') : '⇵';
+      const icon = document.getElementById('sort-icon-'+col);
+      if (icon) icon.textContent = sortColumn===col ? (sortDirection==='asc'?'▲':'▼') : '⇵';
     });
   }
-
   function renderResultados() {
     updateSortIcons();
-    const sorted = [...resultadosData].sort((a, b) => {
-      let valA, valB;
-      if (sortColumn === 'data') {
-        valA = new Date(a.data.split('/').reverse().join('-'));
-        valB = new Date(b.data.split('/').reverse().join('-'));
-      } else if (sortColumn === 'distancia') {
-        valA = parseFloat(a.distancia.replace(',','.'));
-        valB = parseFloat(b.distancia.replace(',','.'));
-      } else if (sortColumn === 'pctGeral') {
-        valA = parseFloat(a.pctGeral);
-        valB = parseFloat(b.pctGeral);
-      } else if (sortColumn === 'pctCat') {
-        valA = parseFloat(a.pctCat);
-        valB = parseFloat(b.pctCat);
-      }
-      if (sortDirection === 'asc') return valA > valB ? 1 : valA < valB ? -1 : 0;
-      return valA < valB ? 1 : valA > valB ? -1 : 0;
+    const sorted = [...resultadosData].sort((a,b) => {
+      let vA, vB;
+      if (sortColumn==='data')      { vA=new Date(a.data.split('/').reverse().join('-')); vB=new Date(b.data.split('/').reverse().join('-')); }
+      else if (sortColumn==='distancia') { vA=parseFloat(a.distancia); vB=parseFloat(b.distancia); }
+      else if (sortColumn==='pctGeral')  { vA=parseFloat(a.pctGeral);  vB=parseFloat(b.pctGeral); }
+      else if (sortColumn==='pctCat')    { vA=parseFloat(a.pctCat);    vB=parseFloat(b.pctCat); }
+      return sortDirection==='asc' ? (vA>vB?1:vA<vB?-1:0) : (vA<vB?1:vA>vB?-1:0);
     });
-
     const tbody = document.getElementById('resultados-tbody');
     tbody.innerHTML = '';
     sorted.forEach(r => {
@@ -885,15 +781,224 @@
       tr.innerHTML = `
         <td>${r.data}</td>
         <td>${r.notion ? `<a href="${r.notion}" target="_blank" rel="noopener">${r.corrida}</a>` : r.corrida}</td>
-        <td>${r.distancia}</td>
-        <td>${r.local}</td>
-        <td>${formatTime(r.tempo)}</td>
+        <td>${r.distancia}</td><td>${r.local}</td><td>${formatTime(r.tempo)}</td>
         <td>${r.geral}</td>
         <td style="background:${getColorForPct(r.pctGeral)}">${formatPct(r.pctGeral)}</td>
         <td>${r.cat}</td>
-        <td style="background:${getColorForPct(r.pctCat)}">${formatPct(r.pctCat)}</td>
-      `;
+        <td style="background:${getColorForPct(r.pctCat)}">${formatPct(r.pctCat)}</td>`;
       tbody.appendChild(tr);
+    });
+  }
+
+  /* ============================================================
+     PLANEJAMENTO — linha do tempo macro
+  ============================================================ */
+  function renderMacro() {
+    if (!macroData.length) return;
+
+    const data = macroData;
+    const labels     = data.map(q => q.id);
+    const volTotal   = data.map(q => q.volTotal);
+    const volLongo   = data.map(q => q.volLongo);
+    const volOther   = data.map((q,i) => Math.max(0, volTotal[i] - volLongo[i]));
+    const volReal    = data.map(q => q.volReal > 0 ? q.volReal : null);
+    const volLgReal  = data.map(q => q.volLgReal > 0 ? q.volLgReal : null);
+
+    // cores por quinzena baseadas na fase
+    const barColors  = data.map(q => getFaseCor(q.fase).bar);
+    const darkColors = data.map(q => getFaseCor(q.fase).dark);
+
+    const gridColor = 'rgba(0,0,0,0.05)';
+    const tickFont  = { family: "'DM Mono', monospace", size: 10 };
+
+    // legenda
+    const legEl = document.getElementById('macro-legend');
+    legEl.innerHTML = '';
+    const fasesUnicas = [...new Set(data.map(q => q.fase))];
+    fasesUnicas.forEach(f => {
+      const c = getFaseCor(f);
+      legEl.innerHTML += `
+        <span class="macro-legend-item">
+          <span class="legend-dot" style="background:${c.bar};border:1.5px solid ${c.dark}"></span>${f}
+        </span>`;
+    });
+    legEl.innerHTML += `
+      <span class="macro-legend-item">
+        <span class="macro-legend-line" style="height:2px;background:#3D6B4F;display:inline-block"></span>&nbsp;vol. realizado
+      </span>
+      <span class="macro-legend-item">
+        <span style="display:inline-block;width:22px;height:2px;background:repeating-linear-gradient(to right,#7A5A10 0,#7A5A10 4px,transparent 4px,transparent 8px)"></span>&nbsp;longo realizado
+      </span>`;
+
+    const chartConfig = {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Volume planejado (outros)',
+            data: volOther,
+            backgroundColor: barColors,
+            borderColor: barColors.map((_,i) => darkColors[i]),
+            borderWidth: 0,
+            borderRadius: { topLeft: 4, topRight: 4 },
+            borderSkipped: 'bottom',
+            stack: 'plan',
+            order: 2,
+          },
+          {
+            label: 'Longão planejado',
+            data: volLongo,
+            backgroundColor: darkColors,
+            borderWidth: 0,
+            borderRadius: { topLeft: 0, topRight: 0 },
+            borderSkipped: false,
+            stack: 'plan',
+            order: 2,
+          },
+          {
+            label: 'Vol. realizado',
+            data: volReal,
+            type: 'line',
+            borderColor: '#3D6B4F',
+            backgroundColor: 'transparent',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#3D6B4F',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            tension: 0.3,
+            order: 1,
+          },
+          {
+            label: 'Longo realizado',
+            data: volLgReal,
+            type: 'line',
+            borderColor: '#7A5A10',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [5, 4],
+            pointBackgroundColor: '#7A5A10',
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            tension: 0.3,
+            order: 1,
+          },
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: items => {
+                const idx = items[0].dataIndex;
+                const q   = data[idx];
+                const d1  = q.dataInicio ? q.dataInicio.slice(8,10)+'/'+q.dataInicio.slice(5,7) : '';
+                const d2  = q.dataFim    ? q.dataFim.slice(8,10)   +'/'+q.dataFim.slice(5,7)   : '';
+                return `${q.id} · ${q.fase}${d1 ? ' ('+d1+' – '+d2+')' : ''}`;
+              },
+              label: ctx => {
+                if (ctx.parsed.y === null) return null;
+                return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(0) + ' km';
+              },
+              afterBody: items => {
+                const idx = items[0].dataIndex;
+                const q   = data[idx];
+                const lines = [];
+                if (q.prova1) lines.push('★ ' + q.prova1 + (q.tipo1 ? ' · '+q.tipo1 : ''));
+                if (q.prova2) lines.push('★ ' + q.prova2 + (q.tipo2 ? ' · '+q.tipo2 : ''));
+                return lines;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            grid: { display: false },
+            ticks: { font: tickFont, maxRotation: 45 }
+          },
+          y: {
+            stacked: false,
+            grid: { color: gridColor },
+            ticks: { font: tickFont, callback: v => v + ' km' }
+          }
+        }
+      }
+    };
+
+    if (chartInstances['chartMacro']) {
+      chartInstances['chartMacro'].data    = chartConfig.data;
+      chartInstances['chartMacro'].options = chartConfig.options;
+      chartInstances['chartMacro'].update('none');
+    } else {
+      chartInstances['chartMacro'] = new Chart(document.getElementById('chartMacro'), chartConfig);
+    }
+
+    // ── BADGES DE PROVA ──
+    // Remove badges anteriores
+    document.querySelectorAll('.prova-badge').forEach(b => b.remove());
+
+    // Aguarda o chart renderizar para pegar posições corretas
+    requestAnimationFrame(() => {
+      const chart  = chartInstances['chartMacro'];
+      const outer  = document.getElementById('macro-chart-outer');
+      const canvas = document.getElementById('chartMacro');
+      const canvasTop = canvas.offsetTop;
+
+      data.forEach((q, idx) => {
+        const provas = [];
+        if (q.prova1) provas.push({ nome: q.prova1, tipo: q.tipo1 });
+        if (q.prova2) provas.push({ nome: q.prova2, tipo: q.tipo2 });
+        if (!provas.length) return;
+
+        // posição X do centro da barra
+        const meta = chart.getDatasetMeta(0);
+        if (!meta.data[idx]) return;
+        const xPos = meta.data[idx].x;
+
+        // posição Y: topo da barra planejada total
+        const yVal  = volTotal[idx];
+        const yPos  = canvasTop + chart.scales.y.getPixelForValue(yVal) - 28;
+
+        provas.forEach((pv, pi) => {
+          const badge = document.createElement('div');
+          badge.className = 'prova-badge';
+          badge.style.left = xPos + 'px';
+          badge.style.top  = (yPos - pi * 26) + 'px';
+          badge.innerHTML  = `<span class="star">★</span>${pv.nome}`;
+
+          // popover
+          const pop = document.createElement('div');
+          pop.className = 'prova-popover';
+          pop.innerHTML = `<div class="pp-name">${pv.nome}</div><div class="pp-dist">${pv.tipo}</div>`;
+          badge.appendChild(pop);
+
+          badge.addEventListener('mouseenter', () => pop.classList.add('open'));
+          badge.addEventListener('mouseleave', () => pop.classList.remove('open'));
+
+          outer.appendChild(badge);
+        });
+      });
+
+      // ── FAIXA DE FASES ──
+      const strip = document.getElementById('fase-strip');
+      strip.innerHTML = '';
+      const total = data.length;
+      data.forEach(q => {
+        const c   = getFaseCor(q.fase);
+        const pct = (1 / total * 100).toFixed(2);
+        const bl  = document.createElement('div');
+        bl.className = 'fase-block';
+        bl.style.width      = pct + '%';
+        bl.style.background = c.strip;
+        bl.style.borderTop  = `2px solid ${c.dark}`;
+        bl.textContent      = q.fase;
+        strip.appendChild(bl);
+      });
     });
   }
 
@@ -902,37 +1007,29 @@
   ============================================================ */
   async function init() {
     try {
-      // busca planilha e clima em paralelo
-      const [res] = await Promise.all([
-        fetch(SHEETS_URL),
-        fetchWeather(),
-      ]);
-
+      const [res] = await Promise.all([fetch(SHEETS_URL), fetchWeather()]);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const raw = await res.json();
-
-      if (!raw.treinos || !Array.isArray(raw.treinos)) {
+      if (!raw.treinos || !Array.isArray(raw.treinos))
         throw new Error('Dados sem "treinos". Verifique o Apps Script.');
-      }
 
       const data = raw.treinos.map(r => ({
-        diaSemana: String(r.diaSemana || '').trim(),
-        dia:       String(r.dia       || '').trim(),
+        diaSemana: String(r.diaSemana||'').trim(),
+        dia:       String(r.dia||'').trim(),
         distPlan:  parseKm(r.distPlan),
         distEf:    parseKm(r.distEf),
-        tipo:      String(r.tipo      || '').trim(),
+        tipo:      String(r.tipo||'').trim(),
         comp:      parseComp(r.comp),
         peso:      parsePeso(r.peso),
       })).filter(r => r.dia !== '');
 
       let lastFilled = -1;
-      data.forEach((r, i) => {
-        if (r.distEf > 0 || r.peso !== null || r.comp) lastFilled = i;
-      });
-      const dashRows = lastFilled >= 0 ? data.slice(0, lastFilled + 1) : data;
+      data.forEach((r,i) => { if (r.distEf>0||r.peso!==null||r.comp) lastFilled=i; });
+      const dashRows = lastFilled >= 0 ? data.slice(0, lastFilled+1) : data;
 
       globalRows     = data;
       resultadosData = raw.resultados || [];
+      macroData      = raw.macro      || [];
 
       document.getElementById('loading-box').style.display = 'none';
       document.getElementById('tab-visao').classList.add('active');
