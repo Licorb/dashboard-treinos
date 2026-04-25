@@ -647,7 +647,7 @@
         plugins:{legend:{display:false},tooltip:{callbacks:{
           title:items=>{const q=data[items[0].dataIndex];return`${q.id} · ${q.fase}`;},
           label:ctx=>{if(ctx.parsed.y===null)return null;return' '+ctx.dataset.label+': '+ctx.parsed.y.toFixed(0)+' km';},
-          afterBody:items=>{const q=data[items[0].dataIndex];const l=[];if(q.prova1)l.push('★ '+q.prova1+(q.tipo1?' · '+q.tipo1:''+Km));if(q.prova2)l.push('★ '+q.prova2+(q.tipo2?' · '+q.tipo2:'Km'));return l;}
+          afterBody:items=>{const q=data[items[0].dataIndex];const l=[];if(q.prova1)l.push('★ '+q.prova1+(q.tipo1?' · '+q.tipo1 + 'Km' :''));if(q.prova2)l.push('★ '+q.prova2+(q.tipo2?' · '+q.tipo2 + 'Km' : ''));return l;}
         }}},
         scales:{
           x:{stacked:true,grid:{display:false},ticks:{font:tf,maxRotation:0,autoSkip:false}},
