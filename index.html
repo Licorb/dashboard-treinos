@@ -9,19 +9,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
     :root {
-      --bg: #F5F3EF;
-      --surface: #FFFFFF;
-      --surface2: #EDEAE4;
-      --border: rgba(0,0,0,0.08);
-      --text: #1A1916;
-      --text-muted: #7A7770;
-      --text-hint: #B0ADA8;
-      --accent: #3D6B4F;
-      --accent-light: #D4E8DC;
-      --done-bg: #F0F0EE;
-      --done-border: rgba(0,0,0,0.10);
-      --blue: #A8C8F0; --purple: #C8B4E8; --green: #B8E0C8;
-      --amber: #FAD4A0; --pink: #F4A8B4; --teal: #B8D8E8;
+      --bg: #F5F3EF; --surface: #FFFFFF; --surface2: #EDEAE4;
+      --border: rgba(0,0,0,0.08); --text: #1A1916; --text-muted: #7A7770; --text-hint: #B0ADA8;
+      --accent: #3D6B4F; --accent-light: #D4E8DC;
+      --done-bg: #F0F0EE; --done-border: rgba(0,0,0,0.10);
+      --blue: #A8C8F0; --purple: #C8B4E8; --green: #B8E0C8; --amber: #FAD4A0; --pink: #F4A8B4;
       --radius-md: 12px; --radius-lg: 18px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,7 +27,7 @@
     .last-update { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 0.7rem; font-family: 'DM Mono', monospace; padding: 3px 10px; border-radius: 20px; margin-top: 5px; }
 
     .tabs { display: flex; }
-    .tab-btn { padding: 0.7rem 1.4rem; font-size: 0.82rem; font-family: 'DM Mono', monospace; color: var(--text-hint); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; letter-spacing: 0.04em; transition: color 0.15s, border-color 0.15s; }
+    .tab-btn { padding: 0.7rem 1.4rem; font-size: 0.82rem; font-family: 'DM Mono', monospace; color: var(--text-hint); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; letter-spacing: 0.04em; transition: color .15s, border-color .15s; }
     .tab-btn:hover { color: var(--text-muted); }
     .tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
 
@@ -46,9 +38,9 @@
     /* CARDS */
     .cards-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 1.8rem; }
     .card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
-    .card-label { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
-    .card-value { font-size: 2rem; font-weight: 300; color: var(--text); line-height: 1; letter-spacing: -0.03em; }
-    .card-sub   { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; min-height: 1rem; }
+    .card-label { font-size: .7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 10px; }
+    .card-value { font-size: 2rem; font-weight: 300; color: var(--text); line-height: 1; letter-spacing: -.03em; }
+    .card-sub   { font-size: .72rem; color: var(--text-muted); margin-top: 6px; min-height: 1rem; }
     .delta { font-weight: 500; }
     .delta.down { color: var(--accent); }
     .delta.up   { color: #C0533A; }
@@ -60,154 +52,132 @@
     .card-provas .card-accent { background: var(--pink); }
     .meta-bar-wrap  { margin-top: 10px; }
     .meta-bar-track { height: 4px; background: var(--surface2); border-radius: 10px; overflow: hidden; margin-top: 5px; }
-    .meta-bar-fill  { height: 100%; background: var(--purple); border-radius: 10px; transition: width 0.6s ease; }
-    .meta-label     { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-hint); font-family: 'DM Mono', monospace; }
+    .meta-bar-fill  { height: 100%; background: var(--purple); border-radius: 10px; transition: width .6s ease; }
+    .meta-label     { display: flex; justify-content: space-between; font-size: .68rem; color: var(--text-hint); font-family: 'DM Mono', monospace; }
 
     /* CHARTS */
     .charts-row { display: grid; grid-template-columns: minmax(0,1.65fr) minmax(0,1fr); gap: 14px; margin-bottom: 1.4rem; }
     .chart-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.4rem 1.6rem; }
     .peso-chart-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.4rem 1.6rem; margin-bottom: 1.4rem; }
-    .chart-title { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px; }
+    .chart-title { font-size: .7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 14px; }
     .legend      { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: .7rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
     .legend-dot  { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-    .footer-note { text-align: center; font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); margin-top: 2.5rem; }
+    .footer-note { text-align: center; font-size: .7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); margin-top: 2.5rem; }
 
     /* CALENDÁRIO */
     .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 10px; }
     .cal-nav { display: flex; align-items: center; gap: 12px; }
-    .cal-nav button { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 5px 14px; font-size: 0.8rem; font-family: 'DM Mono', monospace; color: var(--text-muted); cursor: pointer; }
+    .cal-nav button { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 5px 14px; font-size: .8rem; font-family: 'DM Mono', monospace; color: var(--text-muted); cursor: pointer; }
     .cal-nav button:hover { background: var(--surface2); }
     .cal-month { font-size: 1rem; font-weight: 500; font-family: 'DM Mono', monospace; color: var(--text); min-width: 150px; text-align: center; }
-    .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; }
     .cal-grid-hdr { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 6px; margin-bottom: 4px; }
     .cal-grid     { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 6px; }
-    .cal-weekday  { text-align: center; font-size: 0.65rem; font-family: 'DM Mono', monospace; color: var(--text-hint); padding: 4px 0 6px; letter-spacing: 0.04em; }
-    .cal-day { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; min-height: 96px; padding: 7px 8px 6px; position: relative; display: flex; flex-direction: column; gap: 3px; transition: box-shadow 0.1s; overflow: visible; }
-    .cal-day:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .cal-day.empty   { background: transparent; border-color: transparent; pointer-events: none; }
-    .cal-day.done    { background: var(--done-bg); border-color: var(--done-border); }
-    .cal-day.planned { background: var(--surface); }
-    .cal-day.today   { border-color: var(--accent); border-width: 1.5px; }
+    .cal-weekday  { text-align: center; font-size: .65rem; font-family: 'DM Mono', monospace; color: var(--text-hint); padding: 4px 0 6px; }
+    .cal-day { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; min-height: 96px; padding: 7px 8px 6px; position: relative; display: flex; flex-direction: column; gap: 3px; transition: box-shadow .1s; overflow: visible; }
+    .cal-day:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .cal-day.empty { background: transparent; border-color: transparent; pointer-events: none; }
+    .cal-day.done  { background: var(--done-bg); border-color: var(--done-border); }
+    .cal-day.today { border-color: var(--accent); border-width: 1.5px; }
     .cal-day-top { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
-    .cal-day-num { font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); }
+    .cal-day-num { font-size: .7rem; font-family: 'DM Mono', monospace; color: var(--text-hint); }
     .cal-day.today .cal-day-num { color: var(--accent); font-weight: 500; }
     .cal-check { width: 14px; height: 14px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .cal-check svg { width: 8px; height: 8px; }
-    .cal-thermo { background: none; border: none; padding: 0; cursor: pointer; font-size: 13px; line-height: 1; flex-shrink: 0; display: flex; align-items: center; position: relative; }
+    .cal-thermo { background: none; border: none; padding: 0; cursor: pointer; font-size: 13px; line-height: 1; flex-shrink: 0; display: flex; align-items: center; }
     .cal-thermo:hover { transform: scale(1.15); }
-    .weather-popover { display: none; position: absolute; top: calc(100% + 4px); left: 0; z-index: 999; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); min-width: 148px; flex-direction: column; gap: 5px; pointer-events: none; }
+    .weather-popover { display: none; position: absolute; top: calc(100% + 4px); left: 0; z-index: 999; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; box-shadow: 0 6px 20px rgba(0,0,0,.12); min-width: 148px; flex-direction: column; gap: 5px; pointer-events: none; }
     .weather-popover.open { display: flex; pointer-events: auto; }
     .cal-day:nth-child(7n) .weather-popover, .cal-day:nth-child(7n-1) .weather-popover, .cal-day:nth-child(7n-2) .weather-popover { left: auto; right: 0; }
     .wp-emoji { font-size: 1.8rem; text-align: center; line-height: 1.2; }
-    .wp-cond  { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); text-align: center; }
-    .wp-temp  { font-size: 0.82rem; font-family: 'DM Mono', monospace; color: var(--text); font-weight: 500; text-align: center; }
-    .wp-rain  { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); text-align: center; }
-    .cal-tipo-badge { font-size: 0.58rem; font-family: 'DM Mono', monospace; padding: 2px 6px; border-radius: 5px; font-weight: 500; line-height: 1.4; display: inline-block; width: fit-content; }
-    .cal-dist    { font-size: 0.63rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
-    .cal-dist-ef { font-size: 0.60rem; font-family: 'DM Mono', monospace; color: var(--text-hint); }
-    .cal-gym-icon { position: absolute; top: 6px; right: 7px; font-size: 11px; line-height: 1; }
+    .wp-cond  { font-size: .68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); text-align: center; }
+    .wp-temp  { font-size: .82rem; font-family: 'DM Mono', monospace; color: var(--text); font-weight: 500; text-align: center; }
+    .wp-rain  { font-size: .68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); text-align: center; }
+    .cal-tipo-badge { font-size: .58rem; font-family: 'DM Mono', monospace; padding: 2px 6px; border-radius: 5px; font-weight: 500; line-height: 1.4; display: inline-block; width: fit-content; }
+    .cal-dist    { font-size: .63rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
+    .cal-dist-ef { font-size: .60rem; font-family: 'DM Mono', monospace; color: var(--text-hint); }
+    .cal-gym-icon { position: absolute; top: 6px; right: 7px; font-size: 11px; }
 
     /* TABLE */
-    table { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; margin-top: 14px; }
+    table { font-size: .8rem; width: 100%; border-collapse: collapse; margin-top: 14px; }
     th { background: var(--surface2); font-weight: 500; padding: 10px 8px; text-align: left; border: 1px solid var(--border); }
     th.sortable { cursor: pointer; }
-    th.sortable:hover { color: var(--text); }
-    .sort-icon { font-size: 0.8rem; margin-left: 4px; color: var(--text-hint); }
-    tbody tr:nth-child(odd) { background: rgba(0,0,0,0.02); }
-    td { padding: 8px; border: 1px solid var(--border); font-family: 'DM Mono', monospace; }
+    .sort-icon { font-size: .8rem; margin-left: 4px; color: var(--text-hint); }
+    tbody tr:nth-child(odd) { background: rgba(0,0,0,.02); }
+    td { padding: 8px; border: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: .78rem; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
     /* PLANEJAMENTO */
-    .macro-wrap {
-      background: var(--surface);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      padding: 1.6rem;
-      margin-bottom: 1.4rem;
-      overflow-x: auto;
-    }
-    .macro-legend {
-      display: flex; flex-wrap: wrap; gap: 12px;
-      margin-bottom: 1.2rem; align-items: center;
-    }
-    .macro-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
-    .macro-legend-line { width: 22px; height: 2px; border-radius: 1px; }
-    .macro-legend-line.dashed { background: repeating-linear-gradient(to right, currentColor 0, currentColor 4px, transparent 4px, transparent 8px); }
+    .macro-wrap { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1.6rem; margin-bottom: 1.4rem; }
+    .macro-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.2rem; }
+    .macro-legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .macro-legend-item { display: flex; align-items: center; gap: 5px; font-size: .7rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
 
-    /* container relativo para o gráfico + badges de prova sobrepostos */
+    /* contador km realizados */
+    .macro-counter { text-align: right; font-family: 'DM Mono', monospace; flex-shrink: 0; margin-left: 2rem; }
+    .macro-counter-main { font-size: 1.1rem; font-weight: 500; color: var(--text); letter-spacing: -.02em; }
+    .macro-counter-main span { color: var(--text-hint); font-weight: 300; }
+    .macro-counter-sub { font-size: .65rem; color: var(--text-hint); margin-top: 3px; }
+
+    /* chart outer — posição relativa para badges */
     .macro-chart-outer { position: relative; }
 
-    /* badges de prova flutuantes sobre o canvas */
+    /* badges de prova — DOURADAS */
     .prova-badge {
       position: absolute;
       transform: translateX(-50%);
-      background: #F4A8B4;
-      color: #7A1838;
-      font-size: 0.58rem;
+      background: #F5D78E;        /* dourado pastel */
+      color: #7A5800;             /* dourado escuro */
+      font-size: .65rem;
       font-family: 'DM Mono', monospace;
-      font-weight: 600;
-      padding: 2px 7px;
+      font-weight: 700;
+      padding: 1px 6px;
       border-radius: 20px;
       white-space: nowrap;
       cursor: default;
       z-index: 10;
-      display: flex; align-items: center; gap: 3px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-      transition: box-shadow 0.12s;
+      display: flex; align-items: center; gap: 2px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.12);
+      transition: box-shadow .12s;
+      line-height: 1.6;
     }
-    .prova-badge:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.18); }
-    .prova-badge .star { font-size: 10px; }
+    .prova-badge:hover { box-shadow: 0 3px 10px rgba(0,0,0,.2); }
+    .prova-badge .star { font-size: 9px; }
 
-    /* popover de prova */
+    /* popover de prova — abre ABAIXO */
     .prova-popover {
-      display: none;
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 200;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-      min-width: 140px;
-      flex-direction: column;
-      gap: 4px;
-      pointer-events: none;
-      white-space: nowrap;
+      display: none; position: absolute;
+      top: calc(100% + 5px); left: 50%; transform: translateX(-50%);
+      z-index: 200; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+      min-width: 140px; flex-direction: column; gap: 4px;
+      pointer-events: none; white-space: nowrap;
     }
     .prova-popover.open { display: flex; pointer-events: auto; }
-    .pp-name { font-size: 0.78rem; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--text); }
-    .pp-dist { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
+    .pp-name { font-size: .78rem; font-weight: 500; color: var(--text); }
+    .pp-dist { font-size: .68rem; font-family: 'DM Mono', monospace; color: var(--text-muted); }
 
-    /* faixa de fase no rodapé do gráfico */
+    /* faixa de fases */
     .fase-strip { display: flex; margin-top: 6px; border-radius: 6px; overflow: hidden; }
-    .fase-block {
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.58rem; font-family: 'DM Mono', monospace;
-      font-weight: 600; letter-spacing: 0.04em;
-      padding: 5px 4px; overflow: hidden;
-      color: #444;
-    }
+    .fase-block { display: flex; align-items: center; justify-content: center; font-size: .55rem; font-family: 'DM Mono', monospace; font-weight: 600; letter-spacing: .04em; padding: 5px 2px; overflow: hidden; color: #444; }
 
     /* loading / erro */
-    .state-box { text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.8; }
+    .state-box { text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: .85rem; line-height: 1.8; }
     .state-box.error { color: #C0533A; }
-    .spinner { width: 28px; height: 28px; border: 2px solid var(--surface2); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+    .spinner { width: 28px; height: 28px; border: 2px solid var(--surface2); border-top-color: var(--purple); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 1rem; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 768px) {
       header { padding: 1.5rem 1.5rem 0; }
       .header-top { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .container { padding: 0 0.8rem; }
+      .container { padding: 0 .8rem; }
       .cards-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .charts-row { grid-template-columns: minmax(0,1fr); }
       .cal-grid, .cal-grid-hdr { gap: 3px; }
       .cal-day { min-height: 72px; padding: 5px; }
-      .cal-header { flex-direction: column; align-items: flex-start; }
+      .cal-header, .macro-header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -225,21 +195,18 @@
     </div>
   </div>
   <div class="tabs">
-    <button class="tab-btn active" id="btn-visao"         onclick="switchTab('visao',this)">visão geral</button>
-    <button class="tab-btn"        id="btn-calendario"    onclick="switchTab('calendario',this)">calendário</button>
-    <button class="tab-btn"        id="btn-resultados"    onclick="switchTab('resultados',this)">resultados</button>
-    <button class="tab-btn"        id="btn-planejamento"  onclick="switchTab('planejamento',this)">planejamento</button>
+    <button class="tab-btn active" id="btn-visao"        onclick="switchTab('visao',this)">visão geral</button>
+    <button class="tab-btn"        id="btn-calendario"   onclick="switchTab('calendario',this)">calendário</button>
+    <button class="tab-btn"        id="btn-resultados"   onclick="switchTab('resultados',this)">resultados</button>
+    <button class="tab-btn"        id="btn-planejamento" onclick="switchTab('planejamento',this)">planejamento</button>
   </div>
 </header>
 
 <div class="container">
 
-  <div id="loading-box" class="state-box">
-    <div class="spinner"></div>
-    buscando dados da planilha...
-  </div>
+  <div id="loading-box" class="state-box"><div class="spinner"></div>buscando dados da planilha...</div>
 
-  <!-- ABA VISÃO GERAL -->
+  <!-- VISÃO GERAL -->
   <div class="tab-panel" id="tab-visao">
     <div class="cards-grid">
       <div class="card card-peso">
@@ -275,28 +242,22 @@
       <div class="chart-card">
         <div class="chart-title">Distância por semana — por tipo (km)</div>
         <div class="legend" id="legend-semanas"></div>
-        <div style="position:relative;height:220px;">
-          <canvas id="chartSemanas">Barras empilhadas por tipo de treino.</canvas>
-        </div>
+        <div style="position:relative;height:220px;"><canvas id="chartSemanas"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="chart-title">Tipos de treino</div>
         <div class="legend" id="legend-tipos"></div>
-        <div style="position:relative;height:190px;">
-          <canvas id="chartTipos">Gráfico horizontal com tipos.</canvas>
-        </div>
+        <div style="position:relative;height:190px;"><canvas id="chartTipos"></canvas></div>
       </div>
     </div>
     <div class="peso-chart-card">
       <div class="chart-title">Evolução do peso (kg)</div>
-      <div style="position:relative;height:200px;">
-        <canvas id="chartPeso">Linha de peso ao longo do tempo.</canvas>
-      </div>
+      <div style="position:relative;height:200px;"><canvas id="chartPeso"></canvas></div>
     </div>
     <div class="footer-note" id="footer-note"></div>
   </div>
 
-  <!-- ABA CALENDÁRIO -->
+  <!-- CALENDÁRIO -->
   <div class="tab-panel" id="tab-calendario">
     <div class="cal-header">
       <div class="cal-nav">
@@ -304,45 +265,47 @@
         <div class="cal-month" id="cal-month-label"></div>
         <button onclick="calNav(1)">próximo →</button>
       </div>
-      <div class="legend cal-legend" id="cal-legend"></div>
+      <div class="legend" id="cal-legend"></div>
     </div>
     <div class="cal-grid-hdr" id="cal-weekdays"></div>
     <div class="cal-grid" id="cal-days"></div>
   </div>
 
-  <!-- ABA RESULTADOS -->
+  <!-- RESULTADOS -->
   <div class="tab-panel" id="tab-resultados">
     <div class="chart-card">
       <div class="chart-title">Resultados de Corridas</div>
-      <table id="resultados-table" style="width:100%; border-collapse:collapse;">
-        <thead>
-          <tr>
-            <th class="sortable" onclick="sortResultados('data')">Data <span class="sort-icon" id="sort-icon-data">⇵</span></th>
-            <th>Corrida</th>
-            <th class="sortable" onclick="sortResultados('distancia')">Distância <span class="sort-icon" id="sort-icon-distancia">⇵</span></th>
-            <th>Local</th>
-            <th>Tempo</th>
-            <th>Geral</th>
-            <th class="sortable" onclick="sortResultados('pctGeral')">% Geral <span class="sort-icon" id="sort-icon-pctGeral">⇵</span></th>
-            <th>Categoria</th>
-            <th class="sortable" onclick="sortResultados('pctCat')">% Categoria <span class="sort-icon" id="sort-icon-pctCat">⇵</span></th>
-          </tr>
-        </thead>
+      <table>
+        <thead><tr>
+          <th class="sortable" onclick="sortResultados('data')">Data <span class="sort-icon" id="sort-icon-data">⇵</span></th>
+          <th>Corrida</th>
+          <th class="sortable" onclick="sortResultados('distancia')">Dist. <span class="sort-icon" id="sort-icon-distancia">⇵</span></th>
+          <th>Local</th><th>Tempo</th><th>Geral</th>
+          <th class="sortable" onclick="sortResultados('pctGeral')">% Geral <span class="sort-icon" id="sort-icon-pctGeral">⇵</span></th>
+          <th>Cat.</th>
+          <th class="sortable" onclick="sortResultados('pctCat')">% Cat. <span class="sort-icon" id="sort-icon-pctCat">⇵</span></th>
+        </tr></thead>
         <tbody id="resultados-tbody"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- ABA PLANEJAMENTO -->
+  <!-- PLANEJAMENTO -->
   <div class="tab-panel" id="tab-planejamento">
     <div class="macro-wrap">
-      <div class="chart-title">Linha do tempo — volume quinzenal (km)</div>
-      <div class="macro-legend" id="macro-legend"></div>
-      <div class="macro-chart-outer" id="macro-chart-outer">
-        <div style="position:relative; height:320px;">
-          <canvas id="chartMacro">Linha do tempo macro de treinos.</canvas>
+      <div class="macro-header">
+        <div>
+          <div class="chart-title" style="margin-bottom:10px;">Linha do tempo — volume quinzenal (km)</div>
+          <div class="macro-legend" id="macro-legend"></div>
         </div>
-        <!-- badges de prova injetados via JS aqui -->
+        <!-- Contador km realizados -->
+        <div class="macro-counter" id="macro-counter">
+          <div class="macro-counter-main" id="macro-km-main">— <span>/ —</span></div>
+          <div class="macro-counter-sub" id="macro-km-sub">volume planejado anual: — km</div>
+        </div>
+      </div>
+      <div class="macro-chart-outer" id="macro-chart-outer">
+        <div style="position:relative;height:320px;"><canvas id="chartMacro"></canvas></div>
       </div>
       <div class="fase-strip" id="fase-strip"></div>
     </div>
@@ -351,706 +314,388 @@
 </div>
 
 <script>
-  /* ============================================================
-     CONFIG
-  ============================================================ */
+  /* ── CONFIG ── */
   const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyoMkam9danM3ouXKul6wDKXX2D8K92MvD5ccvk9X5HjEHFRnh6zuEll51WPIHjbqqYjA/exec';
   const META_PESO  = 68.0;
 
   const TIPO_CORES = {
-    'Intervalado': '#ffc8aa',
-    'Regenerativo': '#d4edbc',
-    'Longo':        '#A8C8F0',
-    'Tempo':        '#ffe5a0',
-    'Prova':        '#6ca68e',
-    'Rodagem':      '#e6cff2',
+    'Intervalado':'#ffc8aa','Regenerativo':'#d4edbc','Longo':'#A8C8F0',
+    'Tempo':'#ffe5a0','Prova':'#6ca68e','Rodagem':'#e6cff2',
   };
   const TIPO_TEXT = {
-    'Intervalado': '#7a533d',
-    'Regenerativo': '#1A5030',
-    'Longo':        '#324966',
-    'Tempo':        '#6A4808',
-    'Prova':        '#104731',
-    'Rodagem':      '#1A4858',
+    'Intervalado':'#7a533d','Regenerativo':'#1A5030','Longo':'#324966',
+    'Tempo':'#6A4808','Prova':'#104731','Rodagem':'#1A4858',
   };
-
-  // Cores por fase (pastel)
   const FASE_CORES = {
-    'BASE':   { bar: '#C8B4E8', dark: '#A090C8', strip: '#EDE8F8' },
-    'CURTAS': { bar: '#FAD4A0', dark: '#D4A860', strip: '#FDF0DC' },
-    'PRIME':  { bar: '#A8C8F0', dark: '#6A9ED0', strip: '#E0EEF8' },
-    'FÉRIAS': { bar: '#B8E0C8', dark: '#6CAC88', strip: '#E4F4EC' },
+    'BASE':   {bar:'#C8B4E8',dark:'#A090C8',strip:'#EDE8F8'},
+    'CURTAS': {bar:'#FAD4A0',dark:'#D4A860',strip:'#FDF0DC'},
+    'PRIME':  {bar:'#A8C8F0',dark:'#6A9ED0',strip:'#E0EEF8'},
+    'FÉRIAS': {bar:'#B8E0C8',dark:'#6CAC88',strip:'#E4F4EC'},
   };
   function getFaseCor(fase) {
     const key = Object.keys(FASE_CORES).find(k => fase.toUpperCase().includes(k));
-    return FASE_CORES[key] || { bar: '#D8D5D0', dark: '#A8A5A0', strip: '#EDEAE4' };
+    return FASE_CORES[key] || {bar:'#D8D5D0',dark:'#A8A5A0',strip:'#EDEAE4'};
   }
 
-  /* ============================================================
-     TABS
-  ============================================================ */
+  /* ── TABS ── */
   function switchTab(name, btn) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('tab-'+name).classList.add('active');
     btn.classList.add('active');
-    if (name === 'calendario')   renderCalendar();
-    if (name === 'resultados')   renderResultados();
-    if (name === 'planejamento') renderMacro();
+    if (name==='calendario')   renderCalendar();
+    if (name==='resultados')   renderResultados();
+    if (name==='planejamento') renderMacro();
   }
 
-  /* ============================================================
-     PARSERS
-  ============================================================ */
+  /* ── PARSERS ── */
   function parseKm(v) {
-    if (!v && v !== 0) return 0;
-    if (typeof v === 'number') return v;
-    const n = parseFloat(String(v).replace(',','.').replace(/[^0-9.]/g,''));
-    return isNaN(n) ? 0 : n;
+    if (!v && v!==0) return 0;
+    if (typeof v==='number') return v;
+    const n=parseFloat(String(v).replace(',','.').replace(/[^0-9.]/g,''));
+    return isNaN(n)?0:n;
   }
   function parsePeso(v) {
-    if (v === '' || v === null || v === undefined) return null;
-    if (typeof v === 'number') return v;
-    const n = parseFloat(String(v).replace(',','.').replace(/[^0-9.]/g,''));
-    return isNaN(n) ? null : n;
+    if (v===''||v===null||v===undefined) return null;
+    if (typeof v==='number') return v;
+    const n=parseFloat(String(v).replace(',','.').replace(/[^0-9.]/g,''));
+    return isNaN(n)?null:n;
   }
   function parseComp(v) {
-    if (typeof v === 'boolean') return v;
-    return String(v || '').toLowerCase().includes('academia');
+    if (typeof v==='boolean') return v;
+    return String(v||'').toLowerCase().includes('academia');
   }
   function getSemanaKey(diaStr) {
-    const [d, m] = diaStr.split('/').map(Number);
-    const date = new Date(2026, m - 1, d);
-    const dow  = date.getDay();
-    const mon  = new Date(date);
-    mon.setDate(date.getDate() - ((dow + 6) % 7));
-    return String(mon.getDate()).padStart(2,'0') + '/' + String(mon.getMonth()+1).padStart(2,'0');
+    const [d,m]=diaStr.split('/').map(Number);
+    const date=new Date(2026,m-1,d);
+    const mon=new Date(date);
+    mon.setDate(date.getDate()-((date.getDay()+6)%7));
+    return String(mon.getDate()).padStart(2,'0')+'/'+String(mon.getMonth()+1).padStart(2,'0');
   }
 
-  /* ============================================================
-     ESTADO GLOBAL
-  ============================================================ */
-  let globalRows     = [];
-  let resultadosData = [];
-  let macroData      = [];
-  let sortColumn     = 'data';
-  let sortDirection  = 'desc';
-  let calYear        = new Date().getFullYear();
-  let calMonth       = new Date().getMonth();
-  let macroRendered  = false;
+  /* ── ESTADO GLOBAL ── */
+  let globalRows=[], resultadosData=[], macroData=[];
+  let sortColumn='data', sortDirection='desc';
+  let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
 
-  /* ============================================================
-     PREVISÃO DO TEMPO
-  ============================================================ */
-  function wmoToInfo(code) {
-    if (code === 0)    return { emoji: '☀️',  label: 'céu limpo' };
-    if (code <= 2)     return { emoji: '🌤️', label: 'poucas nuvens' };
-    if (code <= 3)     return { emoji: '☁️',  label: 'nublado' };
-    if (code <= 49)    return { emoji: '🌫️', label: 'névoa' };
-    if (code <= 57)    return { emoji: '🌦️', label: 'garoa' };
-    if (code <= 67)    return { emoji: '🌧️', label: 'chuva' };
-    if (code <= 77)    return { emoji: '🌨️', label: 'neve' };
-    if (code <= 82)    return { emoji: '🌦️', label: 'pancadas' };
-    if (code <= 99)    return { emoji: '⛈️',  label: 'tempestade' };
-    return { emoji: '🌡️', label: '—' };
+  /* ── TEMPO ── */
+  function wmoToInfo(c) {
+    if(c===0)  return{emoji:'☀️', label:'céu limpo'};
+    if(c<=2)   return{emoji:'🌤️',label:'poucas nuvens'};
+    if(c<=3)   return{emoji:'☁️', label:'nublado'};
+    if(c<=49)  return{emoji:'🌫️',label:'névoa'};
+    if(c<=57)  return{emoji:'🌦️',label:'garoa'};
+    if(c<=67)  return{emoji:'🌧️',label:'chuva'};
+    if(c<=77)  return{emoji:'🌨️',label:'neve'};
+    if(c<=82)  return{emoji:'🌦️',label:'pancadas'};
+    if(c<=99)  return{emoji:'⛈️', label:'tempestade'};
+    return{emoji:'🌡️',label:'—'};
   }
-  let weatherCache = {};
+  let weatherCache={};
   async function fetchWeather() {
-    const url =
-      'https://api.open-meteo.com/v1/forecast' +
-      '?latitude=-22.9068&longitude=-43.1729' +
-      '&hourly=temperature_2m' +
-      '&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max' +
-      '&timezone=America%2FSao_Paulo&forecast_days=5';
+    const url='https://api.open-meteo.com/v1/forecast?latitude=-22.9068&longitude=-43.1729&hourly=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America%2FSao_Paulo&forecast_days=5';
     try {
-      const res  = await fetch(url);
-      const json = await res.json();
-      const { time: dates, weathercode: codes, temperature_2m_max: tMax,
-              temperature_2m_min: tMin, precipitation_probability_max: rainPct } = json.daily;
-      const hTimes = json.hourly.time;
-      const hTemps = json.hourly.temperature_2m;
-      dates.forEach((date, i) => {
-        const hIdx   = hTimes.indexOf(date + 'T07:00');
-        const temp7h = hIdx >= 0 ? Math.round(hTemps[hIdx]) : null;
-        const info   = wmoToInfo(codes[i]);
-        weatherCache[date] = { emoji: info.emoji, label: info.label, temp7h,
-          tempMin: Math.round(tMin[i]), tempMax: Math.round(tMax[i]), rain: Math.round(rainPct[i]) };
+      const json=await (await fetch(url)).json();
+      const {time:dates,weathercode:codes,temperature_2m_max:tMax,temperature_2m_min:tMin,precipitation_probability_max:rainPct}=json.daily;
+      const hT=json.hourly.time, hV=json.hourly.temperature_2m;
+      dates.forEach((date,i)=>{
+        const hi=hT.indexOf(date+'T07:00');
+        const info=wmoToInfo(codes[i]);
+        weatherCache[date]={emoji:info.emoji,label:info.label,temp7h:hi>=0?Math.round(hV[hi]):null,tempMin:Math.round(tMin[i]),tempMax:Math.round(tMax[i]),rain:Math.round(rainPct[i])};
       });
-    } catch(e) { console.warn('[weather]', e); }
+    } catch(e){console.warn('[weather]',e);}
   }
-  function dStrToISO(dStr, year) {
-    const [d, m] = dStr.split('/');
-    return `${year}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  function dStrToISO(s,y){const[d,m]=s.split('/');return`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;}
+  let activePopover=null;
+  function openWeatherPopover(btn){
+    if(activePopover&&activePopover!==btn._popover) activePopover.classList.remove('open');
+    const pop=btn._popover, was=pop.classList.contains('open');
+    pop.classList.toggle('open',!was);
+    activePopover=!was?pop:null;
   }
-  let activePopover = null;
-  function openWeatherPopover(btn) {
-    if (activePopover && activePopover !== btn._popover) activePopover.classList.remove('open');
-    const pop = btn._popover;
-    const isOpen = pop.classList.contains('open');
-    pop.classList.toggle('open', !isOpen);
-    activePopover = !isOpen ? pop : null;
-  }
-  document.addEventListener('click', e => {
-    if (!activePopover) return;
-    if (!e.target.closest('.cal-thermo') && !e.target.closest('.weather-popover')) {
-      activePopover.classList.remove('open');
-      activePopover = null;
-    }
+  document.addEventListener('click',e=>{
+    if(!activePopover) return;
+    if(!e.target.closest('.cal-thermo')&&!e.target.closest('.weather-popover')){activePopover.classList.remove('open');activePopover=null;}
   });
 
-  /* ============================================================
-     CHARTS HELPER
-  ============================================================ */
-  const chartInstances = {};
-  function upsertChart(id, config) {
-    if (chartInstances[id]) {
-      chartInstances[id].data    = config.data;
-      chartInstances[id].options = config.options;
-      chartInstances[id].update('none');
-    } else {
-      chartInstances[id] = new Chart(document.getElementById(id), config);
-    }
+  /* ── CHART HELPER ── */
+  const chartInstances={};
+  function upsertChart(id,cfg){
+    if(chartInstances[id]){chartInstances[id].data=cfg.data;chartInstances[id].options=cfg.options;chartInstances[id].update('none');}
+    else chartInstances[id]=new Chart(document.getElementById(id),cfg);
   }
 
-  /* ============================================================
-     VISÃO GERAL
-  ============================================================ */
-  function buildDashboard(rows) {
-    const comPeso      = rows.filter(r => r.peso !== null);
-    const ultimoPeso   = comPeso.length ? comPeso[comPeso.length-1].peso : null;
-    const primPeso     = comPeso.length ? comPeso[0].peso : null;
-    const distTotal    = rows.reduce((s,r) => s + r.distEf, 0);
-    const totalTreinos = rows.filter(r => r.distEf > 0).length;
-    const academia     = rows.filter(r => r.comp && (r.distEf > 0 || r.peso !== null)).length;
-    const provas       = rows.filter(r => r.tipo === 'Prova' && r.distEf > 0);
-    const ultimoDia    = rows.length ? rows[rows.length-1].dia : '—';
-
-    document.getElementById('val-peso').textContent =
-      ultimoPeso !== null ? ultimoPeso.toFixed(1) + ' kg' : '—';
-    if (primPeso !== null && ultimoPeso !== null) {
-      const diff = ultimoPeso - primPeso;
-      const el   = document.getElementById('val-peso-delta');
-      el.textContent = (diff < 0 ? '▼ ' : '▲ ') + Math.abs(diff).toFixed(1) + ' kg desde o início';
-      el.className   = 'delta ' + (diff < 0 ? 'down' : 'up');
-      document.getElementById('meta-inicio').textContent = primPeso.toFixed(1) + ' kg';
-      const pct = Math.min(100, Math.max(0, ((primPeso - ultimoPeso) / (primPeso - META_PESO)) * 100));
-      document.getElementById('meta-bar').style.width = pct.toFixed(1) + '%';
+  /* ── VISÃO GERAL ── */
+  function buildDashboard(rows){
+    const comPeso=rows.filter(r=>r.peso!==null);
+    const ultimoPeso=comPeso.length?comPeso[comPeso.length-1].peso:null;
+    const primPeso=comPeso.length?comPeso[0].peso:null;
+    const distTotal=rows.reduce((s,r)=>s+r.distEf,0);
+    const totalTreinos=rows.filter(r=>r.distEf>0).length;
+    const academia=rows.filter(r=>r.comp&&(r.distEf>0||r.peso!==null)).length;
+    const provas=rows.filter(r=>r.tipo==='Prova'&&r.distEf>0);
+    const ultimoDia=rows.length?rows[rows.length-1].dia:'—';
+    document.getElementById('val-peso').textContent=ultimoPeso!==null?ultimoPeso.toFixed(1)+' kg':'—';
+    if(primPeso!==null&&ultimoPeso!==null){
+      const diff=ultimoPeso-primPeso;
+      const el=document.getElementById('val-peso-delta');
+      el.textContent=(diff<0?'▼ ':'▲ ')+Math.abs(diff).toFixed(1)+' kg desde o início';
+      el.className='delta '+(diff<0?'down':'up');
+      document.getElementById('meta-inicio').textContent=primPeso.toFixed(1)+' kg';
+      document.getElementById('meta-bar').style.width=Math.min(100,Math.max(0,((primPeso-ultimoPeso)/(primPeso-META_PESO))*100)).toFixed(1)+'%';
     }
-    document.getElementById('val-dist').textContent     = distTotal.toFixed(1) + ' km';
-    document.getElementById('val-dist-sub').textContent = totalTreinos + ' treinos registrados';
-    document.getElementById('val-gym').textContent      = academia + 'x';
-    document.getElementById('val-provas').textContent   = provas.length;
-    document.getElementById('last-update').textContent  = 'atualizado · ' + ultimoDia;
-    document.getElementById('footer-note').textContent  = 'dados ao vivo · google sheets · ' + ultimoDia;
+    document.getElementById('val-dist').textContent=distTotal.toFixed(1)+' km';
+    document.getElementById('val-dist-sub').textContent=totalTreinos+' treinos registrados';
+    document.getElementById('val-gym').textContent=academia+'x';
+    document.getElementById('val-provas').textContent=provas.length;
+    document.getElementById('last-update').textContent='atualizado · '+ultimoDia;
+    document.getElementById('footer-note').textContent='dados ao vivo · google sheets · '+ultimoDia;
 
-    const tiposOrdem = ['Intervalado','Tempo','Longo','Regenerativo','Prova','Rodagem'];
-    const semSet = {};
-    rows.forEach(r => {
-      if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre') {
-        const k = getSemanaKey(r.dia);
-        if (!semSet[k]) semSet[k] = {};
-        semSet[k][r.tipo] = (semSet[k][r.tipo] || 0) + r.distEf;
-      }
-    });
-    const semLabels      = Object.keys(semSet);
-    const tiposPresentes = tiposOrdem.filter(t => semLabels.some(s => semSet[s][t]));
-    const semDatasets    = tiposPresentes.map(t => ({
-      label: t, data: semLabels.map(s => Math.round((semSet[s][t]||0)*10)/10),
-      backgroundColor: TIPO_CORES[t]||'#D0D0D0', borderRadius: 3, borderSkipped: false,
-    }));
-    const legSem = document.getElementById('legend-semanas');
-    legSem.innerHTML = '';
-    tiposPresentes.forEach(t => {
-      legSem.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t]||'#D0D0D0'}"></span>${t}</span>`;
-    });
-    const gridColor = 'rgba(0,0,0,0.05)';
-    const tickFont  = { family: "'DM Mono', monospace", size: 10 };
-    upsertChart('chartSemanas', {
-      type: 'bar', data: { labels: semLabels, datasets: semDatasets },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { callbacks: {
-          label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + ' km',
-          footer: items => 'total: ' + items.reduce((s,i) => s+i.parsed.y,0).toFixed(1) + ' km',
-        }}},
-        scales: {
-          x: { stacked: true, grid: { display: false }, ticks: { font: tickFont, maxRotation: 45, autoSkip: true, maxTicksLimit: 20 } },
-          y: { stacked: true, grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v+' km' } }
-        }
-      }
-    });
+    const tiposOrdem=['Intervalado','Tempo','Longo','Regenerativo','Prova','Rodagem'];
+    const semSet={};
+    rows.forEach(r=>{if(r.distEf>0&&r.tipo&&r.tipo!=='Livre'){const k=getSemanaKey(r.dia);if(!semSet[k])semSet[k]={};semSet[k][r.tipo]=(semSet[k][r.tipo]||0)+r.distEf;}});
+    const semLabels=Object.keys(semSet);
+    const tiposPresentes=tiposOrdem.filter(t=>semLabels.some(s=>semSet[s][t]));
+    const legSem=document.getElementById('legend-semanas');legSem.innerHTML='';
+    tiposPresentes.forEach(t=>{legSem.innerHTML+=`<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t]||'#D0D0D0'}"></span>${t}</span>`;});
+    const gc='rgba(0,0,0,0.05)',tf={family:"'DM Mono', monospace",size:10};
+    upsertChart('chartSemanas',{type:'bar',data:{labels:semLabels,datasets:tiposPresentes.map(t=>({label:t,data:semLabels.map(s=>Math.round((semSet[s][t]||0)*10)/10),backgroundColor:TIPO_CORES[t]||'#D0D0D0',borderRadius:3,borderSkipped:false}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+ctx.parsed.y.toFixed(1)+' km',footer:items=>'total: '+items.reduce((s,i)=>s+i.parsed.y,0).toFixed(1)+' km'}}},scales:{x:{stacked:true,grid:{display:false},ticks:{font:tf,maxRotation:45,autoSkip:true,maxTicksLimit:20}},y:{stacked:true,grid:{color:gc},ticks:{font:tf,callback:v=>v+' km'}}}}});
 
-    const tiposMap = {};
-    rows.forEach(r => {
-      if (r.distEf > 0 && r.tipo && r.tipo !== 'Livre')
-        tiposMap[r.tipo] = (tiposMap[r.tipo]||0) + 1;
-    });
-    const tiposLabels = Object.keys(tiposMap);
-    const tiposVals   = tiposLabels.map(k => tiposMap[k]);
-    const legTipos = document.getElementById('legend-tipos');
-    legTipos.innerHTML = '';
-    tiposLabels.forEach(t => {
-      legTipos.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t]||'#D0D0D0'}"></span>${t} (${tiposMap[t]})</span>`;
-    });
-    upsertChart('chartTipos', {
-      type: 'bar', data: { labels: tiposLabels, datasets: [{ label: 'Treinos', data: tiposVals, backgroundColor: tiposLabels.map(t=>TIPO_CORES[t]||'#D0D0D0'), borderRadius: 5, borderSkipped: false }] },
-      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-        scales: { x: { grid: { color: gridColor }, ticks: { font: tickFont, stepSize: 1 } }, y: { grid: { display: false }, ticks: { font: tickFont } } } }
-    });
+    const tiposMap={};rows.forEach(r=>{if(r.distEf>0&&r.tipo&&r.tipo!=='Livre')tiposMap[r.tipo]=(tiposMap[r.tipo]||0)+1;});
+    const tL=Object.keys(tiposMap);
+    const legTipos=document.getElementById('legend-tipos');legTipos.innerHTML='';
+    tL.forEach(t=>{legTipos.innerHTML+=`<span class="legend-item"><span class="legend-dot" style="background:${TIPO_CORES[t]||'#D0D0D0'}"></span>${t} (${tiposMap[t]})</span>`;});
+    upsertChart('chartTipos',{type:'bar',data:{labels:tL,datasets:[{label:'Treinos',data:tL.map(k=>tiposMap[k]),backgroundColor:tL.map(t=>TIPO_CORES[t]||'#D0D0D0'),borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{font:tf,stepSize:1}},y:{grid:{display:false},ticks:{font:tf}}}}});
 
-    const pesoRows   = rows.filter(r => r.peso !== null);
-    const pesoLabels = pesoRows.map(r => r.dia);
-    const pesoVals   = pesoRows.map(r => r.peso);
-    const pesoMin    = pesoVals.length ? Math.floor(Math.min(...pesoVals, META_PESO)) - 1 : 60;
-    const pesoMax    = pesoVals.length ? Math.ceil(Math.max(...pesoVals)) + 1 : 85;
-    upsertChart('chartPeso', {
-      type: 'line',
-      data: { labels: pesoLabels, datasets: [
-        { label: 'Peso', data: pesoVals, borderColor: '#C8B4E8', backgroundColor: 'rgba(200,180,232,0.10)', pointBackgroundColor: '#C8B4E8', pointRadius: 2, pointHoverRadius: 5, tension: 0.3, fill: true },
-        { label: 'Meta', data: pesoLabels.map(()=>META_PESO), borderColor: 'rgba(61,107,79,0.40)', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false }
-      ]},
-      options: { responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2)+' kg' } } },
-        scales: { x: { grid: { display: false }, ticks: { font: tickFont, maxTicksLimit: 14, maxRotation: 45 } },
-          y: { min: pesoMin, max: pesoMax, grid: { color: gridColor }, ticks: { font: tickFont, callback: v => v+' kg' } } } }
-    });
+    const pR=rows.filter(r=>r.peso!==null),pL=pR.map(r=>r.dia),pV=pR.map(r=>r.peso);
+    const pMin=pV.length?Math.floor(Math.min(...pV,META_PESO))-1:60;
+    const pMax=pV.length?Math.ceil(Math.max(...pV))+1:85;
+    upsertChart('chartPeso',{type:'line',data:{labels:pL,datasets:[{label:'Peso',data:pV,borderColor:'#C8B4E8',backgroundColor:'rgba(200,180,232,0.10)',pointBackgroundColor:'#C8B4E8',pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true},{label:'Meta',data:pL.map(()=>META_PESO),borderColor:'rgba(61,107,79,0.40)',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(2)+' kg'}}},scales:{x:{grid:{display:false},ticks:{font:tf,maxTicksLimit:14,maxRotation:45}},y:{min:pMin,max:pMax,grid:{color:gc},ticks:{font:tf,callback:v=>v+' kg'}}}}});
   }
 
-  /* ============================================================
-     CALENDÁRIO
-  ============================================================ */
-  const MESES_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  const DIAS_PT  = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
-  const CHECK_SVG = `<svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1,4 3,6.5 7,1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-
-  function calNav(dir) {
-    calMonth += dir;
-    if (calMonth < 0)  { calMonth = 11; calYear--; }
-    if (calMonth > 11) { calMonth = 0;  calYear++; }
-    renderCalendar();
-  }
-
-  function renderCalendar() {
-    document.getElementById('cal-month-label').textContent = MESES_PT[calMonth] + ' ' + calYear;
-    const legEl = document.getElementById('cal-legend');
-    legEl.innerHTML = '';
-    Object.entries(TIPO_CORES).forEach(([t, c]) => {
-      legEl.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${c}"></span>${t}</span>`;
-    });
-    legEl.innerHTML += `<span class="legend-item">🏋️ academia</span><span class="legend-item">🌡️ previsão</span>`;
-
-    const wdEl = document.getElementById('cal-weekdays');
-    wdEl.innerHTML = '';
-    DIAS_PT.forEach(d => {
-      const el = document.createElement('div');
-      el.className = 'cal-weekday';
-      el.textContent = d;
-      wdEl.appendChild(el);
-    });
-
-    const dataMap = {};
-    globalRows.forEach(r => { dataMap[r.dia] = r; });
-
-    const hoje     = new Date(); hoje.setHours(0,0,0,0);
-    const firstDay = new Date(calYear, calMonth, 1);
-    const lastDay  = new Date(calYear, calMonth + 1, 0);
-    const startDow = (firstDay.getDay() + 6) % 7;
-
-    const daysEl = document.getElementById('cal-days');
-    daysEl.innerHTML = '';
-    for (let i = 0; i < startDow; i++) {
-      const el = document.createElement('div'); el.className = 'cal-day empty'; daysEl.appendChild(el);
-    }
-
-    for (let day = 1; day <= lastDay.getDate(); day++) {
-      const dateObj = new Date(calYear, calMonth, day); dateObj.setHours(0,0,0,0);
-      const dStr    = String(day).padStart(2,'0') + '/' + String(calMonth+1).padStart(2,'0');
-      const isoStr  = dStrToISO(dStr, calYear);
-      const row     = dataMap[dStr];
-      const wx      = weatherCache[isoStr];
-      const isPast  = dateObj < hoje;
-      const isToday = dateObj.getTime() === hoje.getTime();
-      const isFuture = dateObj > hoje;
-      const isDone  = row && (row.distEf > 0 || row.peso !== null) && (isPast || isToday);
-
-      const el = document.createElement('div');
-      el.className = 'cal-day' + (isDone ? ' done' : '') + (isToday ? ' today' : '');
-
-      const topEl = document.createElement('div');
-      topEl.className = 'cal-day-top';
-      const numEl = document.createElement('div');
-      numEl.className = 'cal-day-num';
-      numEl.textContent = day;
-      topEl.appendChild(numEl);
-
-      if (isDone) {
-        const chk = document.createElement('div');
-        chk.className = 'cal-check'; chk.innerHTML = CHECK_SVG;
-        topEl.appendChild(chk);
-      }
-      if (wx && (isToday || isFuture)) {
-        const btn = document.createElement('button');
-        btn.className = 'cal-thermo'; btn.title = 'previsão do tempo';
-        btn.textContent = wx.emoji;
-        const pop = document.createElement('div');
-        pop.className = 'weather-popover';
-        const tempLine = wx.temp7h !== null ? `${wx.temp7h}°C às 7h` : `${wx.tempMin}° – ${wx.tempMax}°C`;
-        pop.innerHTML = `<div class="wp-emoji">${wx.emoji}</div><div class="wp-cond">${wx.label}</div><div class="wp-temp">${tempLine}</div><div class="wp-rain">💧 ${wx.rain}% chuva</div>`;
-        btn._popover = pop;
-        btn.addEventListener('click', e => { e.stopPropagation(); openWeatherPopover(btn); });
-        topEl.appendChild(btn);
-        el.appendChild(pop);
+  /* ── CALENDÁRIO ── */
+  const MESES_PT=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const DIAS_PT=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  const CHECK_SVG=`<svg viewBox="0 0 8 8" fill="none"><polyline points="1,4 3,6.5 7,1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  function calNav(dir){calMonth+=dir;if(calMonth<0){calMonth=11;calYear--;}if(calMonth>11){calMonth=0;calYear++;}renderCalendar();}
+  function renderCalendar(){
+    document.getElementById('cal-month-label').textContent=MESES_PT[calMonth]+' '+calYear;
+    const legEl=document.getElementById('cal-legend');legEl.innerHTML='';
+    Object.entries(TIPO_CORES).forEach(([t,c])=>{legEl.innerHTML+=`<span class="legend-item"><span class="legend-dot" style="background:${c}"></span>${t}</span>`;});
+    legEl.innerHTML+=`<span class="legend-item">🏋️ academia</span><span class="legend-item">🌡️ previsão</span>`;
+    const wdEl=document.getElementById('cal-weekdays');wdEl.innerHTML='';
+    DIAS_PT.forEach(d=>{const el=document.createElement('div');el.className='cal-weekday';el.textContent=d;wdEl.appendChild(el);});
+    const dataMap={};globalRows.forEach(r=>{dataMap[r.dia]=r;});
+    const hoje=new Date();hoje.setHours(0,0,0,0);
+    const firstDay=new Date(calYear,calMonth,1),lastDay=new Date(calYear,calMonth+1,0);
+    const startDow=(firstDay.getDay()+6)%7;
+    const daysEl=document.getElementById('cal-days');daysEl.innerHTML='';
+    for(let i=0;i<startDow;i++){const el=document.createElement('div');el.className='cal-day empty';daysEl.appendChild(el);}
+    for(let day=1;day<=lastDay.getDate();day++){
+      const dateObj=new Date(calYear,calMonth,day);dateObj.setHours(0,0,0,0);
+      const dStr=String(day).padStart(2,'0')+'/'+String(calMonth+1).padStart(2,'0');
+      const isoStr=dStrToISO(dStr,calYear),row=dataMap[dStr],wx=weatherCache[isoStr];
+      const isPast=dateObj<hoje,isToday=dateObj.getTime()===hoje.getTime(),isFuture=dateObj>hoje;
+      const isDone=row&&(row.distEf>0||row.peso!==null)&&(isPast||isToday);
+      const el=document.createElement('div');
+      el.className='cal-day'+(isDone?' done':'')+(isToday?' today':'');
+      const topEl=document.createElement('div');topEl.className='cal-day-top';
+      const numEl=document.createElement('div');numEl.className='cal-day-num';numEl.textContent=day;topEl.appendChild(numEl);
+      if(isDone){const chk=document.createElement('div');chk.className='cal-check';chk.innerHTML=CHECK_SVG;topEl.appendChild(chk);}
+      if(wx&&(isToday||isFuture)){
+        const btn=document.createElement('button');btn.className='cal-thermo';btn.title='previsão';btn.textContent=wx.emoji;
+        const pop=document.createElement('div');pop.className='weather-popover';
+        const tl=wx.temp7h!==null?`${wx.temp7h}°C às 7h`:`${wx.tempMin}° – ${wx.tempMax}°C`;
+        pop.innerHTML=`<div class="wp-emoji">${wx.emoji}</div><div class="wp-cond">${wx.label}</div><div class="wp-temp">${tl}</div><div class="wp-rain">💧 ${wx.rain}% chuva</div>`;
+        btn._popover=pop;btn.addEventListener('click',e=>{e.stopPropagation();openWeatherPopover(btn);});
+        topEl.appendChild(btn);el.appendChild(pop);
       }
       el.appendChild(topEl);
-
-      if (row) {
-        const tipo = row.tipo || '';
-        if (row.comp) {
-          const gym = document.createElement('div'); gym.className = 'cal-gym-icon'; gym.textContent = '🏋️'; el.appendChild(gym);
-        }
-        if (tipo && tipo !== 'Livre') {
-          const badge = document.createElement('div');
-          badge.className = 'cal-tipo-badge';
-          badge.style.background = TIPO_CORES[tipo]||'#E0DDD8';
-          badge.style.color      = TIPO_TEXT[tipo]||'#444';
-          badge.textContent = tipo;
-          el.appendChild(badge);
-        }
-        if (row.distPlan > 0) {
-          const dp = document.createElement('div'); dp.className = 'cal-dist'; dp.textContent = row.distPlan.toFixed(1)+' km plan.'; el.appendChild(dp);
-        }
-        if (row.distEf > 0 && !isFuture) {
-          const de = document.createElement('div'); de.className = 'cal-dist-ef'; de.textContent = '→ '+row.distEf.toFixed(1)+' km ef.'; el.appendChild(de);
-        }
+      if(row){
+        const tipo=row.tipo||'';
+        if(row.comp){const g=document.createElement('div');g.className='cal-gym-icon';g.textContent='🏋️';el.appendChild(g);}
+        if(tipo&&tipo!=='Livre'){const b=document.createElement('div');b.className='cal-tipo-badge';b.style.background=TIPO_CORES[tipo]||'#E0DDD8';b.style.color=TIPO_TEXT[tipo]||'#444';b.textContent=tipo;el.appendChild(b);}
+        if(row.distPlan>0){const dp=document.createElement('div');dp.className='cal-dist';dp.textContent=row.distPlan.toFixed(1)+' km plan.';el.appendChild(dp);}
+        if(row.distEf>0&&!isFuture){const de=document.createElement('div');de.className='cal-dist-ef';de.textContent='→ '+row.distEf.toFixed(1)+' km ef.';el.appendChild(de);}
       }
       daysEl.appendChild(el);
     }
   }
 
-  /* ============================================================
-     RESULTADOS
-  ============================================================ */
-  function sortResultados(column) {
-    sortDirection = sortColumn === column ? (sortDirection === 'asc' ? 'desc' : 'asc') : 'asc';
-    sortColumn = column;
-    renderResultados();
-  }
-  function formatTime(t) {
-    if (!t) return '';
-    if (typeof t === 'number') {
-      const h=Math.floor(t/3600), m=Math.floor((t%3600)/60), s=Math.floor(t%60);
-      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
-    return String(t);
-  }
-  function formatPct(pct) {
-    if (!pct && pct !== 0) return '-';
-    const val = parseFloat(pct);
-    return isNaN(val) ? '-' : val.toFixed(1)+'%';
-  }
-  function getColorForPct(pct) {
-    const val = parseFloat(pct);
-    if (isNaN(val)) return 'transparent';
-    if (val <= 1)   return '#E8F5E8';
-    if (val <= 5)   return '#C8E6C9';
-    if (val <= 10)  return '#A5D6A7';
-    if (val <= 25)  return '#C5E1A5';
-    if (val <= 50)  return '#FFF59D';
-    return '#FFCC80';
-  }
-  function updateSortIcons() {
-    ['data','distancia','pctGeral','pctCat'].forEach(col => {
-      const icon = document.getElementById('sort-icon-'+col);
-      if (icon) icon.textContent = sortColumn===col ? (sortDirection==='asc'?'▲':'▼') : '⇵';
-    });
-  }
-  function renderResultados() {
+  /* ── RESULTADOS ── */
+  function sortResultados(col){sortDirection=sortColumn===col?(sortDirection==='asc'?'desc':'asc'):'asc';sortColumn=col;renderResultados();}
+  function formatTime(t){if(!t)return'';if(typeof t==='number'){const h=Math.floor(t/3600),m=Math.floor((t%3600)/60),s=Math.floor(t%60);return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}return String(t);}
+  function formatPct(p){if(!p&&p!==0)return'-';const v=parseFloat(p);return isNaN(v)?'-':v.toFixed(1)+'%';}
+  function pctColor(p){const v=parseFloat(p);if(isNaN(v))return'transparent';if(v<=1)return'#E8F5E8';if(v<=5)return'#C8E6C9';if(v<=10)return'#A5D6A7';if(v<=25)return'#C5E1A5';if(v<=50)return'#FFF59D';return'#FFCC80';}
+  function updateSortIcons(){['data','distancia','pctGeral','pctCat'].forEach(c=>{const el=document.getElementById('sort-icon-'+c);if(el)el.textContent=sortColumn===c?(sortDirection==='asc'?'▲':'▼'):'⇵';});}
+  function renderResultados(){
     updateSortIcons();
-    const sorted = [...resultadosData].sort((a,b) => {
-      let vA, vB;
-      if (sortColumn==='data')      { vA=new Date(a.data.split('/').reverse().join('-')); vB=new Date(b.data.split('/').reverse().join('-')); }
-      else if (sortColumn==='distancia') { vA=parseFloat(a.distancia); vB=parseFloat(b.distancia); }
-      else if (sortColumn==='pctGeral')  { vA=parseFloat(a.pctGeral);  vB=parseFloat(b.pctGeral); }
-      else if (sortColumn==='pctCat')    { vA=parseFloat(a.pctCat);    vB=parseFloat(b.pctCat); }
-      return sortDirection==='asc' ? (vA>vB?1:vA<vB?-1:0) : (vA<vB?1:vA>vB?-1:0);
+    const sorted=[...resultadosData].sort((a,b)=>{
+      let vA,vB;
+      if(sortColumn==='data'){vA=new Date(a.data.split('/').reverse().join('-'));vB=new Date(b.data.split('/').reverse().join('-'));}
+      else if(sortColumn==='distancia'){vA=parseFloat(a.distancia);vB=parseFloat(b.distancia);}
+      else if(sortColumn==='pctGeral'){vA=parseFloat(a.pctGeral);vB=parseFloat(b.pctGeral);}
+      else if(sortColumn==='pctCat'){vA=parseFloat(a.pctCat);vB=parseFloat(b.pctCat);}
+      return sortDirection==='asc'?(vA>vB?1:vA<vB?-1:0):(vA<vB?1:vA>vB?-1:0);
     });
-    const tbody = document.getElementById('resultados-tbody');
-    tbody.innerHTML = '';
-    sorted.forEach(r => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${r.data}</td>
-        <td>${r.notion ? `<a href="${r.notion}" target="_blank" rel="noopener">${r.corrida}</a>` : r.corrida}</td>
-        <td>${r.distancia}</td><td>${r.local}</td><td>${formatTime(r.tempo)}</td>
-        <td>${r.geral}</td>
-        <td style="background:${getColorForPct(r.pctGeral)}">${formatPct(r.pctGeral)}</td>
-        <td>${r.cat}</td>
-        <td style="background:${getColorForPct(r.pctCat)}">${formatPct(r.pctCat)}</td>`;
+    const tbody=document.getElementById('resultados-tbody');tbody.innerHTML='';
+    sorted.forEach(r=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${r.data}</td><td>${r.notion?`<a href="${r.notion}" target="_blank" rel="noopener">${r.corrida}</a>`:r.corrida}</td><td>${r.distancia}</td><td>${r.local}</td><td>${formatTime(r.tempo)}</td><td>${r.geral}</td><td style="background:${pctColor(r.pctGeral)}">${formatPct(r.pctGeral)}</td><td>${r.cat}</td><td style="background:${pctColor(r.pctCat)}">${formatPct(r.pctCat)}</td>`;
       tbody.appendChild(tr);
     });
   }
 
-  /* ============================================================
-     PLANEJAMENTO — linha do tempo macro
-  ============================================================ */
-  function renderMacro() {
-    if (!macroData.length) return;
+  /* ── PLANEJAMENTO ── */
+  function renderMacro(){
+    if(!macroData.length) return;
+    const data=macroData;
+    const labels    = data.map((_,i)=>i+1);
+    const volTotal  = data.map(q=>q.volTotal);
+    const volLongo  = data.map(q=>q.volLongo);
+    const volCurto  = data.map((q,i)=>Math.max(0,volTotal[i]-volLongo[i]));
+    const volReal   = data.map(q=>q.volReal>0?q.volReal:null);
+    const volLgReal = data.map(q=>q.volLgReal>0?q.volLgReal:null);
+    const barColors  = data.map(q=>getFaseCor(q.fase).bar);
+    const darkColors = data.map(q=>getFaseCor(q.fase).dark);
 
-    const data = macroData;
-    const labels     = data.map((_, i) => i + 1);          // 1, 2, 3 … 26
-    const volTotal   = data.map(q => q.volTotal);
-    const volLongo   = data.map(q => q.volLongo);
-    // Volume curto = diferença — fica empilhado ACIMA do longo
-    const volCurto   = data.map((q,i) => Math.max(0, volTotal[i] - volLongo[i]));
-    const volReal    = data.map(q => q.volReal   > 0 ? q.volReal   : null);
-    const volLgReal  = data.map(q => q.volLgReal > 0 ? q.volLgReal : null);
-
-    // cores por quinzena baseadas na fase
-    const barColors  = data.map(q => getFaseCor(q.fase).bar);
-    const darkColors = data.map(q => getFaseCor(q.fase).dark);
-
-    const gridColor = 'rgba(0,0,0,0.05)';
-    const tickFont  = { family: "'DM Mono', monospace", size: 10 };
-
-    // legenda
-    const legEl = document.getElementById('macro-legend');
-    legEl.innerHTML = '';
-    const fasesUnicas = [...new Set(data.map(q => q.fase))];
-    fasesUnicas.forEach(f => {
-      const c = getFaseCor(f);
-      legEl.innerHTML += `
-        <span class="macro-legend-item">
-          <span style="display:inline-flex;flex-direction:column;width:12px;height:14px;border-radius:2px;overflow:hidden;flex-shrink:0">
-            <span style="flex:1;background:${c.bar}"></span>
-            <span style="flex:1;background:${c.dark}"></span>
-          </span>&nbsp;${f}
-        </span>`;
+    /* ── CONTADOR: soma até a última quinzena com dado real ── */
+    const hoje = new Date();
+    let kmRealAcum = 0, kmPlanAcum = 0;
+    const kmPlanTotal = volTotal.reduce((s,v)=>s+v, 0);
+    data.forEach(q => {
+      const fimDate = q.dataFim ? new Date(q.dataFim) : null;
+      if (fimDate && fimDate <= hoje) {
+        kmRealAcum += q.volReal || 0;
+        kmPlanAcum += q.volTotal || 0;
+      } else if (!fimDate && q.volReal > 0) {
+        kmRealAcum += q.volReal;
+        kmPlanAcum += q.volTotal;
+      }
     });
-    legEl.innerHTML += `
-      <span class="macro-legend-item">
-        <span class="macro-legend-line" style="height:2px;background:#3D6B4F;display:inline-block"></span>&nbsp;vol. realizado
-      </span>
-      <span class="macro-legend-item">
-        <span style="display:inline-block;width:22px;height:2px;background:repeating-linear-gradient(to right,#7A5A10 0,#7A5A10 4px,transparent 4px,transparent 8px)"></span>&nbsp;longo realizado
-      </span>`;
+    document.getElementById('macro-km-main').innerHTML =
+      `${kmRealAcum.toFixed(0)} km <span>/ ${kmPlanAcum.toFixed(0)} km</span>`;
+    document.getElementById('macro-km-sub').textContent =
+      `volume planejado anual: ${kmPlanTotal.toFixed(0)} km`;
 
-    const chartConfig = {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            // LONGO — base da barra (cor escura)
-            label: 'Longão planejado',
-            data: volLongo,
-            backgroundColor: darkColors,
-            borderWidth: 0,
-            borderSkipped: 'bottom',
-            stack: 'plan',
-            order: 2,
-          },
-          {
-            // CURTO — topo da barra (cor clara), empilhado acima do longo
-            label: 'Volume planejado',
-            data: volTotal,
-            backgroundColor: barColors,
-            borderWidth: 0,
-            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
-            borderSkipped: 'bottom',
-            stack: 'plan',
-            order: 2,
-          },
-          {
-            label: 'Vol. realizado',
-            data: volReal,
-            type: 'line',
-            borderColor: '#3D6B4F',
-            backgroundColor: 'transparent',
-            borderWidth: 2.5,
-            pointBackgroundColor: '#3D6B4F',
-            pointRadius: 4,
-            pointHoverRadius: 6,
-            tension: 0.3,
-            order: 1,
-          },
-          {
-            label: 'Longo realizado',
-            data: volLgReal,
-            type: 'line',
-            borderColor: '#7A5A10',
-            backgroundColor: 'transparent',
-            borderWidth: 2,
-            borderDash: [5, 4],
-            pointBackgroundColor: '#7A5A10',
-            pointRadius: 3,
-            pointHoverRadius: 5,
-            tension: 0.3,
-            order: 1,
-          },
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              title: items => {
-                const q = data[items[0].dataIndex];
-                // return `${q.id} · ${q.fase}`;
-                return `${q.fase}`;
-              },
-              label: ctx => {
-                if (ctx.parsed.y === null) return null;
-                return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(0) + ' km';
-              },
-              afterBody: items => {
-                const idx = items[0].dataIndex;
-                const q   = data[idx];
-                const lines = [];
-                if (q.prova1) lines.push('★ ' + q.prova1 + (q.tipo1 ? ' · '+q.tipo1 : ''));
-                if (q.prova2) lines.push('★ ' + q.prova2 + (q.tipo2 ? ' · '+q.tipo2 : ''));
-                return lines;
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            stacked: true,
-            grid: { display: false },
-            ticks: { font: tickFont, maxRotation: 0, autoSkip: false }
-          },
-          y: {
-            stacked: false,
-            grid: { color: gridColor },
-            ticks: { font: tickFont, callback: v => v + ' km' }
-          }
+    /* ── LEGENDA ── */
+    const legEl=document.getElementById('macro-legend');legEl.innerHTML='';
+    [...new Set(data.map(q=>q.fase))].forEach(f=>{
+      const c=getFaseCor(f);
+      legEl.innerHTML+=`<span class="macro-legend-item"><span style="display:inline-flex;flex-direction:column;width:12px;height:14px;border-radius:2px;overflow:hidden;flex-shrink:0"><span style="flex:1;background:${c.bar}"></span><span style="flex:1;background:${c.dark}"></span></span>&nbsp;${f}</span>`;
+    });
+    legEl.innerHTML+=`
+      <span class="macro-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#3D6B4F"></span>&nbsp;vol. realizado</span>
+      <span class="macro-legend-item"><span style="display:inline-block;width:22px;height:2px;background:repeating-linear-gradient(to right,#7A5A10 0,#7A5A10 4px,transparent 4px,transparent 8px)"></span>&nbsp;longo realizado</span>
+      <span class="macro-legend-item"><span style="background:#F5D78E;color:#7A5800;font-size:.65rem;padding:1px 6px;border-radius:20px;font-weight:700">★</span>&nbsp;prova</span>`;
+
+    const gc='rgba(0,0,0,0.05)',tf={family:"'DM Mono', monospace",size:10};
+    const cfg={
+      type:'bar',
+      data:{labels,datasets:[
+        {label:'Longão planejado',data:volLongo,backgroundColor:darkColors,borderWidth:0,borderSkipped:'bottom',stack:'plan',order:2},
+        {label:'Volume planejado',data:volCurto,backgroundColor:barColors,borderWidth:0,borderRadius:{topLeft:4,topRight:4,bottomLeft:0,bottomRight:0},borderSkipped:'bottom',stack:'plan',order:2},
+        {label:'Vol. realizado',data:volReal,type:'line',borderColor:'#3D6B4F',backgroundColor:'transparent',borderWidth:2.5,pointBackgroundColor:'#3D6B4F',pointRadius:4,pointHoverRadius:6,tension:0.3,order:1},
+        {label:'Longo realizado',data:volLgReal,type:'line',borderColor:'#7A5A10',backgroundColor:'transparent',borderWidth:2,borderDash:[5,4],pointBackgroundColor:'#7A5A10',pointRadius:3,pointHoverRadius:5,tension:0.3,order:1},
+      ]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{legend:{display:false},tooltip:{callbacks:{
+          title:items=>{const q=data[items[0].dataIndex];return`${q.id} · ${q.fase}`;},
+          label:ctx=>{if(ctx.parsed.y===null)return null;return' '+ctx.dataset.label+': '+ctx.parsed.y.toFixed(0)+' km';},
+          afterBody:items=>{const q=data[items[0].dataIndex];const l=[];if(q.prova1)l.push('★ '+q.prova1+(q.tipo1?' · '+q.tipo1:''));if(q.prova2)l.push('★ '+q.prova2+(q.tipo2?' · '+q.tipo2:''));return l;}
+        }}},
+        scales:{
+          x:{stacked:true,grid:{display:false},ticks:{font:tf,maxRotation:0,autoSkip:false}},
+          y:{stacked:false,grid:{color:gc},ticks:{font:tf,callback:v=>v+' km'}},
         }
       }
     };
 
-    if (chartInstances['chartMacro']) {
-      chartInstances['chartMacro'].data    = chartConfig.data;
-      chartInstances['chartMacro'].options = chartConfig.options;
-      chartInstances['chartMacro'].update('none');
-    } else {
-      chartInstances['chartMacro'] = new Chart(document.getElementById('chartMacro'), chartConfig);
-    }
+    if(chartInstances['chartMacro']){chartInstances['chartMacro'].data=cfg.data;chartInstances['chartMacro'].options=cfg.options;chartInstances['chartMacro'].update('none');}
+    else chartInstances['chartMacro']=new Chart(document.getElementById('chartMacro'),cfg);
 
-    // ── BADGES DE PROVA ──
-    // Remove badges anteriores
-    document.querySelectorAll('.prova-badge').forEach(b => b.remove());
+    /* ── BADGES ── */
+    document.querySelectorAll('.prova-badge').forEach(b=>b.remove());
+    requestAnimationFrame(()=>{
+      const chart=chartInstances['chartMacro'];
+      const outer=document.getElementById('macro-chart-outer');
+      const canvas=document.getElementById('chartMacro');
+      const canvasTop=canvas.offsetTop;
 
-    // Aguarda o chart renderizar para pegar posições corretas
-    requestAnimationFrame(() => {
-      const chart  = chartInstances['chartMacro'];
-      const outer  = document.getElementById('macro-chart-outer');
-      const canvas = document.getElementById('chartMacro');
-      const canvasTop = canvas.offsetTop;
+      data.forEach((q,idx)=>{
+        const provas=[];
+        if(q.prova1) provas.push({nome:q.prova1,tipo:q.tipo1});
+        if(q.prova2) provas.push({nome:q.prova2,tipo:q.tipo2});
+        if(!provas.length) return;
 
-      data.forEach((q, idx) => {
-        const provas = [];
-        if (q.prova1) provas.push({ nome: q.prova1, tipo: q.tipo1 });
-        if (q.prova2) provas.push({ nome: q.prova2, tipo: q.tipo2 });
-        if (!provas.length) return;
+        // posição X: centro da barra
+        const meta=chart.getDatasetMeta(0);
+        if(!meta.data[idx]) return;
+        const xPos=meta.data[idx].x;
 
-        // posição X do centro da barra
-        const meta = chart.getDatasetMeta(0);
-        if (!meta.data[idx]) return;
-        const xPos = meta.data[idx].x;
+        // posição Y: pixel do topo exato da barra (volTotal)
+        const yPixel = canvasTop + chart.scales.y.getPixelForValue(volTotal[idx]);
 
-        // posição Y: topo da barra planejada total
-        const yVal  = volTotal[idx];
-        const yPos  = canvasTop + chart.scales.y.getPixelForValue(yVal) - 12;
+        provas.forEach((pv,pi)=>{
+          const badge=document.createElement('div');
+          badge.className='prova-badge';
+          badge.style.left=xPos+'px';
+          // empilha acima: cada badge tem ~18px de altura, 4px de gap entre elas
+          badge.style.top=(yPixel - 18 - pi * 22)+'px';
+          badge.innerHTML=`<span class="star">★</span>`;
 
-        provas.forEach((pv, pi) => {
-          const badge = document.createElement('div');
-          badge.className = 'prova-badge';
-          badge.style.left = xPos + 'px';
-          badge.style.top  = (yPos + 72) + 'px';
-          badge.innerHTML  = `<span class="star">★</span>`;
-
-          // popover ABAIXO do badge
-          const pop = document.createElement('div');
-          pop.className = 'prova-popover';
-          pop.innerHTML = `<div class="pp-name">${pv.nome}</div><div class="pp-dist">${pv.tipo}</div>`;
+          const pop=document.createElement('div');
+          pop.className='prova-popover';
+          pop.innerHTML=`<div class="pp-name">${pv.nome}</div><div class="pp-dist">${pv.tipo}</div>`;
           badge.appendChild(pop);
-
-          badge.addEventListener('mouseenter', () => pop.classList.add('open'));
-          badge.addEventListener('mouseleave', () => pop.classList.remove('open'));
-
+          badge.addEventListener('mouseenter',()=>pop.classList.add('open'));
+          badge.addEventListener('mouseleave',()=>pop.classList.remove('open'));
           outer.appendChild(badge);
         });
       });
 
-      // ── FAIXA DE FASES ──
-      const strip = document.getElementById('fase-strip');
-      strip.innerHTML = '';
-      const total = data.length;
-      data.forEach(q => {
-        const c   = getFaseCor(q.fase);
-        const pct = (1 / total * 100).toFixed(2);
-        const bl  = document.createElement('div');
-        bl.className = 'fase-block';
-        bl.style.width      = pct + '%';
-        bl.style.background = c.strip;
-        bl.style.borderTop  = `2px solid ${c.dark}`;
-        bl.textContent      = q.fase;
+      /* ── FAIXA DE FASES ── */
+      const strip=document.getElementById('fase-strip');strip.innerHTML='';
+      const total=data.length;
+      data.forEach(q=>{
+        const c=getFaseCor(q.fase);
+        const bl=document.createElement('div');
+        bl.className='fase-block';
+        bl.style.width=(1/total*100).toFixed(2)+'%';
+        bl.style.background=c.strip;
+        bl.style.borderTop=`2px solid ${c.dark}`;
+        bl.textContent=q.fase;
         strip.appendChild(bl);
       });
     });
   }
 
-  /* ============================================================
-     INIT
-  ============================================================ */
-  async function init() {
-    try {
-      const [res] = await Promise.all([fetch(SHEETS_URL), fetchWeather()]);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const raw = await res.json();
-      if (!raw.treinos || !Array.isArray(raw.treinos))
-        throw new Error('Dados sem "treinos". Verifique o Apps Script.');
-
-      const data = raw.treinos.map(r => ({
-        diaSemana: String(r.diaSemana||'').trim(),
-        dia:       String(r.dia||'').trim(),
-        distPlan:  parseKm(r.distPlan),
-        distEf:    parseKm(r.distEf),
-        tipo:      String(r.tipo||'').trim(),
-        comp:      parseComp(r.comp),
-        peso:      parsePeso(r.peso),
-      })).filter(r => r.dia !== '');
-
-      let lastFilled = -1;
-      data.forEach((r,i) => { if (r.distEf>0||r.peso!==null||r.comp) lastFilled=i; });
-      const dashRows = lastFilled >= 0 ? data.slice(0, lastFilled+1) : data;
-
-      globalRows     = data;
-      resultadosData = raw.resultados || [];
-      macroData      = raw.macro      || [];
-
-      document.getElementById('loading-box').style.display = 'none';
+  /* ── INIT ── */
+  async function init(){
+    try{
+      const [res]=await Promise.all([fetch(SHEETS_URL),fetchWeather()]);
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const raw=await res.json();
+      if(!raw.treinos||!Array.isArray(raw.treinos)) throw new Error('Dados sem "treinos". Verifique o Apps Script.');
+      const data=raw.treinos.map(r=>({
+        diaSemana:String(r.diaSemana||'').trim(),dia:String(r.dia||'').trim(),
+        distPlan:parseKm(r.distPlan),distEf:parseKm(r.distEf),
+        tipo:String(r.tipo||'').trim(),comp:parseComp(r.comp),peso:parsePeso(r.peso),
+      })).filter(r=>r.dia!=='');
+      let lf=-1;data.forEach((r,i)=>{if(r.distEf>0||r.peso!==null||r.comp)lf=i;});
+      const dashRows=lf>=0?data.slice(0,lf+1):data;
+      globalRows=data; resultadosData=raw.resultados||[]; macroData=raw.macro||[];
+      document.getElementById('loading-box').style.display='none';
       document.getElementById('tab-visao').classList.add('active');
-
       buildDashboard(dashRows);
       renderCalendar();
-
-    } catch (err) {
-      console.error('[dashboard]', err);
-      document.getElementById('loading-box').innerHTML = `
-        <div class="state-box error">
-          não foi possível carregar os dados.<br>
-          verifique se o Apps Script está publicado como Web App<br>
-          com acesso para <strong>qualquer pessoa</strong>.<br><br>
-          <small style="color:#B0ADA8">${err.message}</small>
-        </div>`;
+    } catch(err){
+      console.error('[dashboard]',err);
+      document.getElementById('loading-box').innerHTML=`<div class="state-box error">não foi possível carregar os dados.<br>verifique se o Apps Script está publicado como Web App<br>com acesso para <strong>qualquer pessoa</strong>.<br><br><small style="color:#B0ADA8">${err.message}</small></div>`;
     }
   }
-
   init();
 </script>
 </body>
