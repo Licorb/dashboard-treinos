@@ -797,13 +797,12 @@
     if (!macroData.length) return;
 
     const data = macroData;
-    const labels     = data.map(q => q.id);
+    const labels     = data.map((_, i) => i + 1);          // 1, 2, 3 … 26
     const volTotal   = data.map(q => q.volTotal);
     const volLongo   = data.map(q => q.volLongo);
-    // volOther = volume que NÃO é longo (base da barra)
-    // volLongo = topo da barra — ambos empilhados somam volTotal
-    const volOther   = data.map((q,i) => Math.max(0, volTotal[i] - volLongo[i]));
-    const volReal    = data.map(q => q.volReal > 0 ? q.volReal : null);
+    // Volume curto = diferença — fica empilhado ACIMA do longo
+    const volCurto   = data.map((q,i) => Math.max(0, volTotal[i] - volLongo[i]));
+    const volReal    = data.map(q => q.volReal   > 0 ? q.volReal   : null);
     const volLgReal  = data.map(q => q.volLgReal > 0 ? q.volLgReal : null);
 
     // cores por quinzena baseadas na fase
@@ -821,7 +820,10 @@
       const c = getFaseCor(f);
       legEl.innerHTML += `
         <span class="macro-legend-item">
-          <span class="legend-dot" style="background:${c.bar};border:1.5px solid ${c.dark}"></span>${f}
+          <span style="display:inline-flex;flex-direction:column;width:12px;height:14px;border-radius:2px;overflow:hidden;flex-shrink:0">
+            <span style="flex:1;background:${c.bar}"></span>
+            <span style="flex:1;background:${c.dark}"></span>
+          </span>&nbsp;${f}
         </span>`;
     });
     legEl.innerHTML += `
@@ -838,18 +840,20 @@
         labels,
         datasets: [
           {
-            label: 'Volume planejado',
-            data: volOther,
-            backgroundColor: barColors,
+            // LONGO — base da barra (cor escura)
+            label: 'Longão planejado',
+            data: volLongo,
+            backgroundColor: darkColors,
             borderWidth: 0,
             borderSkipped: 'bottom',
             stack: 'plan',
             order: 2,
           },
           {
-            label: 'Longão planejado',
-            data: volLongo,
-            backgroundColor: darkColors,
+            // CURTO — topo da barra (cor clara), empilhado acima do longo
+            label: 'Volume planejado',
+            data: volCurto,
+            backgroundColor: barColors,
             borderWidth: 0,
             borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
             borderSkipped: 'bottom',
@@ -894,11 +898,8 @@
           tooltip: {
             callbacks: {
               title: items => {
-                const idx = items[0].dataIndex;
-                const q   = data[idx];
-                const d1  = q.dataInicio ? q.dataInicio.slice(8,10)+'/'+q.dataInicio.slice(5,7) : '';
-                const d2  = q.dataFim    ? q.dataFim.slice(8,10)+'/'+q.dataFim.slice(5,7) : '';
-                return `${q.id} · ${q.fase} · ${d1} – ${d2}`;
+                const q = data[items[0].dataIndex];
+                return `${q.id} · ${q.fase}`;
               },
               label: ctx => {
                 if (ctx.parsed.y === null) return null;
@@ -962,7 +963,7 @@
 
         // posição Y: topo da barra planejada total
         const yVal  = volTotal[idx];
-        const yPos  = canvasTop + chart.scales.y.getPixelForValue(yVal) - 28;
+        const yPos  = canvasTop + chart.scales.y.getPixelForValue(yVal) - 12;
 
         provas.forEach((pv, pi) => {
           const badge = document.createElement('div');
